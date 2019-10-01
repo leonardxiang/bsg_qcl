@@ -1,0 +1,26 @@
+# Vivado project logs
+vivado*.jou
+vivado_*.str
+vivado_*.zip
+open*
+
+# Pycharm dir
+.idea/
+
+# Trace files
+*.tr
+*_rom.v
+
+imports/*
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
