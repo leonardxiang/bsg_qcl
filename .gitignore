@@ -3,6 +3,8 @@ vivado*.jou
 vivado_*.str
 vivado_*.zip
 open*
+*.log
+*.tmp
 
 # Pycharm dir
 .idea/
@@ -23,4 +25,3 @@ __pycache__/
 
 # Jupyter Notebook
 .ipynb_checkpoints
-
