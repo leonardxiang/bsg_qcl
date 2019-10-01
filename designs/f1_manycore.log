@@ -1,0 +1,213 @@
+#-----------------------------------------------------------
+# Vivado v2018.2 (64-bit)
+# SW Build 2258646 on Thu Jun 14 20:02:38 MDT 2018
+# IP Build 2256618 on Thu Jun 14 22:10:49 MDT 2018
+# Start of session at: Tue Oct  1 16:05:28 2019
+# Process ID: 69284
+# Current directory: /home/xlelephant/git_repos/bsg_qcl/designs
+# Command line: vivado -mode tcl -log f1_manycore.log -source create_project.tcl -tclargs f1_manycore /home/xlelephant/workspace/f1_manycore xcvu37p-fsvh2892-3-e-es1 0 7 19 190 /home/xlelephant/git_repos/basejump_stl/bsg_misc /home/xlelephant/git_repos/basejump_stl/bsg_cache /home/xlelephant/git_repos/basejump_stl/bsg_noc /home/xlelephant/git_repos/bsg_manycore/v /home/xlelephant/git_repos/bsg_manycore/v/vanilla_bean /home/xlelephant/git_repos/bsg_f1/hardware /home/xlelephant/git_repos/bsg_qcl/hdl /home/xlelephant/git_repos/basejump_stl/bsg_misc/bsg_defines.v /home/xlelephant/git_repos/basejump_stl/bsg_noc/bsg_noc_pkg.v /home/xlelephant/git_repos/basejump_stl/bsg_noc/bsg_noc_links.vh /home/xlelephant/git_repos/basejump_stl/bsg_cache/bsg_cache_pkg.v /home/xlelephant/git_repos/basejump_stl/bsg_fpu/bsg_fpu_pkg.v /home/xlelephant/git_repos/bsg_manycore/v/bsg_manycore_addr_pkg.v /home/xlelephant/git_repos/bsg_manycore/v/bsg_manycore_addr.vh /home/xlelephant/git_repos/bsg_manycore/v/bsg_manycore_packet.vh /home/xlelephant/git_repos/bsg_manycore/v/vanilla_bean/parameters.vh /home/xlelephant/git_repos/bsg_manycore/v/vanilla_bean/definitions.vh /home/xlelephant/git_repos/bsg_manycore/testbenches/common/v/bsg_mem_cfg_pkg.v /home/xlelephant/git_repos/bsg_f1/hardware/f1_parameters.vh /home/xlelephant/git_repos/bsg_f1/hardware/axil_to_mcl.vh /home/xlelephant/git_repos/bsg_f1/hardware/bsg_axi_bus_pkg.vh /home/xlelephant/git_repos/bsg_f1/hardware/bsg_bladerunner_rom_pkg.vh /home/xlelephant/git_repos/bsg_f1/hardware/cl_manycore_defines.vh /home/xlelephant/git_repos/bsg_f1/hardware/cl_id_defines.vh /home/xlelephant/git_repos/bsg_qcl/hdl/bsg_bladerunner_defines.vh /home/xlelephant/git_repos/bsg_qcl/hdl/bsg_axi4_bus_pkg.vh /home/xlelephant/git_repos/basejump_stl/bsg_misc/bsg_defines.v /home/xlelephant/git_repos/basejump_stl/bsg_noc/bsg_noc_pkg.v /home/xlelephant/git_repos/basejump_stl/bsg_noc/bsg_noc_links.vh /home/xlelephant/git_repos/basejump_stl/bsg_cache/bsg_cache_pkg.v /home/xlelephant/git_repos/basejump_stl/bsg_fpu/bsg_fpu_pkg.v /home/xlelephant/git_repos/bsg_manycore/v/bsg_manycore_addr_pkg.v /home/xlelephant/git_repos/bsg_manycore/v/bsg_manycore_addr.vh /home/xlelephant/git_repos/bsg_manycore/v/bsg_manycore_packet.vh /home/xlelephant/git_repos/bsg_manycore/v/vanilla_bean/parameters.vh /home/xlelephant/git_repos/bsg_manycore/v/vanilla_bean/definitions.vh /home/xlelephant/git_repos/bsg_manycore/testbenches/common/v/bsg_mem_cfg_pkg.v /home/xlelephant/git_repos/bsg_f1/hardware/f1_parameters.vh /home/xlelephant/git_repos/bsg_f1/hardware/axil_to_mcl.vh /home/xlelephant/git_repos/bsg_f1/hardware/bsg_axi_bus_pkg.vh /home/xlelephant/git_repos/bsg_f1/hardware/bsg_bladerunner_rom_pkg.vh /home/xlelephant/git_repos/bsg_f1/hardware/cl_manycore_defines.vh /home/xlelephant/git_repos/bsg_f1/hardware/cl_id_defines.vh /home/xlelephant/git_repos/bsg_qcl/hdl/bsg_bladerunner_defines.vh /home/xlelephant/git_repos/bsg_qcl/hdl/bsg_axi4_bus_pkg.vh /home/xlelephant/git_repos/basejump_stl/bsg_misc/bsg_defines.v /home/xlelephant/git_repos/basejump_stl/bsg_noc/bsg_noc_pkg.v /home/xlelephant/git_repos/basejump_stl/bsg_noc/bsg_noc_links.vh /home/xlelephant/git_repos/basejump_stl/bsg_cache/bsg_cache_pkg.v /home/xlelephant/git_repos/basejump_stl/bsg_fpu/bsg_fpu_pkg.v /home/xlelephant/git_repos/bsg_manycore/v/bsg_manycore_addr_pkg.v /home/xlelephant/git_repos/bsg_manycore/v/bsg_manycore_addr.vh /home/xlelephant/git_repos/bsg_manycore/v/bsg_manycore_packet.vh /home/xlelephant/git_repos/bsg_manycore/v/vanilla_bean/parameters.vh /home/xlelephant/git_repos/bsg_manycore/v/vanilla_bean/definitions.vh /home/xlelephant/git_repos/bsg_manycore/testbenches/common/v/bsg_mem_cfg_pkg.v /home/xlelephant/git_repos/bsg_f1/hardware/f1_parameters.vh /home/xlelephant/git_repos/bsg_f1/hardware/axil_to_mcl.vh /home/xlelephant/git_repos/bsg_f1/hardware/bsg_axi_bus_pkg.vh /home/xlelephant/git_repos/bsg_f1/hardware/bsg_bladerunner_rom_pkg.vh /home/xlelephant/git_repos/bsg_f1/hardware/cl_manycore_defines.vh /home/xlelephant/git_repos/bsg_f1/hardware/cl_id_defines.vh /home/xlelephant/git_repos/bsg_qcl/hdl/bsg_bladerunner_defines.vh /home/xlelephant/git_repos/bsg_qcl/hdl/bsg_axi4_bus_pkg.vh /home/xlelephant/git_repos/basejump_stl/bsg_misc/bsg_defines.v /home/xlelephant/git_repos/basejump_stl/bsg_noc/bsg_noc_pkg.v /home/xlelephant/git_repos/basejump_stl/bsg_noc/bsg_noc_links.vh /home/xlelephant/git_repos/basejump_stl/bsg_cache/bsg_cache_pkg.v /home/xlelephant/git_repos/basejump_stl/bsg_fpu/bsg_fpu_pkg.v /home/xlelephant/git_repos/bsg_manycore/v/bsg_manycore_addr_pkg.v /home/xlelephant/git_repos/bsg_manycore/v/bsg_manycore_addr.vh /home/xlelephant/git_repos/bsg_manycore/v/bsg_manycore_packet.vh /home/xlelephant/git_repos/bsg_manycore/v/vanilla_bean/parameters.vh /home/xlelephant/git_repos/bsg_manycore/v/vanilla_bean/definitions.vh /home/xlelephant/git_repos/bsg_manycore/testbenches/common/v/bsg_mem_cfg_pkg.v /home/xlelephant/git_repos/bsg_f1/hardware/f1_parameters.vh /home/xlelephant/git_repos/bsg_f1/hardware/axil_to_mcl.vh /home/xlelephant/git_repos/bsg_f1/hardware/bsg_axi_bus_pkg.vh /home/xlelephant/git_repos/bsg_f1/hardware/bsg_bladerunner_rom_pkg.vh /home/xlelephant/git_repos/bsg_f1/hardware/cl_manycore_defines.vh /home/xlelephant/git_repos/bsg_f1/hardware/cl_id_defines.vh /home/xlelephant/git_repos/bsg_qcl/hdl/bsg_bladerunner_defines.vh /home/xlelephant/git_repos/bsg_qcl/hdl/bsg_axi4_bus_pkg.vh /home/xlelephant/git_repos/basejump_stl/bsg_misc/bsg_defines.v /home/xlelephant/git_repos/basejump_stl/bsg_noc/bsg_noc_pkg.v /home/xlelephant/git_repos/basejump_stl/bsg_noc/bsg_noc_links.vh /home/xlelephant/git_repos/basejump_stl/bsg_cache/bsg_cache_pkg.v /home/xlelephant/git_repos/basejump_stl/bsg_fpu/bsg_fpu_pkg.v /home/xlelephant/git_repos/bsg_manycore/v/bsg_manycore_addr_pkg.v /home/xlelephant/git_repos/bsg_manycore/v/bsg_manycore_addr.vh /home/xlelephant/git_repos/bsg_manycore/v/bsg_manycore_packet.vh /home/xlelephant/git_repos/bsg_manycore/v/vanilla_bean/parameters.vh /home/xlelephant/git_repos/bsg_manycore/v/vanilla_bean/definitions.vh /home/xlelephant/git_repos/bsg_manycore/testbenches/common/v/bsg_mem_cfg_pkg.v /home/xlelephant/git_repos/bsg_f1/hardware/f1_parameters.vh /home/xlelephant/git_repos/bsg_f1/hardware/axil_to_mcl.vh /home/xlelephant/git_repos/bsg_f1/hardware/bsg_axi_bus_pkg.vh /home/xlelephant/git_repos/bsg_f1/hardware/bsg_bladerunner_rom_pkg.vh /home/xlelephant/git_repos/bsg_f1/hardware/cl_manycore_defines.vh /home/xlelephant/git_repos/bsg_f1/hardware/cl_id_defines.vh /home/xlelephant/git_repos/bsg_qcl/hdl/bsg_bladerunner_defines.vh /home/xlelephant/git_repos/bsg_qcl/hdl/bsg_axi4_bus_pkg.vh /home/xlelephant/git_repos/basejump_stl/bsg_misc/bsg_less_than.v /home/xlelephant/git_repos/basejump_stl/bsg_misc/bsg_reduce.v /home/xlelephant/git_repos/basejump_stl/bsg_misc/bsg_abs.v /home/xlelephant/git_repos/basejump_stl/bsg_misc/bsg_mul_synth.v /home/xlelephant/git_repos/basejump_stl/bsg_misc/bsg_priority_encode.v /home/xlelephant/git_repos/basejump_stl/bsg_misc/bsg_priority_encode_one_hot_out.v /home/xlelephant/git_repos/basejump_stl/bsg_misc/bsg_encode_one_hot.v /home/xlelephant/git_repos/basejump_stl/bsg_misc/bsg_scan.v /home/xlelephant/git_repos/basejump_stl/bsg_misc/bsg_mux.v /home/xlelephant/git_repos/basejump_stl/bsg_misc/bsg_mux_one_hot.v /home/xlelephant/git_repos/basejump_stl/bsg_misc/bsg_mux_segmented.v /home/xlelephant/git_repos/basejump_stl/bsg_misc/bsg_dff.v /home/xlelephant/git_repos/basejump_stl/bsg_misc/bsg_dff_en_bypass.v /home/xlelephant/git_repos/basejump_stl/bsg_misc/bsg_dff_en.v /home/xlelephant/git_repos/basejump_stl/bsg_misc/bsg_dff_reset.v /home/xlelephant/git_repos/basejump_stl/bsg_misc/bsg_transpose.v /home/xlelephant/git_repos/basejump_stl/bsg_misc/bsg_crossbar_o_by_i.v /home/xlelephant/git_repos/basejump_stl/bsg_misc/bsg_decode_with_v.v /home/xlelephant/git_repos/basejump_stl/bsg_misc/bsg_decode.v /home/xlelephant/git_repos/basejump_stl/bsg_misc/bsg_counter_clear_up.v /home/xlelephant/git_repos/basejump_stl/bsg_misc/bsg_counter_up_down.v /home/xlelephant/git_repos/basejump_stl/bsg_misc/bsg_round_robin_arb.v /home/xlelephant/git_repos/basejump_stl/bsg_misc/bsg_circular_ptr.v /home/xlelephant/git_repos/basejump_stl/bsg_misc/bsg_imul_iterative.v /home/xlelephant/git_repos/basejump_stl/bsg_misc/bsg_idiv_iterative.v /home/xlelephant/git_repos/basejump_stl/bsg_misc/bsg_idiv_iterative_controller.v /home/xlelephant/git_repos/basejump_stl/bsg_misc/bsg_buf.v /home/xlelephant/git_repos/basejump_stl/bsg_misc/bsg_buf_ctrl.v /home/xlelephant/git_repos/basejump_stl/bsg_misc/bsg_xnor.v /home/xlelephant/git_repos/basejump_stl/bsg_misc/bsg_nor2.v /home/xlelephant/git_repos/basejump_stl/bsg_misc/bsg_adder_cin.v /home/xlelephant/git_repos/basejump_stl/bsg_misc/bsg_expand_bitmask.v /home/xlelephant/git_repos/basejump_stl/bsg_misc/bsg_lru_pseudo_tree_decode.v /home/xlelephant/git_repos/basejump_stl/bsg_misc/bsg_lru_pseudo_tree_encode.v /home/xlelephant/git_repos/basejump_stl/bsg_dataflow/bsg_fifo_1r1w_small.v /home/xlelephant/git_repos/basejump_stl/bsg_dataflow/bsg_two_fifo.v /home/xlelephant/git_repos/basejump_stl/bsg_dataflow/bsg_round_robin_n_to_1.v /home/xlelephant/git_repos/basejump_stl/bsg_dataflow/bsg_parallel_in_serial_out.v /home/xlelephant/git_repos/basejump_stl/bsg_dataflow/bsg_serial_in_parallel_out.v /home/xlelephant/git_repos/basejump_stl/bsg_dataflow/bsg_fifo_tracker.v /home/xlelephant/git_repos/basejump_stl/bsg_mem/bsg_mem_1r1w.v /home/xlelephant/git_repos/basejump_stl/bsg_mem/bsg_mem_1r1w_synth.v /home/xlelephant/git_repos/basejump_stl/bsg_mem/bsg_mem_1rw_sync.v /home/xlelephant/git_repos/basejump_stl/bsg_mem/bsg_mem_1rw_sync_synth.v /home/xlelephant/git_repos/basejump_stl/bsg_mem/bsg_mem_2r1w_sync.v /home/xlelephant/git_repos/basejump_stl/bsg_mem/bsg_mem_2r1w_sync_synth.v /home/xlelephant/git_repos/basejump_stl/bsg_mem/bsg_mem_1rw_sync_mask_write_byte.v /home/xlelephant/git_repos/basejump_stl/bsg_mem/bsg_mem_1rw_sync_mask_write_byte_synth.v /home/xlelephant/git_repos/basejump_stl/bsg_mem/bsg_mem_1rw_sync_mask_write_bit_synth.v /home/xlelephant/git_repos/basejump_stl/bsg_noc/bsg_mesh_stitch.v /home/xlelephant/git_repos/basejump_stl/bsg_noc/bsg_mesh_router.v /home/xlelephant/git_repos/basejump_stl/bsg_noc/bsg_mesh_router_buffered.v /home/xlelephant/git_repos/basejump_stl/bsg_fpu/bsg_fpu_classify.v /home/xlelephant/git_repos/basejump_stl/bsg_fpu/bsg_fpu_preprocess.v /home/xlelephant/git_repos/basejump_stl/bsg_fpu/bsg_fpu_add_sub.v /home/xlelephant/git_repos/basejump_stl/bsg_fpu/bsg_fpu_mul.v /home/xlelephant/git_repos/basejump_stl/bsg_fpu/bsg_fpu_cmp.v /home/xlelephant/git_repos/basejump_stl/bsg_fpu/bsg_fpu_i2f.v /home/xlelephant/git_repos/basejump_stl/bsg_fpu/bsg_fpu_f2i.v /home/xlelephant/git_repos/basejump_stl/bsg_fpu/bsg_fpu_clz.v /home/xlelephant/git_repos/basejump_stl/bsg_fpu/bsg_fpu_sticky.v /home/xlelephant/git_repos/basejump_stl/bsg_cache/bsg_cache.v /home/xlelephant/git_repos/basejump_stl/bsg_cache/bsg_cache_pkt_decode.v /home/xlelephant/git_repos/basejump_stl/bsg_cache/bsg_cache_dma.v /home/xlelephant/git_repos/basejump_stl/bsg_cache/bsg_cache_miss.v /home/xlelephant/git_repos/basejump_stl/bsg_cache/bsg_cache_sbuf.v /home/xlelephant/git_repos/basejump_stl/bsg_cache/bsg_cache_sbuf_queue.v /home/xlelephant/git_repos/basejump_stl/bsg_cache/bsg_cache_to_axi_rx.v /home/xlelephant/git_repos/basejump_stl/bsg_cache/bsg_cache_to_axi_tx.v /home/xlelephant/git_repos/bsg_manycore/v/bsg_manycore_link_to_cache.v /home/xlelephant/git_repos/bsg_manycore/v/vanilla_bean/bsg_manycore_proc_vanilla.v /home/xlelephant/git_repos/bsg_manycore/v/vanilla_bean/network_rx.v /home/xlelephant/git_repos/bsg_manycore/v/vanilla_bean/network_tx.v /home/xlelephant/git_repos/bsg_manycore/v/vanilla_bean/vanilla_core.v /home/xlelephant/git_repos/bsg_manycore/v/vanilla_bean/alu.v /home/xlelephant/git_repos/bsg_manycore/v/vanilla_bean/cl_decode.v /home/xlelephant/git_repos/bsg_manycore/v/vanilla_bean/fpu_float.v /home/xlelephant/git_repos/bsg_manycore/v/vanilla_bean/fpu_float_aux.v /home/xlelephant/git_repos/bsg_manycore/v/vanilla_bean/fpu_int.v /home/xlelephant/git_repos/bsg_manycore/v/vanilla_bean/icache.v /home/xlelephant/git_repos/bsg_manycore/v/vanilla_bean/imul_idiv_iterative.v /home/xlelephant/git_repos/bsg_manycore/v/vanilla_bean/load_packer.v /home/xlelephant/git_repos/bsg_manycore/v/vanilla_bean/lsu.v /home/xlelephant/git_repos/bsg_manycore/v/vanilla_bean/regfile.v /home/xlelephant/git_repos/bsg_manycore/v/vanilla_bean/scoreboard.v /home/xlelephant/git_repos/bsg_manycore/v/vanilla_bean/hash_function.v /home/xlelephant/git_repos/bsg_manycore/v/vanilla_bean/hash_function_reverse.v /home/xlelephant/git_repos/bsg_manycore/v/vanilla_bean/bsg_cache_to_axi_hashed.v /home/xlelephant/git_repos/bsg_manycore/v/bsg_manycore.v /home/xlelephant/git_repos/bsg_manycore/v/bsg_manycore_tile.v /home/xlelephant/git_repos/bsg_manycore/v/bsg_manycore_hetero_socket.v /home/xlelephant/git_repos/bsg_manycore/v/bsg_manycore_mesh_node.v /home/xlelephant/git_repos/bsg_manycore/v/bsg_manycore_endpoint.v /home/xlelephant/git_repos/bsg_manycore/v/bsg_manycore_endpoint_standard.v /home/xlelephant/git_repos/bsg_manycore/v/bsg_manycore_lock_ctrl.v /home/xlelephant/git_repos/bsg_manycore/v/bsg_1hold.v /home/xlelephant/git_repos/bsg_manycore/v/bsg_manycore_link_sif_tieoff.v /home/xlelephant/git_repos/bsg_manycore/testbenches/common/v/bsg_cache_wrapper_axi.v /home/xlelephant/git_repos/bsg_manycore/testbenches/common/v/memory_system.v /home/xlelephant/git_repos/bsg_f1/hardware/bsg_bladerunner_configuration.v /home/xlelephant/git_repos/bsg_f1/hardware/bsg_manycore_wrapper.v /home/xlelephant/git_repos/bsg_f1/hardware/bsg_bladerunner_rom.v /home/xlelephant/git_repos/bsg_f1/hardware/axil_to_mcl.v /home/xlelephant/git_repos/bsg_f1/hardware/axil_to_mem.sv /home/xlelephant/git_repos/basejump_stl/hard/ultrascale_plus/bsg_mem/bsg_mem_1rw_sync_mask_write_bit.v /home/xlelephant/git_repos/bsg_qcl/hdl/bsg_bladerunner_pkg.v /home/xlelephant/git_repos/bsg_qcl/hdl/bsg_bladerunner_wrapper.v /home/xlelephant/git_repos/bsg_qcl/hdl/s_axil_mcl_adapter.v /home/xlelephant/git_repos/bsg_qcl/hdl/f1_manycore_top.v /home/xlelephant/git_repos/bsg_qcl/hdl/lib_pip.v /home/xlelephant/git_repos/bsg_qcl/hdl/qcl_debounce.v /home/xlelephant/git_repos/bsg_qcl/hdl/axi4_mux.v /home/xlelephant/git_repos/bsg_qcl/hdl/axi_register_slice.v /home/xlelephant/git_repos/bsg_qcl/hdl/axi_register_slice_light.v
+# Log file: /home/xlelephant/git_repos/bsg_qcl/designs/f1_manycore.log
+# Journal file: /home/xlelephant/git_repos/bsg_qcl/designs/vivado.jou
+#-----------------------------------------------------------
+Sourcing tcl script '/home/xlelephant/.Xilinx/Vivado/Vivado_init.tcl'
+source create_project.tcl
+# set DESIGN_NAME       [lindex $argv 0]
+# set DESIGN_PRJ_DIR    [lindex $argv 1]
+# set FPGA_PART         [lindex $argv 2]
+# set DEBUG             [lindex $argv 3]
+# set LVINCLUDES        [lindex $argv 4]
+# set LVHEADERS         [lindex $argv 5]
+# set LVSOURCES         [lindex $argv 6]
+# set HDLSOURCE         [lrange $argv 7 end]
+# set VINCLUDES         [lrange $HDLSOURCE 0 [expr {$LVINCLUDES-1}]]
+# set VHEADERS          [lrange $HDLSOURCE $LVINCLUDES [expr {$LVINCLUDES+$LVHEADERS-1}]]
+# set VSOURCES          [lrange $HDLSOURCE [expr {$LVINCLUDES+$LVHEADERS}] end]
+# create_project -force ${DESIGN_NAME} ${DESIGN_PRJ_DIR} -part ${FPGA_PART}
+# if {[string equal [get_filesets -quiet sources_1] ""]} {
+#     create_fileset -srcset sources_1
+# }
+# if {[string equal [get_filesets -quiet sources_1] ""]} {
+#     create_fileset -constrset constrs_1
+# }
+# if {[string equal [get_filesets -quiet sim_1] ""]} {
+#     create_fileset -simset sim_1
+# }
+# set_property include_dirs ${VINCLUDES} [get_filesets sources_1]
+# add_files -fileset sources_1 -norecurse [join "${VHEADERS}"]
+# foreach vfile ${VHEADERS} {
+#   if {[string match [file extension ${vfile}] ".vh"]} {
+#     set_property file_type "Verilog Header" [get_files ${vfile}]
+#   }
+# }
+# foreach vfile ${VHEADERS} {
+#   if {[string match [file extension ${vfile}] ".v"]} {
+#     set_property file_type SystemVerilog [get_files ${vfile}]
+#   }
+# }
+# add_files -fileset sources_1 -norecurse [join "${VSOURCES}"]
+WARNING: [filemgmt 56-12] File '/home/xlelephant/git_repos/basejump_stl/bsg_misc/bsg_defines.v' cannot be added to the project because it already exists in the project, skipping this file
+WARNING: [filemgmt 56-12] File '/home/xlelephant/git_repos/basejump_stl/bsg_noc/bsg_noc_pkg.v' cannot be added to the project because it already exists in the project, skipping this file
+WARNING: [filemgmt 56-12] File '/home/xlelephant/git_repos/basejump_stl/bsg_noc/bsg_noc_links.vh' cannot be added to the project because it already exists in the project, skipping this file
+WARNING: [filemgmt 56-12] File '/home/xlelephant/git_repos/basejump_stl/bsg_cache/bsg_cache_pkg.v' cannot be added to the project because it already exists in the project, skipping this file
+WARNING: [filemgmt 56-12] File '/home/xlelephant/git_repos/basejump_stl/bsg_fpu/bsg_fpu_pkg.v' cannot be added to the project because it already exists in the project, skipping this file
+WARNING: [filemgmt 56-12] File '/home/xlelephant/git_repos/bsg_manycore/v/bsg_manycore_addr_pkg.v' cannot be added to the project because it already exists in the project, skipping this file
+WARNING: [filemgmt 56-12] File '/home/xlelephant/git_repos/bsg_manycore/v/bsg_manycore_addr.vh' cannot be added to the project because it already exists in the project, skipping this file
+WARNING: [filemgmt 56-12] File '/home/xlelephant/git_repos/bsg_manycore/v/bsg_manycore_packet.vh' cannot be added to the project because it already exists in the project, skipping this file
+WARNING: [filemgmt 56-12] File '/home/xlelephant/git_repos/bsg_manycore/v/vanilla_bean/parameters.vh' cannot be added to the project because it already exists in the project, skipping this file
+WARNING: [filemgmt 56-12] File '/home/xlelephant/git_repos/bsg_manycore/v/vanilla_bean/definitions.vh' cannot be added to the project because it already exists in the project, skipping this file
+WARNING: [filemgmt 56-12] File '/home/xlelephant/git_repos/bsg_manycore/testbenches/common/v/bsg_mem_cfg_pkg.v' cannot be added to the project because it already exists in the project, skipping this file
+WARNING: [filemgmt 56-12] File '/home/xlelephant/git_repos/bsg_f1/hardware/f1_parameters.vh' cannot be added to the project because it already exists in the project, skipping this file
+WARNING: [filemgmt 56-12] File '/home/xlelephant/git_repos/bsg_f1/hardware/axil_to_mcl.vh' cannot be added to the project because it already exists in the project, skipping this file
+WARNING: [filemgmt 56-12] File '/home/xlelephant/git_repos/bsg_f1/hardware/bsg_axi_bus_pkg.vh' cannot be added to the project because it already exists in the project, skipping this file
+WARNING: [filemgmt 56-12] File '/home/xlelephant/git_repos/bsg_f1/hardware/bsg_bladerunner_rom_pkg.vh' cannot be added to the project because it already exists in the project, skipping this file
+WARNING: [filemgmt 56-12] File '/home/xlelephant/git_repos/bsg_f1/hardware/cl_manycore_defines.vh' cannot be added to the project because it already exists in the project, skipping this file
+WARNING: [filemgmt 56-12] File '/home/xlelephant/git_repos/bsg_f1/hardware/cl_id_defines.vh' cannot be added to the project because it already exists in the project, skipping this file
+WARNING: [filemgmt 56-12] File '/home/xlelephant/git_repos/bsg_qcl/hdl/bsg_bladerunner_defines.vh' cannot be added to the project because it already exists in the project, skipping this file
+WARNING: [filemgmt 56-12] File '/home/xlelephant/git_repos/bsg_qcl/hdl/bsg_axi4_bus_pkg.vh' cannot be added to the project because it already exists in the project, skipping this file
+# foreach vfile ${VSOURCES} {
+#   if {[string match [file extension ${vfile}] ".v"]} {
+#     set_property file_type SystemVerilog [get_files ${vfile}]
+#   }
+# }
+# set_property file_type {Verilog Header} [get_files *bsg_defines.v]
+# set DESIGN_TOP $env(BSG_QCL_DIR)/hdl/${DESIGN_NAME}_top.v
+# reorder_files -fileset sources_1 -front [get_files ${DESIGN_TOP}]
+# source ./${DESIGN_NAME}/${DESIGN_NAME}.tcl
+## set VIVADO_IP_DIR $env(XILINX_VIVADO)/data/ip/xilinx
+## add_files -fileset sources_1 -norecurse [join "
+## ${VIVADO_IP_DIR}/axi_infrastructure_v1_1/hdl/axi_infrastructure_v1_1_0.vh
+## ${VIVADO_IP_DIR}/axi_infrastructure_v1_1/hdl/axi_infrastructure_v1_1_vl_rfs.v
+## ${VIVADO_IP_DIR}/axi_register_slice_v2_1/hdl/axi_register_slice_v2_1_vl_rfs.v
+## ${VIVADO_IP_DIR}/generic_baseblocks_v2_1/hdl/generic_baseblocks_v2_1_vl_rfs.v
+## ${VIVADO_IP_DIR}/axi_crossbar_v2_1/hdl/axi_crossbar_v2_1_vl_rfs.v
+## 
+## ${VIVADO_IP_DIR}/axis_infrastructure_v1_1/hdl/axis_infrastructure_v1_1_0.vh
+## ${VIVADO_IP_DIR}/axis_infrastructure_v1_1/hdl/axis_infrastructure_v1_1_vl_rfs.v
+## ${VIVADO_IP_DIR}/axis_register_slice_v1_1/hdl/axis_register_slice_v1_1_vl_rfs.v
+## ${VIVADO_IP_DIR}/axis_dwidth_converter_v1_1/hdl/axis_dwidth_converter_v1_1_vl_rfs.v
+## "]
+## set PRJ_IP_DIR ${DESIGN_PRJ_DIR}/${DESIGN_NAME}.srcs/sources_1/ip
+## create_ip -name axi_dwidth_converter -vendor xilinx.com -library ip \
+##   -version 2.1 -module_name axi_dwidth_converter_0
+INFO: [IP_Flow 19-234] Refreshing IP repositories
+INFO: [IP_Flow 19-1704] No user IP repositories specified
+INFO: [IP_Flow 19-2313] Loaded Vivado IP repository '/gro/cad/Xilinx/Vivado/2018.2/data/ip'.
+## set_property -dict [list \
+## CONFIG.ADDR_WIDTH {64} \
+## CONFIG.SI_DATA_WIDTH {64} \
+## CONFIG.MI_DATA_WIDTH {256} \
+## CONFIG.SI_ID_WIDTH {4} \
+## CONFIG.MAX_SPLIT_BEATS {16} \
+## CONFIG.FIFO_MODE {1}
+## ] [get_ips axi_dwidth_converter_0]
+## generate_target {instantiation_template} [get_files ${PRJ_IP_DIR}/axi_dwidth_converter_0/axi_dwidth_converter_0.xci]
+INFO: [IP_Flow 19-1686] Generating 'Instantiation Template' target for IP 'axi_dwidth_converter_0'...
+## set_property generate_synth_checkpoint false [get_files  ${PRJ_IP_DIR}/axi_dwidth_converter_0/axi_dwidth_converter_0.xci]
+## generate_target all [get_files  ${PRJ_IP_DIR}/axi_dwidth_converter_0/axi_dwidth_converter_0.xci]
+INFO: [IP_Flow 19-1686] Generating 'Instantiation Template' target for IP 'axi_dwidth_converter_0'...
+INFO: [IP_Flow 19-1686] Generating 'Synthesis' target for IP 'axi_dwidth_converter_0'...
+INFO: [IP_Flow 19-1686] Generating 'Simulation' target for IP 'axi_dwidth_converter_0'...
+INFO: [IP_Flow 19-1686] Generating 'Implementation' target for IP 'axi_dwidth_converter_0'...
+INFO: [IP_Flow 19-1686] Generating 'Change Log' target for IP 'axi_dwidth_converter_0'...
+## create_ip -name axi_bram_ctrl -vendor xilinx.com -library ip \
+##   -version 4.0 -module_name axi_bram_ctrl_0
+INFO: [xilinx.com:ip:axi_bram_ctrl:4.0-2] axi_bram_ctrl_0: In IP Integrator, please note that memory depth value gets calculated based on the Data Width of the IP and Address range selected in the Address Editor.Incase a validation error occured on the range of this parameter, please check if the selected Data width and the Address Range are valid. For valid Data width and memory depth values, please refer to the AXI BRAM Controller Product Guide.
+INFO: [xilinx.com:ip:axi_bram_ctrl:4.0-1] axi_bram_ctrl_0: In IP Integrator, The Maximum address range supported is 2G. Selecting the address range more than 2G in the address editor may resets the value of Memory depth to default value (1024). please refer to the AXI BRAM Controller Product Guide.
+## set_property -dict [list \
+## CONFIG.DATA_WIDTH {256} \
+## CONFIG.ID_WIDTH {6} \
+## CONFIG.SUPPORTS_NARROW_BURST {0} \
+## CONFIG.SINGLE_PORT_BRAM {1} \
+## CONFIG.ECC_TYPE {0} \
+## CONFIG.BMG_INSTANCE {INTERNAL}
+## ] [get_ips axi_bram_ctrl_0]
+INFO: [xilinx.com:ip:axi_bram_ctrl:4.0-2] axi_bram_ctrl_0: In IP Integrator, please note that memory depth value gets calculated based on the Data Width of the IP and Address range selected in the Address Editor.Incase a validation error occured on the range of this parameter, please check if the selected Data width and the Address Range are valid. For valid Data width and memory depth values, please refer to the AXI BRAM Controller Product Guide.
+INFO: [xilinx.com:ip:axi_bram_ctrl:4.0-1] axi_bram_ctrl_0: In IP Integrator, The Maximum address range supported is 2G. Selecting the address range more than 2G in the address editor may resets the value of Memory depth to default value (1024). please refer to the AXI BRAM Controller Product Guide.
+INFO: [xilinx.com:ip:axi_bram_ctrl:4.0-2] axi_bram_ctrl_0: In IP Integrator, please note that memory depth value gets calculated based on the Data Width of the IP and Address range selected in the Address Editor.Incase a validation error occured on the range of this parameter, please check if the selected Data width and the Address Range are valid. For valid Data width and memory depth values, please refer to the AXI BRAM Controller Product Guide.
+INFO: [xilinx.com:ip:axi_bram_ctrl:4.0-1] axi_bram_ctrl_0: In IP Integrator, The Maximum address range supported is 2G. Selecting the address range more than 2G in the address editor may resets the value of Memory depth to default value (1024). please refer to the AXI BRAM Controller Product Guide.
+## generate_target {instantiation_template} [get_files ${PRJ_IP_DIR}/axi_bram_ctrl_0/axi_bram_ctrl_0.xci]
+INFO: [IP_Flow 19-1686] Generating 'Instantiation Template' target for IP 'axi_bram_ctrl_0'...
+## set_property generate_synth_checkpoint false [get_files  ${PRJ_IP_DIR}/axi_bram_ctrl_0/axi_bram_ctrl_0.xci]
+## generate_target all [get_files  ${PRJ_IP_DIR}/axi_bram_ctrl_0/axi_bram_ctrl_0.xci]
+INFO: [IP_Flow 19-1686] Generating 'Instantiation Template' target for IP 'axi_bram_ctrl_0'...
+INFO: [IP_Flow 19-1686] Generating 'Synthesis' target for IP 'axi_bram_ctrl_0'...
+INFO: [IP_Flow 19-1686] Generating 'Simulation' target for IP 'axi_bram_ctrl_0'...
+INFO: [IP_Flow 19-1686] Generating 'Change Log' target for IP 'axi_bram_ctrl_0'...
+## create_ip -name blk_mem_gen -vendor xilinx.com -library ip \
+##   -version 8.4 -module_name blk_mem_gen_1
+INFO: [Device 21-403] Loading part xcvu37p-fsvh2892-3-e-es1
+create_ip: Time (s): cpu = 00:00:11 ; elapsed = 00:00:23 . Memory (MB): peak = 2593.441 ; gain = 1240.395 ; free physical = 52344 ; free virtual = 131892
+## set_property -dict [list \
+## CONFIG.Component_Name {blk_mem_gen_1} \
+## CONFIG.Interface_Type {AXI4} \
+## CONFIG.Use_AXI_ID {true} \
+## CONFIG.Memory_Type {Simple_Dual_Port_RAM} \
+## CONFIG.Use_Byte_Write_Enable {true} \
+## CONFIG.Byte_Size {8} \
+## CONFIG.Assume_Synchronous_Clk {true} \
+## CONFIG.Write_Width_A {64} \
+## CONFIG.Write_Depth_A {512} \
+## CONFIG.Read_Width_A {64} \
+## CONFIG.Operating_Mode_A {READ_FIRST} \
+## CONFIG.Write_Width_B {64} \
+## CONFIG.Read_Width_B {64} \
+## CONFIG.Operating_Mode_B {READ_FIRST} \
+## CONFIG.Enable_B {Use_ENB_Pin} \
+## CONFIG.Register_PortA_Output_of_Memory_Primitives {false} \
+## CONFIG.Use_RSTB_Pin {true} \
+## CONFIG.Reset_Type {ASYNC} \
+## CONFIG.Port_B_Clock {100} \
+## CONFIG.Port_B_Enable_Rate {100} \
+## CONFIG.EN_SAFETY_CKT {true}
+## ] [get_ips blk_mem_gen_1]
+WARNING: [Vivado 12-3523] Attempt to change 'Component_Name' from 'blk_mem_gen_1' to 'blk_mem_gen_1' is not allowed and is ignored.
+## generate_target {instantiation_template} [get_files ${PRJ_IP_DIR}/blk_mem_gen_1/blk_mem_gen_1.xci]
+INFO: [IP_Flow 19-1686] Generating 'Instantiation Template' target for IP 'blk_mem_gen_1'...
+## set_property generate_synth_checkpoint false [get_files  ${PRJ_IP_DIR}/blk_mem_gen_1/blk_mem_gen_1.xci]
+## generate_target all [get_files  ${PRJ_IP_DIR}/blk_mem_gen_1/blk_mem_gen_1.xci]
+INFO: [IP_Flow 19-1686] Generating 'Instantiation Template' target for IP 'blk_mem_gen_1'...
+INFO: [IP_Flow 19-1686] Generating 'Synthesis' target for IP 'blk_mem_gen_1'...
+INFO: [IP_Flow 19-1686] Generating 'Simulation' target for IP 'blk_mem_gen_1'...
+INFO: [IP_Flow 19-1686] Generating 'Miscellaneous' target for IP 'blk_mem_gen_1'...
+INFO: [IP_Flow 19-1686] Generating 'Change Log' target for IP 'blk_mem_gen_1'...
+## create_ip -name axi_fifo_mm_s -vendor xilinx.com -library ip \
+##   -version 4.1 -module_name axi_fifo_mm_s_0
+## generate_target {instantiation_template} [get_files ${PRJ_IP_DIR}/axi_fifo_mm_s_0/axi_fifo_mm_s_0.xci]
+INFO: [IP_Flow 19-1686] Generating 'Instantiation Template' target for IP 'axi_fifo_mm_s_0'...
+## set_property generate_synth_checkpoint false [get_files ${PRJ_IP_DIR}/axi_fifo_mm_s_0/axi_fifo_mm_s_0.xci]
+## generate_target all [get_files  ${PRJ_IP_DIR}/axi_fifo_mm_s_0/axi_fifo_mm_s_0.xci]
+INFO: [IP_Flow 19-1686] Generating 'Instantiation Template' target for IP 'axi_fifo_mm_s_0'...
+INFO: [IP_Flow 19-1686] Generating 'Synthesis' target for IP 'axi_fifo_mm_s_0'...
+INFO: [IP_Flow 19-1686] Generating 'Simulation' target for IP 'axi_fifo_mm_s_0'...
+INFO: [IP_Flow 19-1686] Generating 'Change Log' target for IP 'axi_fifo_mm_s_0'...
+## create_ip -name xdma -vendor xilinx.com -library ip \
+##   -version 4.1 -module_name xdma_0
+## set_property -dict [list \
+## CONFIG.pcie_blk_locn {PCIE4C_X1Y0} \
+## CONFIG.pl_link_cap_max_link_width {X4} \
+## CONFIG.axisten_freq {125} \
+## CONFIG.pf0_device_id {9014} \
+## CONFIG.axilite_master_en {true} \
+## CONFIG.axist_bypass_en {true} \
+## CONFIG.select_quad {GTY_Quad_227} \
+## CONFIG.pf0_msix_cap_table_bir {BAR_1} \
+## CONFIG.pf0_msix_cap_pba_bir {BAR_1} \
+## CONFIG.PF0_DEVICE_ID_mqdma {9014} \
+## CONFIG.PF2_DEVICE_ID_mqdma {9014} \
+## CONFIG.PF3_DEVICE_ID_mqdma {9014}
+## ] [get_ips xdma_0]
+## generate_target {instantiation_template} [get_files ${PRJ_IP_DIR}/xdma_0/xdma_0.xci]
+INFO: [IP_Flow 19-1686] Generating 'Instantiation Template' target for IP 'xdma_0'...
+## set_property generate_synth_checkpoint false [get_files ${PRJ_IP_DIR}/xdma_0/xdma_0.xci]
+## generate_target all [get_files ${PRJ_IP_DIR}/xdma_0/xdma_0.xci]
+INFO: [IP_Flow 19-1686] Generating 'Instantiation Template' target for IP 'xdma_0'...
+INFO: [IP_Flow 19-1686] Generating 'Synthesis' target for IP 'xdma_0'...
+INFO: [IP_Flow 19-1686] Generating 'Simulation' target for IP 'xdma_0'...
+INFO: [IP_Flow 19-1686] Generating 'Implementation' target for IP 'xdma_0'...
+INFO: [IP_Flow 19-1686] Generating 'Change Log' target for IP 'xdma_0'...
+generate_target: Time (s): cpu = 00:00:08 ; elapsed = 00:00:10 . Memory (MB): peak = 2593.441 ; gain = 0.000 ; free physical = 52427 ; free virtual = 131738
+## set DESIGN_CONSTRAINT_DIR ./${DESIGN_NAME}/constraints
+## add_files -fileset constrs_1 ${DESIGN_CONSTRAINT_DIR}/xdma.xdc
+## add_files -fileset constrs_1 ${DESIGN_CONSTRAINT_DIR}/io_planning.xdc
+## add_files -fileset constrs_1 ${DESIGN_CONSTRAINT_DIR}/debug_core.xdc
+## set_property target_constrs_file ${DESIGN_CONSTRAINT_DIR}/debug_core.xdc [current_fileset -constrset]
