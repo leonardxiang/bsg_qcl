@@ -81,9 +81,9 @@ set_property file_type {Verilog Header} [get_files *bsg_defines.v]
 # ---------------------------------------
 # top design file
 # ---------------------------------------
-set DESIGN_TOP $env(BSG_QCL_DIR)/hdl/${DESIGN_NAME}_top.v
-# add_files -fileset sources_1 ${DESIGN_TOP}
-# set_property file_type SystemVerilog [get_files ${DESIGN_TOP}]
+set DESIGN_TOP $env(BSG_QCL_DIR)/designs/${DESIGN_NAME}/${DESIGN_NAME}_top.v
+add_files -fileset sources_1 "${DESIGN_TOP}"
+set_property file_type SystemVerilog [get_files ${DESIGN_TOP}]
 reorder_files -fileset sources_1 -front [get_files ${DESIGN_TOP}]
 
 # ---------------------------------------

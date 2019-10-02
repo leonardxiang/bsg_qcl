@@ -14,16 +14,24 @@ VINCLUDES += $(BSG_QCL_DIR)/hdl
 VHEADERS += $(BSG_QCL_DIR)/hdl/bsg_bladerunner_defines.vh
 VHEADERS += $(BSG_QCL_DIR)/hdl/bsg_axi4_bus_pkg.vh
 
+
+
 # Replace any xilinx(unsynthesizable or F1 specific) sources with xilinx-synthesizable sources
-VSOURCES := $(filter-out $(BASEJUMP_STL_DIR)/bsg_mem/bsg_mem_1rw_sync_mask_write_bit.v,$(VHEADERS) $(VSOURCES))
-VSOURCES := $(filter-out ${BSG_F1_DIR}/hardware/cl_manycore_pkg.v,$(VHEADERS) $(VSOURCES))
 VSOURCES := $(filter-out ${BSG_F1_DIR}/hardware/cl_manycore.sv,$(VHEADERS) $(VSOURCES))
-VSOURCES := $(filter-out ${BSG_F1_DIR}/hardware/s_axil_mcl_adapter.v,$(VHEADERS) $(VSOURCES))
+# VSOURCES += $(BSG_QCL_DIR)/designs/$(DESIGN_NAME)/$(DESIGN_NAME)_top.v, this is done in create_project.tcl
+
+
+VSOURCES := $(filter-out $(BASEJUMP_STL_DIR)/bsg_mem/bsg_mem_1rw_sync_mask_write_bit.v,$(VHEADERS) $(VSOURCES))
 VSOURCES += $(BASEJUMP_STL_DIR)/hard/ultrascale_plus/bsg_mem/bsg_mem_1rw_sync_mask_write_bit.v
+
+VSOURCES := $(filter-out ${BSG_F1_DIR}/hardware/cl_manycore_pkg.v,$(VHEADERS) $(VSOURCES))
 VSOURCES += $(BSG_QCL_DIR)/hdl/bsg_bladerunner_pkg.v
-VSOURCES += $(BSG_QCL_DIR)/hdl/bsg_bladerunner_wrapper.v
+
+VSOURCES := $(filter-out ${BSG_F1_DIR}/hardware/s_axil_mcl_adapter.v,$(VHEADERS) $(VSOURCES))
 VSOURCES += $(BSG_QCL_DIR)/hdl/s_axil_mcl_adapter.v
-VSOURCES += $(BSG_QCL_DIR)/hdl/f1_manycore_top.v
+
+VSOURCES += $(BSG_QCL_DIR)/hdl/xilinx_dma_pcie_ep.v
+VSOURCES += $(BSG_QCL_DIR)/hdl/bsg_bladerunner_wrapper.v
 VSOURCES += $(BSG_QCL_DIR)/hdl/lib_pip.v
 VSOURCES += $(BSG_QCL_DIR)/hdl/qcl_debounce.v
 VSOURCES += $(BSG_QCL_DIR)/hdl/axi4_mux.v

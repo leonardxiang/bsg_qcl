@@ -1,7 +1,7 @@
 # =====================================
 # Add vivado ip source files
 # =====================================
-set VIVADO_IP_DIR $env(XILINX_VIVADO)/data/ip/xilinx
+set VIVADO_IP_DIR $env(XILINX_VIVADO_DIR)/data/ip/xilinx
 add_files -fileset sources_1 -norecurse [join "
 ${VIVADO_IP_DIR}/axi_infrastructure_v1_1/hdl/axi_infrastructure_v1_1_0.vh
 ${VIVADO_IP_DIR}/axi_infrastructure_v1_1/hdl/axi_infrastructure_v1_1_vl_rfs.v
