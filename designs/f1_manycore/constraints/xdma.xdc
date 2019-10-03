@@ -107,3 +107,34 @@ set_property LOC [get_package_pins \
 #
 set_false_path -to [get_pins -hier *sync_reg[0]/D]
 #
+
+
+##-----------------------------------------------------------------------------
+##
+## Project    : UltraScale+ FPGA PCI Express CCIX v4.0 Integrated Block
+## File       : xdma_0_pcie4c_ip_late.xdc
+## Version    : 1.0 
+##-----------------------------------------------------------------------------
+#
+# This constraints file contains ASYNC clock grouping and processed late after OOC and IP Level XDC files. 
+#
+#
+###############################################################################
+# ASYNC CLOCK GROUPINGS
+###############################################################################
+# sys_clk vs TXOUTCLK
+set_clock_groups -asynchronous -group [get_clocks -of_objects [get_ports sys_clk*]] -group [get_clocks -of_objects [get_pins -hierarchical -filter {NAME =~ *gen_channel_container[*].*gen_gtye4_channel_inst[*].GTYE4_CHANNEL_PRIM_INST/TXOUTCLK}]]
+set_clock_groups -asynchronous -group [get_clocks -of_objects [get_pins -hierarchical -filter {NAME =~ *gen_channel_container[*].*gen_gtye4_channel_inst[*].GTYE4_CHANNEL_PRIM_INST/TXOUTCLK}]] -group [get_clocks -of_objects [get_ports sys_clk*]]
+#
+# sys_clk vs intclk
+set_clock_groups -asynchronous -group [get_clocks -of_objects [get_pins gt_top_i/diablo_gt.diablo_gt_phy_wrapper/phy_clk_i/bufg_gt_intclk/O]] -group [get_clocks -of_objects [get_ports sys_clk*]]
+set_clock_groups -asynchronous -group [get_clocks -of_objects [get_ports sys_clk*]] -group [get_clocks -of_objects [get_pins gt_top_i/diablo_gt.diablo_gt_phy_wrapper/phy_clk_i/bufg_gt_intclk/O]]
+#
+# intclk vs pclk
+set_clock_groups -asynchronous -group [get_clocks -of_objects [get_pins gt_top_i/diablo_gt.diablo_gt_phy_wrapper/phy_clk_i/bufg_gt_intclk/O]] -group [get_clocks -of_objects [get_pins gt_top_i/diablo_gt.diablo_gt_phy_wrapper/phy_clk_i/bufg_gt_pclk/O]]
+set_clock_groups -asynchronous -group [get_clocks -of_objects [get_pins gt_top_i/diablo_gt.diablo_gt_phy_wrapper/phy_clk_i/bufg_gt_pclk/O]] -group [get_clocks -of_objects [get_pins gt_top_i/diablo_gt.diablo_gt_phy_wrapper/phy_clk_i/bufg_gt_intclk/O]]
+#
+# sys_clk vs pclk
+set_clock_groups -asynchronous -group [get_clocks -of_objects [get_ports sys_clk*]] -group [get_clocks -of_objects [get_pins gt_top_i/diablo_gt.diablo_gt_phy_wrapper/phy_clk_i/bufg_gt_pclk/O]]
+set_clock_groups -asynchronous -group [get_clocks -of_objects [get_pins gt_top_i/diablo_gt.diablo_gt_phy_wrapper/phy_clk_i/bufg_gt_pclk/O]] -group [get_clocks -of_objects [get_ports sys_clk*]]
+#

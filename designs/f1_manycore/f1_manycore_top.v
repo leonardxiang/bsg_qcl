@@ -23,7 +23,7 @@ module f1_manycore_top
   ,input [pcie_width_p-1:0] pcie_i_n
   ,output [pcie_width_p-1:0] pcie_o_p
   ,output [pcie_width_p-1:0] pcie_o_n
-  ,output led_o
+  ,output [7:0] led_o
 );
 
   localparam mem_axi_id_width_lp = axi_id_width_p;
@@ -131,7 +131,7 @@ module f1_manycore_top
     .user_clk_o     (user_clk_lo     ),
     .user_resetn_o  (user_resetn_lo  ),
     .user_link_up_o (user_link_up_lo ),
-    .leds_o         (),
+    .leds_o         (led_o[4:1]      ),
     // AXIL
     .m_axil_awaddr  (m_axil_awaddr  ),
     .m_axil_awvalid (m_axil_awvalid ),
@@ -233,10 +233,14 @@ module f1_manycore_top
   );
 
   // TODO: add system hard reset
-  wire mc_resetn_i = ~ (rst_dbnced_lo  | ~resetn_i);
+  wire mc_reset_i = (rst_dbnced_lo  | ~resetn_i);
 
-  assign led_o = rst_dbnced_lo;
-
+  qcl_breath_en #(.val_p('d125_000_000)) led_breath (
+    .clk_i  (clk_i        ),
+    .reset_i(cpu_reset_i  ),
+    .en_i   (rst_dbnced_lo),
+    .o      (led_o[0]     )
+  );
 
   // ---------------------------------------------
   // axil ocl interface
@@ -404,12 +408,12 @@ module f1_manycore_top
   assign s_pcis_axi_li_cast.arid    = '0;
 
   bsg_bladerunner_wrapper #(
-    .axi_id_width_p  (mem_axi_id_width_lp)
-    ,.axi_addr_width_p(mem_axi_addr_width_lp)
-    ,.axi_data_width_p(mem_axi_data_width_lp)
+    .axi_id_width_p  (mem_axi_id_width_lp  ),
+    .axi_addr_width_p(mem_axi_addr_width_lp),
+    .axi_data_width_p(mem_axi_data_width_lp)
   ) bladerunner_inst (
-    .clk_i           (clk_i           ),
-    .reset_i         (cpu_reset_i     ),
+    .clk_i           (clk_i                     ),
+    .reset_i         (mc_reset_i                ),
     // AXI-Lite
     .s_axil_awaddr_i (s_axil_ocl_li_cast.awaddr ),
     .s_axil_awvalid_i(s_axil_ocl_li_cast.awvalid),
@@ -429,35 +433,35 @@ module f1_manycore_top
     .s_axil_rvalid_o (s_axil_ocl_lo_cast.rvalid ),
     .s_axil_rready_i (s_axil_ocl_li_cast.rready ),
     // AXI4 PCIS
-    .s_axi_awid_i    (s_pcis_axi_li_cast.awid    ),
-    .s_axi_awaddr_i  (s_pcis_axi_li_cast.awaddr  ),
-    .s_axi_awlen_i   (s_pcis_axi_li_cast.awlen   ),
-    .s_axi_awsize_i  (s_pcis_axi_li_cast.awsize  ),
-    .s_axi_awburst_i (s_pcis_axi_li_cast.awburst ),
-    .s_axi_awvalid_i (s_pcis_axi_li_cast.awvalid ),
-    .s_axi_awready_o (s_pcis_axi_lo_cast.awready ),
-    .s_axi_wdata_i   (s_pcis_axi_li_cast.wdata   ),
-    .s_axi_wstrb_i   (s_pcis_axi_li_cast.wstrb   ),
-    .s_axi_wlast_i   (s_pcis_axi_li_cast.wlast   ),
-    .s_axi_wvalid_i  (s_pcis_axi_li_cast.wvalid  ),
-    .s_axi_wready_o  (s_pcis_axi_lo_cast.wready  ),
-    .s_axi_bid_o     (s_pcis_axi_lo_cast.bid     ),
-    .s_axi_bresp_o   (s_pcis_axi_lo_cast.bresp   ),
-    .s_axi_bvalid_o  (s_pcis_axi_lo_cast.bvalid  ),
-    .s_axi_bready_i  (s_pcis_axi_li_cast.bready  ),
-    .s_axi_arid_i    (s_pcis_axi_li_cast.arid    ),
-    .s_axi_araddr_i  (s_pcis_axi_li_cast.araddr  ),
-    .s_axi_arlen_i   (s_pcis_axi_li_cast.arlen   ),
-    .s_axi_arsize_i  (s_pcis_axi_li_cast.arsize  ),
-    .s_axi_arburst_i (s_pcis_axi_li_cast.arburst ),
-    .s_axi_arvalid_i (s_pcis_axi_li_cast.arvalid ),
-    .s_axi_arready_o (s_pcis_axi_lo_cast.arready ),
-    .s_axi_rid_o     (s_pcis_axi_lo_cast.rid     ),
-    .s_axi_rdata_o   (s_pcis_axi_lo_cast.rdata   ),
-    .s_axi_rresp_o   (s_pcis_axi_lo_cast.rresp   ),
-    .s_axi_rlast_o   (s_pcis_axi_lo_cast.rlast   ),
-    .s_axi_rvalid_o  (s_pcis_axi_lo_cast.rvalid  ),
-    .s_axi_rready_i  (s_pcis_axi_li_cast.rready  ),
+    .s_axi_awid_i    (s_pcis_axi_li_cast.awid   ),
+    .s_axi_awaddr_i  (s_pcis_axi_li_cast.awaddr ),
+    .s_axi_awlen_i   (s_pcis_axi_li_cast.awlen  ),
+    .s_axi_awsize_i  (s_pcis_axi_li_cast.awsize ),
+    .s_axi_awburst_i (s_pcis_axi_li_cast.awburst),
+    .s_axi_awvalid_i (s_pcis_axi_li_cast.awvalid),
+    .s_axi_awready_o (s_pcis_axi_lo_cast.awready),
+    .s_axi_wdata_i   (s_pcis_axi_li_cast.wdata  ),
+    .s_axi_wstrb_i   (s_pcis_axi_li_cast.wstrb  ),
+    .s_axi_wlast_i   (s_pcis_axi_li_cast.wlast  ),
+    .s_axi_wvalid_i  (s_pcis_axi_li_cast.wvalid ),
+    .s_axi_wready_o  (s_pcis_axi_lo_cast.wready ),
+    .s_axi_bid_o     (s_pcis_axi_lo_cast.bid    ),
+    .s_axi_bresp_o   (s_pcis_axi_lo_cast.bresp  ),
+    .s_axi_bvalid_o  (s_pcis_axi_lo_cast.bvalid ),
+    .s_axi_bready_i  (s_pcis_axi_li_cast.bready ),
+    .s_axi_arid_i    (s_pcis_axi_li_cast.arid   ),
+    .s_axi_araddr_i  (s_pcis_axi_li_cast.araddr ),
+    .s_axi_arlen_i   (s_pcis_axi_li_cast.arlen  ),
+    .s_axi_arsize_i  (s_pcis_axi_li_cast.arsize ),
+    .s_axi_arburst_i (s_pcis_axi_li_cast.arburst),
+    .s_axi_arvalid_i (s_pcis_axi_li_cast.arvalid),
+    .s_axi_arready_o (s_pcis_axi_lo_cast.arready),
+    .s_axi_rid_o     (s_pcis_axi_lo_cast.rid    ),
+    .s_axi_rdata_o   (s_pcis_axi_lo_cast.rdata  ),
+    .s_axi_rresp_o   (s_pcis_axi_lo_cast.rresp  ),
+    .s_axi_rlast_o   (s_pcis_axi_lo_cast.rlast  ),
+    .s_axi_rvalid_o  (s_pcis_axi_lo_cast.rvalid ),
+    .s_axi_rready_i  (s_pcis_axi_li_cast.rready ),
     // AXI4 Master
     .m_axi_awid_o    (m_ddr_axi_lo_cast.awid    ),
     .m_axi_awaddr_o  (m_ddr_axi_lo_cast.awaddr  ),
@@ -470,10 +474,10 @@ module f1_manycore_top
     .m_axi_wstrb_o   (m_ddr_axi_lo_cast.wstrb   ),
     .m_axi_wlast_o   (m_ddr_axi_lo_cast.wlast   ),
     .m_axi_wvalid_o  (m_ddr_axi_lo_cast.wvalid  ),
-    .m_axi_wready_i  (m_ddr_axi_li_cast.wready ),
-    .m_axi_bid_i     (m_ddr_axi_li_cast.bid    ),
-    .m_axi_bresp_i   (m_ddr_axi_li_cast.bresp  ),
-    .m_axi_bvalid_i  (m_ddr_axi_li_cast.bvalid ),
+    .m_axi_wready_i  (m_ddr_axi_li_cast.wready  ),
+    .m_axi_bid_i     (m_ddr_axi_li_cast.bid     ),
+    .m_axi_bresp_i   (m_ddr_axi_li_cast.bresp   ),
+    .m_axi_bvalid_i  (m_ddr_axi_li_cast.bvalid  ),
     .m_axi_bready_o  (m_ddr_axi_lo_cast.bready  ),
     .m_axi_arid_o    (m_ddr_axi_lo_cast.arid    ),
     .m_axi_araddr_o  (m_ddr_axi_lo_cast.araddr  ),
@@ -481,12 +485,12 @@ module f1_manycore_top
     .m_axi_arsize_o  (m_ddr_axi_lo_cast.arsize  ),
     .m_axi_arburst_o (m_ddr_axi_lo_cast.arburst ),
     .m_axi_arvalid_o (m_ddr_axi_lo_cast.arvalid ),
-    .m_axi_arready_i (m_ddr_axi_li_cast.arready),
-    .m_axi_rid_i     (m_ddr_axi_li_cast.rid    ),
-    .m_axi_rdata_i   (m_ddr_axi_li_cast.rdata  ),
-    .m_axi_rresp_i   (m_ddr_axi_li_cast.rresp  ),
-    .m_axi_rlast_i   (m_ddr_axi_li_cast.rlast  ),
-    .m_axi_rvalid_i  (m_ddr_axi_li_cast.rvalid ),
+    .m_axi_arready_i (m_ddr_axi_li_cast.arready ),
+    .m_axi_rid_i     (m_ddr_axi_li_cast.rid     ),
+    .m_axi_rdata_i   (m_ddr_axi_li_cast.rdata   ),
+    .m_axi_rresp_i   (m_ddr_axi_li_cast.rresp   ),
+    .m_axi_rlast_i   (m_ddr_axi_li_cast.rlast   ),
+    .m_axi_rvalid_i  (m_ddr_axi_li_cast.rvalid  ),
     .m_axi_rready_o  (m_ddr_axi_lo_cast.rready  )
   );
 

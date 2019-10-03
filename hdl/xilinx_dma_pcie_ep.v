@@ -16,13 +16,13 @@ module xilinx_dma_pcie_ep #(
   localparam C_M_AXI_DATA_WIDTH         = C_DATA_WIDTH,
   parameter  C_M_AXI_ID_WIDTH           = 4           ,
   localparam C_M_AXI_ADDR_WIDTH         = 64
-  // parameter EXT_PIPE_SIM                        = "FALSE",  // This Parameter has effect on selecting Enable External PIPE Interface in GUI.
-  // parameter C_ROOT_PORT                         = "FALSE",      // PCIe block is in root port mode
-  // parameter C_DEVICE_NUMBER                     = 0,            // Device number for Root Port configurations only
-  // parameter AXIS_CCIX_RX_TDATA_WIDTH     = 256,
-  // parameter AXIS_CCIX_TX_TDATA_WIDTH     = 256,
-  // parameter AXIS_CCIX_RX_TUSER_WIDTH     = 46,
-  // parameter AXIS_CCIX_TX_TUSER_WIDTH     = 46
+  // parameter  EXT_PIPE_SIM               = "FALSE"     , // This Parameter has effect on selecting Enable External PIPE Interface in GUI.
+  // parameter  C_ROOT_PORT                = "FALSE"     , // PCIe block is in root port mode
+  // parameter  C_DEVICE_NUMBER            = 0           , // Device number for Root Port configurations only
+  // parameter  AXIS_CCIX_RX_TDATA_WIDTH   = 256         ,
+  // parameter  AXIS_CCIX_TX_TDATA_WIDTH   = 256         ,
+  // parameter  AXIS_CCIX_RX_TUSER_WIDTH   = 46          ,
+  // parameter  AXIS_CCIX_TX_TUSER_WIDTH   = 46
 ) (
   output [(PL_LINK_CAP_MAX_LINK_WIDTH-1):0] pci_exp_txp    ,
   output [(PL_LINK_CAP_MAX_LINK_WIDTH-1):0] pci_exp_txn    ,
@@ -201,9 +201,9 @@ module xilinx_dma_pcie_ep #(
   // wire [5:0]                          cfg_ltssm_state;
 
   // Ref clock buffer
-  IBUFDS_GTE4 # (.REFCLK_HROW_CK_SEL(2'b00)) refclk_ibuf (.O(sys_clk_gt), .ODIV2(sys_clk), .I(sys_clk_p), .CEB(1'b0), .IB(sys_clk_n));
+  IBUFDS_GTE4 # (.REFCLK_HROW_CK_SEL(2'b00)) refclk_ibuf (.O(sys_clk_gt), .ODIV2(sys_clk), .I(sys_clk_p_i), .CEB(1'b0), .IB(sys_clk_n_i));
   // Reset buffer
-  IBUF   sys_reset_n_ibuf (.O(sys_rst_n_c), .I(sys_rst_n));
+  IBUF   sys_reset_n_ibuf (.O(sys_rst_n_c), .I(sys_rst_n_i));
 
   // Core Top Level Wrapper
   xdma_0 xdma_0_i
@@ -345,11 +345,11 @@ module xilinx_dma_pcie_ep #(
 
 
   // The sys_rst_n input is active low based on the core configuration
-  assign sys_resetn = sys_rst_n;
+  // wire sys_resetn = sys_rst_n_i;
 
   // Create a Clock Heartbeat
   always_ff @(posedge user_clk) begin
-    if(!sys_resetn) begin
+    if(!sys_rst_n_buf_o) begin
       user_clk_heartbeat <= #TCQ 26'd0;
     end else begin
       user_clk_heartbeat <= #TCQ user_clk_heartbeat + 1'b1;
@@ -357,7 +357,7 @@ module xilinx_dma_pcie_ep #(
   end
 
   // LEDs for observation
-  assign leds_o[0] = sys_resetn;
+  assign leds_o[0] = sys_rst_n_buf_o;
   assign leds_o[1] = user_resetn;
   assign leds_o[2] = user_lnk_up;
   assign leds_o[3] = user_clk_heartbeat[25];

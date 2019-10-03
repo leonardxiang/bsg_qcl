@@ -34,7 +34,10 @@ VSOURCES += $(BSG_QCL_DIR)/hdl/xilinx_dma_pcie_ep.v
 VSOURCES += $(BSG_QCL_DIR)/hdl/bsg_bladerunner_wrapper.v
 VSOURCES += $(BSG_QCL_DIR)/hdl/lib_pip.v
 VSOURCES += $(BSG_QCL_DIR)/hdl/qcl_debounce.v
+VSOURCES += $(BSG_QCL_DIR)/hdl/qcl_counter_dynamic_limit_en.v
+VSOURCES += $(BSG_QCL_DIR)/hdl/qcl_breath_en.v
 VSOURCES += $(BSG_QCL_DIR)/hdl/axi4_mux.v
 VSOURCES += $(BSG_QCL_DIR)/hdl/axi_register_slice.v
+VSOURCES += $(BSG_QCL_DIR)/hdl/axi_register_slice_light.v
 VSOURCES += $(BSG_QCL_DIR)/hdl/axi_register_slice_light.v
 
