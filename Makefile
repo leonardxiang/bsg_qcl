@@ -1,7 +1,5 @@
 DESINS_TARGETS = f1_manycore
 
-DESIGN_NAME ?= f1_manycore
-
 .DEFAULT_GOAL := help
 
 .PHONY: help create_prj open_prj clean bleach bleach_all %.bleach

@@ -41,3 +41,9 @@ VSOURCES += $(BSG_QCL_DIR)/hdl/axi_register_slice.v
 VSOURCES += $(BSG_QCL_DIR)/hdl/axi_register_slice_light.v
 VSOURCES += $(BSG_QCL_DIR)/hdl/axi_register_slice_light.v
 
+# TODO: CHECK if this is necessary
+bladerunner_setup:
+	$(MAKE) -C $(BSG_BLADERUNNER_DIR) setup-uw
+
+hardware:
+	$(MAKE) -C ${HARDWARE_PATH} hardware

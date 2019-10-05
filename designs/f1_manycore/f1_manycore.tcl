@@ -129,5 +129,6 @@ generate_target all [get_files ${PRJ_IP_DIR}/xdma_0/xdma_0.xci]
 set DESIGN_CONSTRAINT_DIR ./${DESIGN_NAME}/constraints
 add_files -fileset constrs_1 ${DESIGN_CONSTRAINT_DIR}/xdma.xdc
 add_files -fileset constrs_1 ${DESIGN_CONSTRAINT_DIR}/io_planning.xdc
+add_files -fileset constrs_1 ${DESIGN_CONSTRAINT_DIR}/configuration.xdc
 add_files -fileset constrs_1 ${DESIGN_CONSTRAINT_DIR}/debug_core.xdc
 set_property target_constrs_file ${DESIGN_CONSTRAINT_DIR}/debug_core.xdc [current_fileset -constrset]
