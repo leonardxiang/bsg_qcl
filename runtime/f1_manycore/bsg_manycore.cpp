@@ -51,6 +51,8 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <limits.h>
+const size_t MAP_SIZE=32768UL;
+const char* device_name = "/dev/xdma0_user";
 #endif
 
 #ifdef __cplusplus
@@ -296,12 +298,6 @@ static int hb_mc_manycore_init_mmio(hb_mc_manycore_t *mc, hb_mc_manycore_id_t id
 		return HB_MC_INVALID;
 	}
 
-        if ((err = fpga_pci_attach(id, pf_id, bar_id, write_combine, &pdata->handle)) != 0) {
-                manycore_pr_err(mc, "Failed to init MMIO: %s\n", FPGA_ERR2STR(err));
-		manycore_pr_err(mc, "Are you running with sudo?\n");
-                return r;
-        }
-
 #if !defined(FPGA_TARGET_LOCAL) && defined(COSIM)
 
         if ((err = fpga_pci_attach(id, pf_id, bar_id, write_combine, &pdata->handle)) != 0) {
@@ -312,25 +308,24 @@ static int hb_mc_manycore_init_mmio(hb_mc_manycore_t *mc, hb_mc_manycore_id_t id
 #endif
 
 #if !defined(COSIM) // on F1
-#if defined(FPGA_TARGET_LOCAL) // LOCAL FPGA
-        const size_t MAP_SIZE=32768UL;
-        const char* device_name = "/dev/xdma0_user";
-        if ((id = open(device_name, O_RDWR | O_SYNC)) == -1) {
-                fprintf(stderr, "failed to open device: %s\n", device_name);
-                goto cleanup;
-            }
-        else
-                mc->mmio = (uintptr_t) mmap(0, MAP_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, id, 0);
-                printf("Device %s:%s is opened and memory mapped at address %p. \n", \
-                    device_name, id, mc->mmio);
-#else // F1 FPGA
-	// it is not clear to me where 0x4000 comes from...
-	// map in the base address register to our address space
-	if ((err = fpga_pci_get_address(pdata->handle, 0, 0x4000, (void**)&mc->mmio)) != 0) {
-		manycore_pr_err(mc, "Failed to init MMIO: %s\n", FPGA_ERR2STR(err));
-		goto cleanup;
-	}
-#endif
+        #if defined(FPGA_TARGET_LOCAL) // LOCAL FPGA
+                uint8_t fd;
+                if ((fd = open(device_name, O_RDWR | O_SYNC)) == -1) {
+                        fprintf(stderr, "Failed to open device: %s\n", device_name);
+                        goto cleanup;
+                    }
+                else {
+                        mc->mmio = (uintptr_t) mmap(0, MAP_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+                        printf("Device %s:%d is opened and memory mapped at 0x%x\n", device_name, fd, mc->mmio);
+                }
+        #else // F1 FPGA
+        	// it is not clear to me where 0x4000 comes from...
+        	// map in the base address register to our address space
+        	if ((err = fpga_pci_get_address(pdata->handle, 0, 0x4000, (void**)&mc->mmio)) != 0) {
+        		manycore_pr_err(mc, "Failed to init MMIO: %s\n", FPGA_ERR2STR(err));
+        		goto cleanup;
+        	}
+        #endif
 #else
         mc->mmio = (uintptr_t)nullptr;
 #endif
@@ -341,7 +336,15 @@ static int hb_mc_manycore_init_mmio(hb_mc_manycore_t *mc, hb_mc_manycore_id_t id
         goto done;
 
 cleanup:
+        printf("warrning-enter cleanup!!!!\n");
+#if defined(FPGA_TARGET_LOCAL) // LOCAL FPGA
+        if (munmap((void**)&mc->mmio, MAP_SIZE) == -1) {
+            manycore_pr_err(mc, "Failed to munmap MMIO!\n", __func__);
+        }
+        close(fd);
+#else // F1 FPGA
         fpga_pci_detach(pdata->handle);
+#endif
         pdata->handle = PCI_BAR_HANDLE_INIT;
 done:
         return r;
@@ -566,7 +569,6 @@ int  hb_mc_manycore_init(hb_mc_manycore_t *mc, const char *name, hb_mc_manycore_
 		bsg_pr_err("Failed to initialize %s: %m\n", name);
 		return r;
 	}
-
 
 	// initialize private data
 	if ((err = hb_mc_manycore_init_private_data(mc)) != HB_MC_SUCCESS)
