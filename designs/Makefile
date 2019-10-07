@@ -21,9 +21,9 @@ help:
 	@echo "Usage:"
 	@echo "make {hardware|software|create|open|clean|bleach}"
 	@echo "      hardware: prepare for creating the hardware"
-	@echo "      software: install softwares for this design (sudo user)"
+	@echo "      software: install softwares for this design (sudo -E)"
 	@echo "      create: create the vivado project of this design"
-	@echo "      clean: remove all vivado log files (sudo user)"
+	@echo "      clean: remove all vivado log files (sudo -E)"
 	@echo "      bleach: remove all vivado project files"
 
 create: $(DESIGN_NAME).log
@@ -37,12 +37,10 @@ $(DESIGN_NAME).log: hardware
 open:
 	vivado -mode $(MODE) -log $@ $(DESIGN_PRJ_DIR)/$(DESIGN_NAME).xpr
 
-clean: remove_sw
+bleach: clean
+	rm -rf $(DESIGN_PRJ_DIR)/$(DESIGN_NAME).xpr
+	rm -rf $(DESIGN_PRJ_DIR)/$(DESIGN_NAME)*
 	rm -rf vivado.*
 	rm -rf vivado_*
 	rm -rf open*
 	rm -rf $(DESIGN_NAME).log
-
-bleach: clean
-	rm -rf $(DESIGN_PRJ_DIR)/$(DESIGN_NAME).xpr
-	rm -rf $(DESIGN_PRJ_DIR)/$(DESIGN_NAME)*

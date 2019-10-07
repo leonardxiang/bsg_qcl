@@ -10,8 +10,11 @@ create_prj:
 open_prj:
 	$(MAKE) -C designs open DESIGN_NAME=$(DESIGN_NAME)
 
-clean:
-	$(MAKE) -C designs clean DESIGN_NAME=$(DESIGN_NAME)
+install_sw:
+	$(MAKE) -C designs software DESIGN_NAME=$(DESIGN_NAME)
+
+uninstall_sw:
+	$(MAKE) -C designs remove_sw DESIGN_NAME=$(DESIGN_NAME)
 
 bleach_all: $(addsuffix .bleach,$(DESINS_TARGETS))
 %.bleach:
@@ -19,9 +22,11 @@ bleach_all: $(addsuffix .bleach,$(DESINS_TARGETS))
 
 help:
 	@echo "Usage:"
-	@echo "make {create_prj|open_prj|clean|bleach|bleach_all}"
-	@echo "      create_prj: Create a new Vivado project"
-	@echo "      open_prj:   Open a existing Vivado project"
-	@echo "      clean:      Clear Vivado logs"
-	@echo "      bleach:     Remove the project files of DESIGN_NAME"
-	@echo "      bleach_all: Remove all project files"
+	@echo "make {create_prj|open_prj|build_software|clean|bleach|bleach_all}"
+	@echo "      create_prj:   Create a new Vivado project"
+	@echo "      open_prj:     Open a existing Vivado project"
+	@echo	"      install_sw:   Install the software of DESIGN_NAME (sudo -E)"
+	@echo	"      uninstall_sw: Uninstall the software of DESIGN_NAME (sudo -E)"		
+	@echo "      clean:        Clear Vivado logs"
+	@echo "      bleach:       Remove the project files of DESIGN_NAME"
+	@echo "      bleach_all:   Remove all project files"
