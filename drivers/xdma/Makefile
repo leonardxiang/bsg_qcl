@@ -2,7 +2,7 @@
 .PHONY: driver rules load install uninstall
 
 uninstall:
-	rmmod -s xdma
+	rmmod -s xdma | true
 	rm -f /etc/udev/rules.d/60-xdma.rules
 	rm -f /etc/udev/rules.d/xdma-udev-command.sh
 
