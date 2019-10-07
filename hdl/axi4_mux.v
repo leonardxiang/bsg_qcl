@@ -70,7 +70,8 @@ module axi4_mux #(
 				,s_axi4_mux_i_cast.rready[i]
 			} = s_axi4_mux_li[i];
 
-			s_axi4_mux_lo[i] = {s_axi4_mux_o_cast.awready[i]
+			s_axi4_mux_lo[i] = {
+				s_axi4_mux_o_cast.awready[i]
 				,s_axi4_mux_o_cast.wready[i]
 
 				,s_axi4_mux_o_cast.bid[i*id_width_p+:id_width_p]

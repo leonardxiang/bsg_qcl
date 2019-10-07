@@ -235,9 +235,9 @@ module f1_manycore_top
   // TODO: add system hard reset
   wire mc_reset_i = (rst_dbnced_lo  | ~resetn_i);
 
-  qcl_breath_en #(.val_p('d125_000_000)) led_breath (
+  qcl_breath_en #(.val_p('d1)) led_breath_rst (
     .clk_i  (clk_i        ),
-    .reset_i(cpu_reset_i  ),
+    .reset_i(~resetn_i    ),
     .en_i   (rst_dbnced_lo),
     .o      (led_o[0]     )
   );
@@ -268,6 +268,22 @@ module f1_manycore_top
   assign m_axil_rresp   = s_axil_ocl_lo_cast.rresp;
   assign m_axil_rvalid  = s_axil_ocl_lo_cast.rvalid;
 
+  wire axil_wr_issued = s_axil_ocl_li_cast.wvalid & s_axil_ocl_lo_cast.wready;
+  wire axil_rd_issued = s_axil_ocl_lo_cast.rvalid & s_axil_ocl_li_cast.rready;
+
+  qcl_breath_en #(.val_p('d4)) led_breath_axil_wr (
+    .clk_i  (clk_i         ),
+    .reset_i(rst_dbnced_lo ),
+    .en_i   (axil_wr_issued),
+    .o      (led_o[6]      )
+  );
+
+  qcl_breath_en #(.val_p('d4)) led_breath_axil_rd (
+    .clk_i  (clk_i         ),
+    .reset_i(rst_dbnced_lo ),
+    .en_i   (axil_rd_issued),
+    .o      (led_o[7]      )
+  );
 
   // ---------------------------------------------
   // axi4 pcis interface
@@ -500,7 +516,7 @@ module f1_manycore_top
   // ---------------------------------------------
   axi_bram_ctrl_0 hb_mc_bram (
     .s_axi_aclk   (clk_i              ), // input wire s_axi_aclk
-    .s_axi_aresetn(resetn_i           ), // input wire s_axi_aresetn
+    .s_axi_aresetn(~mc_reset_i              ), // input wire s_axi_aresetn
     .s_axi_awid   (m_ddr_axi_lo_cast.awid   ), // input wire [5 : 0] s_axi_awid
     .s_axi_awaddr (m_ddr_axi_lo_cast.awaddr[bram_addr_width_p-1:0] ), // input wire [17 : 0] s_axi_awaddr
     .s_axi_awlen  (m_ddr_axi_lo_cast.awlen  ), // input wire [7 : 0] s_axi_awlen
@@ -544,7 +560,7 @@ module f1_manycore_top
   // Block ram for the AXI interface
   blk_mem_gen_1 blk_mem_xdma_inst (
     .s_aclk       (clk_i             ),
-    .s_aresetn    (resetn_i          ),
+    .s_aresetn    (~mc_reset_i       ),
     .s_axi_awid   (m_axi_awid        ),
     .s_axi_awaddr (m_axi_awaddr[31:0]),
     .s_axi_awlen  (m_axi_awlen       ),

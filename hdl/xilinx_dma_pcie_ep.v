@@ -170,7 +170,7 @@ module xilinx_dma_pcie_ep #(
   assign sys_rst_n_buf_o = sys_rst_n_c;
 
   // User Clock LED Heartbeat
-  reg [25:0]            user_clk_heartbeat;
+  reg [26:0]            user_clk_heartbeat;
   // reg [((2*C_NUM_USR_IRQ)-1):0]    usr_irq_function_number=0;
   reg  [C_NUM_USR_IRQ-1:0] usr_irq_req = 0;
   wire [C_NUM_USR_IRQ-1:0] usr_irq_ack    ;
@@ -350,7 +350,7 @@ module xilinx_dma_pcie_ep #(
   // Create a Clock Heartbeat
   always_ff @(posedge user_clk) begin
     if(!sys_rst_n_buf_o) begin
-      user_clk_heartbeat <= #TCQ 26'd0;
+      user_clk_heartbeat <= #TCQ 27'd0;
     end else begin
       user_clk_heartbeat <= #TCQ user_clk_heartbeat + 1'b1;
     end
@@ -360,6 +360,6 @@ module xilinx_dma_pcie_ep #(
   assign leds_o[0] = sys_rst_n_buf_o;
   assign leds_o[1] = user_resetn;
   assign leds_o[2] = user_lnk_up;
-  assign leds_o[3] = user_clk_heartbeat[25];
+  assign leds_o[3] = user_clk_heartbeat[26];
 
 endmodule

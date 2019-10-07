@@ -107,6 +107,8 @@ module bsg_bladerunner_wrapper
 );
 
 
+  wire clk_main_a0 = clk_i;
+
 // -------------------------------------------------
 // AXI-Lite register
 // -------------------------------------------------
@@ -120,14 +122,14 @@ module bsg_bladerunner_wrapper
 
   (* dont_touch = "true" *) logic axi_reg_rstn;
   lib_pipe #(.WIDTH(1), .STAGES(4)) AXI_REG_RST_N (
-    .clk    (clk_i       ),
+    .clk    (clk_main_a0 ),
     .rst_n  (1'b1        ),
     .in_bus (~reset_i    ),
     .out_bus(axi_reg_rstn)
   );
 
   axi_register_slice_light AXIL_OCL_REG_SLC (
-    .aclk         (clk_i                    ),
+    .aclk         (clk_main_a0              ),
     .aresetn      (axi_reg_rstn             ),
     .s_axi_awaddr (s_axil_awaddr_i          ),
     .s_axi_awprot (3'h0                     ),
@@ -170,11 +172,9 @@ module bsg_bladerunner_wrapper
   );
 
 
-  wire clk_main_a0 = clk_i;
-
   (* dont_touch = "true" *) logic rst_main_n_sync;
   lib_pipe #(.WIDTH(1), .STAGES(4)) MC_RST_N (
-    .clk    (clk_i       ),
+    .clk    (clk_main_a0 ),
     .rst_n  (1'b1        ),
     .in_bus (~reset_i    ),
     .out_bus(rst_main_n_sync)
@@ -400,22 +400,22 @@ module bsg_bladerunner_wrapper
   assign s_axi_rvalid_o  = m_axi4_pcis_li_cast.rvalid;
 
 
-  localparam slot_num_lp = 2;
   (* dont_touch = "true" *) logic axi4_mux_rstn;
   lib_pipe #(.WIDTH(1), .STAGES(4)) AXI4_MUX_RST_N (
-    .clk    (clk_i        ),
+    .clk    (clk_main_a0  ),
     .rst_n  (1'b1         ),
     .in_bus (~reset_i     ),
     .out_bus(axi4_mux_rstn)
   );
 
+  localparam slot_num_lp = 2;
   axi4_mux #(
     .slot_num_p  (slot_num_lp     ),
     .id_width_p  (axi_id_width_p  ),
     .addr_width_p(axi_addr_width_p),
     .data_width_p(axi_data_width_p)
   ) axi4_multiplexer (
-    .clk_i       (clk_i                                   ),
+    .clk_i       (clk_main_a0                             ),
     .reset_i     (~axi4_mux_rstn                          ),
     .s_axi4_mux_i({m_axi4_mc_lo_cast, m_axi4_pcis_lo_cast}),
     .s_axi4_mux_o({m_axi4_mc_li_cast, m_axi4_pcis_li_cast}),

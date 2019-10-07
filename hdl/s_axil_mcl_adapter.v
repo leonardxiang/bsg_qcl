@@ -89,7 +89,7 @@ bsg_axisN_miso_bus_s  miso_axisN_bus ;
 
 `ifdef FPGA_TARGET_ULTRASCALE_PLUS
 
-  axi_fifo_mm_s_0 your_instance_name (
+  axi_fifo_mm_s_0 axi_fifo_mm_s_axi_lite (
     .interrupt(),                            // output wire interrupt
     .s_axi_aclk(clk_i),                          // input wire s_axi_aclk
     .s_axi_aresetn(~reset_i),                    // input wire s_axi_aresetn
