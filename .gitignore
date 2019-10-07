@@ -5,6 +5,8 @@ vivado_*.zip
 open*
 *.log
 *.tmp
+*.prm
+*.mcs
 
 # Pycharm dir
 .idea/
