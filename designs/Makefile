@@ -21,9 +21,9 @@ help:
 	@echo "Usage:"
 	@echo "make {hardware|software|create|open|clean|bleach}"
 	@echo "      hardware: prepare for creating the hardware"
-	@echo "      software: install softwares for this design"
+	@echo "      software: install softwares for this design (sudo user)"
 	@echo "      create: create the vivado project of this design"
-	@echo "      clean: remove all vivado log files"
+	@echo "      clean: remove all vivado log files (sudo user)"
 	@echo "      bleach: remove all vivado project files"
 
 create: $(DESIGN_NAME).log

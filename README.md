@@ -4,7 +4,7 @@ This repo is for porting the bsg_bladerunner project on local FPGA board.
 
 ## Folders
 
-This repository contains the following folders: 
+This repository contains the following folders:
 
 - `designs`: Hardware designs to be ported on FPGA
 - `drivers`: Linux or Windows (3rd-party) drivers for the hardware designs above
@@ -15,6 +15,7 @@ This repository contains the following folders:
    1. Vivado 2018.2
    2. A clone of [bsg_bladerunner](https://github.com/bespoke-silicon-group/bsg_bladerunner) and proper setup
    3. Reference Repositories:
+    - [bsg_f1](https://github.com/bespoke-silicon-group/bsg_f1)
     - [bsg_manycore](https://github.com/bespoke-silicon-group/bsg_manycore)
     - [basejump_stl](https://github.com/bespoke-silicon-group/basejump_stl)
     - [aws-fpga](https://github.com/aws/aws-fpga)
@@ -31,13 +32,13 @@ This repository contains the following folders:
 User should define the `DESIGN_NAME` variable to specify the design target
 
 #### Create a Design Project
-   
+
   `$ make create_prj DESIGN_NAME=f1_manycore`
 
 #### Open a Existing Project
 
   `$ make open_prj DESIGN_NAME=f1_manycore`
-  
+
   See `make help` for more info...
 
 ## Debug a Project
