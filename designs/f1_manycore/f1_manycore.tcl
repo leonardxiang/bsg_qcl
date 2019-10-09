@@ -26,13 +26,20 @@ set PRJ_IP_DIR ${DESIGN_PRJ_DIR}/${DESIGN_NAME}.srcs/sources_1/ip
 # -------------------------------------
 create_ip -name axi_dwidth_converter -vendor xilinx.com -library ip \
   -version 2.1 -module_name axi_dwidth_converter_0
+# set_property -dict [list \
+# CONFIG.ADDR_WIDTH {64} \
+# CONFIG.SI_DATA_WIDTH {64} \
+# CONFIG.MI_DATA_WIDTH {256} \
+# CONFIG.SI_ID_WIDTH {4} \
+# CONFIG.MAX_SPLIT_BEATS {16} \
+# CONFIG.FIFO_MODE {1}
+# ] [get_ips axi_dwidth_converter_0]
 set_property -dict [list \
-CONFIG.ADDR_WIDTH {64} \
 CONFIG.SI_DATA_WIDTH {64} \
-CONFIG.MI_DATA_WIDTH {256} \
-CONFIG.SI_ID_WIDTH {4} \
+CONFIG.MI_DATA_WIDTH {512} \
 CONFIG.MAX_SPLIT_BEATS {16} \
-CONFIG.FIFO_MODE {1}
+CONFIG.FIFO_MODE {1} \
+CONFIG.ACLK_ASYNC {0}
 ] [get_ips axi_dwidth_converter_0]
 generate_target {instantiation_template} [get_files ${PRJ_IP_DIR}/axi_dwidth_converter_0/axi_dwidth_converter_0.xci]
 set_property generate_synth_checkpoint false [get_files  ${PRJ_IP_DIR}/axi_dwidth_converter_0/axi_dwidth_converter_0.xci]
@@ -43,18 +50,22 @@ generate_target all [get_files  ${PRJ_IP_DIR}/axi_dwidth_converter_0/axi_dwidth_
 # -------------------------------------
 create_ip -name axi_bram_ctrl -vendor xilinx.com -library ip \
   -version 4.0 -module_name axi_bram_ctrl_0
+# set_property -dict [list \
+# CONFIG.DATA_WIDTH {256} \
+# CONFIG.ID_WIDTH {6} \
+# CONFIG.SUPPORTS_NARROW_BURST {0} \
+# CONFIG.SINGLE_PORT_BRAM {1} \
+# CONFIG.ECC_TYPE {0} \
+# CONFIG.BMG_INSTANCE {INTERNAL}
+# ] [get_ips axi_bram_ctrl_0]
 set_property -dict [list \
-CONFIG.DATA_WIDTH {256} \
+CONFIG.DATA_WIDTH {512} \
 CONFIG.ID_WIDTH {6} \
-CONFIG.SUPPORTS_NARROW_BURST {0} \
-CONFIG.SINGLE_PORT_BRAM {1} \
 CONFIG.ECC_TYPE {0} \
-CONFIG.BMG_INSTANCE {INTERNAL}
-] [get_ips axi_bram_ctrl_0]
+CONFIG.BMG_INSTANCE {INTERNAL}] [get_ips axi_bram_ctrl_0]
 generate_target {instantiation_template} [get_files ${PRJ_IP_DIR}/axi_bram_ctrl_0/axi_bram_ctrl_0.xci]
 set_property generate_synth_checkpoint false [get_files  ${PRJ_IP_DIR}/axi_bram_ctrl_0/axi_bram_ctrl_0.xci]
 generate_target all [get_files  ${PRJ_IP_DIR}/axi_bram_ctrl_0/axi_bram_ctrl_0.xci]
-
 
 # -------------------------------------
 # block memory
