@@ -41,7 +41,13 @@ User should define the `DESIGN_NAME` variable to specify the design target
 
   See `make help` for more info...
 
-## Debug a Project
+#### Compile the Hardware
+
+Vivado gui will simply do this for you ;)
+
+TODO: partial configuration to speedup implementation.
+
+#### Debug the Hardware
 
    1. Open a design in Vivado **project mode**; type tcl command *start_gui*
 
@@ -51,8 +57,22 @@ User should define the `DESIGN_NAME` variable to specify the design target
 
    3. Click *Set Up Debug* under *Open Synthesized Design* menu
 
-   4. Choose the signals that you want to inspect, then update the xdc file
+   4. Choose the signals that you want to inspect and update the constraints
 
-   5. *Run implementation* and *Generate Bitstream*
+      Vivado will add the debug core automatically, and you need update the xdc file.
 
-    reference: https://www.xilinx.com/video/hardware/logic-debug-in-vivado.html
+   5. *Run implementation*
+
+   6. *Generate Bitstream*
+
+   7. *Program Deivce*
+      - set the programming `$DESIGN_NAME.bit` file generated in step 6
+      - set the probes `$DESIGN_NAME.ltx` file generated when debug core is enabled in step 3
+
+reference: https://www.xilinx.com/video/hardware/logic-debug-in-vivado.html
+
+## Install the Software
+
+  `$ sudo -E make install_sw DESIGN_NAME=f1_manycore`
+
+  test flow should be different for designs, see designs/`DESIGN_NAME`/README.md
