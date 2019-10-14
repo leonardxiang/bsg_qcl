@@ -117,8 +117,8 @@ module bsg_bladerunner_wrapper
   bsg_axil_miso_bus_s m_axil_bus_i_cast;
 
   `declare_bsg_axi4_bus_s(1, axi_id_width_p, axi_addr_width_p, axi_data_width_p, bsg_axi4_mosi_bus_s, bsg_axi4_miso_bus_s);
-  bsg_axi4_mosi_bus_s m_axi4_mc_lo_cast, m_axi4_pcis_lo_cast, m_axi4_ddr_lo_cast;
-  bsg_axi4_miso_bus_s m_axi4_mc_li_cast, m_axi4_pcis_li_cast, m_axi4_ddr_li_cast;
+  (* mark_debug = "true" *) bsg_axi4_mosi_bus_s m_axi4_mc_lo_cast, m_axi4_pcis_lo_cast, m_axi4_ddr_lo_cast;
+  (* mark_debug = "true" *) bsg_axi4_miso_bus_s m_axi4_mc_li_cast, m_axi4_pcis_li_cast, m_axi4_ddr_li_cast;
 
   (* dont_touch = "true" *) logic axi_reg_rstn;
   lib_pipe #(.WIDTH(1), .STAGES(4)) AXI_REG_RST_N (
