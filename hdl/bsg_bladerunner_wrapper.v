@@ -19,7 +19,7 @@ module bsg_bladerunner_wrapper
   import bsg_bladerunner_pkg::*;
   import bsg_bladerunner_rom_pkg::*;
 #(
-  parameter axi_id_width_p   = "inv"
+  parameter axi_id_width_p = "inv"
   ,parameter axi_addr_width_p = "inv"
   ,parameter axi_data_width_p = "inv"
 ) (
@@ -113,8 +113,8 @@ module bsg_bladerunner_wrapper
 // AXI-Lite register
 // -------------------------------------------------
   `declare_bsg_axil_bus_s(1, bsg_axil_mosi_bus_s, bsg_axil_miso_bus_s);
-  bsg_axil_mosi_bus_s m_axil_bus_o_cast;
-  bsg_axil_miso_bus_s m_axil_bus_i_cast;
+  bsg_axil_mosi_bus_s m_axil_bus_lo_cast;
+  bsg_axil_miso_bus_s m_axil_bus_li_cast;
 
   `declare_bsg_axi4_bus_s(1, axi_id_width_p, axi_addr_width_p, axi_data_width_p, bsg_axi4_mosi_bus_s, bsg_axi4_miso_bus_s);
   (* mark_debug = "true" *) bsg_axi4_mosi_bus_s m_axi4_mc_lo_cast, m_axi4_pcis_lo_cast, m_axi4_ddr_lo_cast;
@@ -150,25 +150,25 @@ module bsg_bladerunner_wrapper
     .s_axi_rresp  (s_axil_rresp_o           ),
     .s_axi_rvalid (s_axil_rvalid_o          ),
     .s_axi_rready (s_axil_rready_i          ),
-    .m_axi_awaddr (m_axil_bus_o_cast.awaddr ),
+    .m_axi_awaddr (m_axil_bus_lo_cast.awaddr ),
     .m_axi_awprot (                         ),
-    .m_axi_awvalid(m_axil_bus_o_cast.awvalid),
-    .m_axi_awready(m_axil_bus_i_cast.awready),
-    .m_axi_wdata  (m_axil_bus_o_cast.wdata  ),
-    .m_axi_wstrb  (m_axil_bus_o_cast.wstrb  ),
-    .m_axi_wvalid (m_axil_bus_o_cast.wvalid ),
-    .m_axi_wready (m_axil_bus_i_cast.wready ),
-    .m_axi_bresp  (m_axil_bus_i_cast.bresp  ),
-    .m_axi_bvalid (m_axil_bus_i_cast.bvalid ),
-    .m_axi_bready (m_axil_bus_o_cast.bready ),
-    .m_axi_araddr (m_axil_bus_o_cast.araddr ),
+    .m_axi_awvalid(m_axil_bus_lo_cast.awvalid),
+    .m_axi_awready(m_axil_bus_li_cast.awready),
+    .m_axi_wdata  (m_axil_bus_lo_cast.wdata  ),
+    .m_axi_wstrb  (m_axil_bus_lo_cast.wstrb  ),
+    .m_axi_wvalid (m_axil_bus_lo_cast.wvalid ),
+    .m_axi_wready (m_axil_bus_li_cast.wready ),
+    .m_axi_bresp  (m_axil_bus_li_cast.bresp  ),
+    .m_axi_bvalid (m_axil_bus_li_cast.bvalid ),
+    .m_axi_bready (m_axil_bus_lo_cast.bready ),
+    .m_axi_araddr (m_axil_bus_lo_cast.araddr ),
     .m_axi_arprot (                         ),
-    .m_axi_arvalid(m_axil_bus_o_cast.arvalid),
-    .m_axi_arready(m_axil_bus_i_cast.arready),
-    .m_axi_rdata  (m_axil_bus_i_cast.rdata  ),
-    .m_axi_rresp  (m_axil_bus_i_cast.rresp  ),
-    .m_axi_rvalid (m_axil_bus_i_cast.rvalid ),
-    .m_axi_rready (m_axil_bus_o_cast.rready )
+    .m_axi_arvalid(m_axil_bus_lo_cast.arvalid),
+    .m_axi_arready(m_axil_bus_li_cast.arready),
+    .m_axi_rdata  (m_axil_bus_li_cast.rdata  ),
+    .m_axi_rresp  (m_axil_bus_li_cast.rresp  ),
+    .m_axi_rvalid (m_axil_bus_li_cast.rvalid ),
+    .m_axi_rready (m_axil_bus_lo_cast.rready )
   );
 
 
@@ -303,54 +303,35 @@ module bsg_bladerunner_wrapper
 
 
   // manycore link
+  // manycore link
+  `include "bsg_axi_bus_pkg.vh"
 
-  logic [x_cord_width_p-1:0] mcl_x_cord_lp = '0;
-  logic [y_cord_width_p-1:0] mcl_y_cord_lp = '0;
+  logic [x_cord_width_p-1:0] mcl_x_cord_li = '0;
+  logic [y_cord_width_p-1:0] mcl_y_cord_li = '0;
 
   logic print_stat_v_lo;
   logic [data_width_p-1:0] print_stat_tag_lo;
 
-  axil_to_mcl #(
-    .num_mcl_p        (1                )
-    ,.num_tiles_x_p    (num_tiles_x_p    )
-    ,.num_tiles_y_p    (num_tiles_y_p    )
-    ,.addr_width_p     (addr_width_p     )
-    ,.data_width_p     (data_width_p     )
-    ,.x_cord_width_p   (x_cord_width_p   )
-    ,.y_cord_width_p   (y_cord_width_p   )
-    ,.load_id_width_p  (load_id_width_p  )
-    ,.max_out_credits_p(max_out_credits_p)
-  ) axil_to_mcl_inst (
-    .clk_i             (clk_main_a0       )
-    ,.reset_i           (~rst_main_n_sync  )
-
+  bsg_manycore_link_to_axil #(
+    .x_cord_width_p   (x_cord_width_p   ),
+    .y_cord_width_p   (y_cord_width_p   ),
+    .addr_width_p     (addr_width_p     ),
+    .data_width_p     (data_width_p     ),
+    .max_out_credits_p(max_out_credits_p),
+    .load_id_width_p  (load_id_width_p  )
+  ) mcl_to_axil (
+    .clk_i           (clk_main_a0       ),
+    .reset_i         (~rst_main_n_sync  ),
     // axil slave interface
-    ,.s_axil_mcl_awvalid(m_axil_bus_o_cast.awvalid)
-    ,.s_axil_mcl_awaddr (m_axil_bus_o_cast.awaddr )
-    ,.s_axil_mcl_awready(m_axil_bus_i_cast.awready)
-    ,.s_axil_mcl_wvalid (m_axil_bus_o_cast.wvalid )
-    ,.s_axil_mcl_wdata  (m_axil_bus_o_cast.wdata  )
-    ,.s_axil_mcl_wstrb  (m_axil_bus_o_cast.wstrb  )
-    ,.s_axil_mcl_wready (m_axil_bus_i_cast.wready )
-    ,.s_axil_mcl_bresp  (m_axil_bus_i_cast.bresp  )
-    ,.s_axil_mcl_bvalid (m_axil_bus_i_cast.bvalid )
-    ,.s_axil_mcl_bready (m_axil_bus_o_cast.bready )
-    ,.s_axil_mcl_araddr (m_axil_bus_o_cast.araddr )
-    ,.s_axil_mcl_arvalid(m_axil_bus_o_cast.arvalid)
-    ,.s_axil_mcl_arready(m_axil_bus_i_cast.arready)
-    ,.s_axil_mcl_rdata  (m_axil_bus_i_cast.rdata  )
-    ,.s_axil_mcl_rresp  (m_axil_bus_i_cast.rresp  )
-    ,.s_axil_mcl_rvalid (m_axil_bus_i_cast.rvalid )
-    ,.s_axil_mcl_rready (m_axil_bus_o_cast.rready )
-
+    .s_axil_bus_i    (m_axil_bus_lo_cast),
+    .s_axil_bus_o    (m_axil_bus_li_cast),
     // manycore link
-    ,.link_sif_i        (loader_link_sif_lo)
-    ,.link_sif_o        (loader_link_sif_li)
-    ,.my_x_i            (mcl_x_cord_lp     )
-    ,.my_y_i            (mcl_y_cord_lp     )
-
-    ,.print_stat_v_o(print_stat_v_lo)
-    ,.print_stat_tag_o(print_stat_tag_lo)
+    .link_sif_i      (loader_link_sif_lo),
+    .link_sif_o      (loader_link_sif_li),
+    .my_x_i          (mcl_x_cord_li     ),
+    .my_y_i          (mcl_y_cord_li     ),
+    .print_stat_v_o  (print_stat_v_lo   ),
+    .print_stat_tag_o(print_stat_tag_lo )
   );
 
 

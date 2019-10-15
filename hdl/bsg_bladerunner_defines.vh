@@ -3,4 +3,6 @@
 
 `define FPGA_TARGET_ULTRASCALE_PLUS
 
+`define FPGA_LESS_RST
+
 `endif
