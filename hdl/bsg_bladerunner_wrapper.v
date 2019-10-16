@@ -129,29 +129,29 @@ module bsg_bladerunner_wrapper
   );
 
   axi_register_slice_light AXIL_OCL_REG_SLC (
-    .aclk         (clk_main_a0              ),
-    .aresetn      (axi_reg_rstn             ),
-    .s_axi_awaddr (s_axil_awaddr_i          ),
-    .s_axi_awprot (3'h0                     ),
-    .s_axi_awvalid(s_axil_awvalid_i         ),
-    .s_axi_awready(s_axil_awready_o         ),
-    .s_axi_wdata  (s_axil_wdata_i           ),
-    .s_axi_wstrb  (s_axil_wstrb_i           ),
-    .s_axi_wvalid (s_axil_wvalid_i          ),
-    .s_axi_wready (s_axil_wready_o          ),
-    .s_axi_bresp  (s_axil_bresp_o           ),
-    .s_axi_bvalid (s_axil_bvalid_o          ),
-    .s_axi_bready (s_axil_bready_i          ),
-    .s_axi_araddr (s_axil_araddr_i          ),
-    .s_axi_arprot (3'h0                     ),
-    .s_axi_arvalid(s_axil_arvalid_i         ),
-    .s_axi_arready(s_axil_arready_o         ),
-    .s_axi_rdata  (s_axil_rdata_o           ),
-    .s_axi_rresp  (s_axil_rresp_o           ),
-    .s_axi_rvalid (s_axil_rvalid_o          ),
-    .s_axi_rready (s_axil_rready_i          ),
+    .aclk         (clk_main_a0               ),
+    .aresetn      (axi_reg_rstn              ),
+    .s_axi_awaddr (s_axil_awaddr_i           ),
+    .s_axi_awprot (3'h0                      ),
+    .s_axi_awvalid(s_axil_awvalid_i          ),
+    .s_axi_awready(s_axil_awready_o          ),
+    .s_axi_wdata  (s_axil_wdata_i            ),
+    .s_axi_wstrb  (s_axil_wstrb_i            ),
+    .s_axi_wvalid (s_axil_wvalid_i           ),
+    .s_axi_wready (s_axil_wready_o           ),
+    .s_axi_bresp  (s_axil_bresp_o            ),
+    .s_axi_bvalid (s_axil_bvalid_o           ),
+    .s_axi_bready (s_axil_bready_i           ),
+    .s_axi_araddr (s_axil_araddr_i           ),
+    .s_axi_arprot (3'h0                      ),
+    .s_axi_arvalid(s_axil_arvalid_i          ),
+    .s_axi_arready(s_axil_arready_o          ),
+    .s_axi_rdata  (s_axil_rdata_o            ),
+    .s_axi_rresp  (s_axil_rresp_o            ),
+    .s_axi_rvalid (s_axil_rvalid_o           ),
+    .s_axi_rready (s_axil_rready_i           ),
     .m_axi_awaddr (m_axil_bus_lo_cast.awaddr ),
-    .m_axi_awprot (                         ),
+    .m_axi_awprot (                          ),
     .m_axi_awvalid(m_axil_bus_lo_cast.awvalid),
     .m_axi_awready(m_axil_bus_li_cast.awready),
     .m_axi_wdata  (m_axil_bus_lo_cast.wdata  ),
@@ -162,7 +162,7 @@ module bsg_bladerunner_wrapper
     .m_axi_bvalid (m_axil_bus_li_cast.bvalid ),
     .m_axi_bready (m_axil_bus_lo_cast.bready ),
     .m_axi_araddr (m_axil_bus_lo_cast.araddr ),
-    .m_axi_arprot (                         ),
+    .m_axi_arprot (                          ),
     .m_axi_arvalid(m_axil_bus_lo_cast.arvalid),
     .m_axi_arready(m_axil_bus_li_cast.arready),
     .m_axi_rdata  (m_axil_bus_li_cast.rdata  ),
@@ -302,37 +302,50 @@ module bsg_bladerunner_wrapper
   assign m_axi4_mc_lo_cast.arqos = 4'b0;
 
 
+// manycore link
+
+logic [x_cord_width_p-1:0] mcl_x_cord_li = '0;
+logic [y_cord_width_p-1:0] mcl_y_cord_li = '0;
+
+logic print_stat_v_lo;
+logic [data_width_p-1:0] print_stat_tag_lo;
+
+bsg_manycore_link_to_axil #(
+  .x_cord_width_p   (x_cord_width_p   ),
+  .y_cord_width_p   (y_cord_width_p   ),
+  .addr_width_p     (addr_width_p     ),
+  .data_width_p     (data_width_p     ),
+  .max_out_credits_p(max_out_credits_p),
+  .load_id_width_p  (load_id_width_p  )
+) mcl_to_axil (
+  .clk_i           (clk_main_a0               ),
+  .reset_i         (~rst_main_n_sync          ),
+  // axil slave interface
+  .axil_awvalid_i  (m_axil_bus_lo_cast.awvalid),
+  .axil_awaddr_i   (m_axil_bus_lo_cast.awaddr ),
+  .axil_awready_o  (m_axil_bus_li_cast.awready),
+  .axil_wvalid_i   (m_axil_bus_lo_cast.wvalid ),
+  .axil_wdata_i    (m_axil_bus_lo_cast.wdata  ),
+  .axil_wstrb_i    (m_axil_bus_lo_cast.wstrb  ),
+  .axil_wready_o   (m_axil_bus_li_cast.wready ),
+  .axil_bresp_o    (m_axil_bus_li_cast.bresp  ),
+  .axil_bvalid_o   (m_axil_bus_li_cast.bvalid ),
+  .axil_bready_i   (m_axil_bus_lo_cast.bready ),
+  .axil_araddr_i   (m_axil_bus_lo_cast.araddr ),
+  .axil_arvalid_i  (m_axil_bus_lo_cast.arvalid),
+  .axil_arready_o  (m_axil_bus_li_cast.arready),
+  .axil_rdata_o    (m_axil_bus_li_cast.rdata  ),
+  .axil_rresp_o    (m_axil_bus_li_cast.rresp  ),
+  .axil_rvalid_o   (m_axil_bus_li_cast.rvalid ),
+  .axil_rready_i   (m_axil_bus_lo_cast.rready ),
   // manycore link
-  // manycore link
-  `include "bsg_axi_bus_pkg.vh"
-
-  logic [x_cord_width_p-1:0] mcl_x_cord_li = '0;
-  logic [y_cord_width_p-1:0] mcl_y_cord_li = '0;
-
-  logic print_stat_v_lo;
-  logic [data_width_p-1:0] print_stat_tag_lo;
-
-  bsg_manycore_link_to_axil #(
-    .x_cord_width_p   (x_cord_width_p   ),
-    .y_cord_width_p   (y_cord_width_p   ),
-    .addr_width_p     (addr_width_p     ),
-    .data_width_p     (data_width_p     ),
-    .max_out_credits_p(max_out_credits_p),
-    .load_id_width_p  (load_id_width_p  )
-  ) mcl_to_axil (
-    .clk_i           (clk_main_a0       ),
-    .reset_i         (~rst_main_n_sync  ),
-    // axil slave interface
-    .s_axil_bus_i    (m_axil_bus_lo_cast),
-    .s_axil_bus_o    (m_axil_bus_li_cast),
-    // manycore link
-    .link_sif_i      (loader_link_sif_lo),
-    .link_sif_o      (loader_link_sif_li),
-    .my_x_i          (mcl_x_cord_li     ),
-    .my_y_i          (mcl_y_cord_li     ),
-    .print_stat_v_o  (print_stat_v_lo   ),
-    .print_stat_tag_o(print_stat_tag_lo )
-  );
+  .link_sif_i      (loader_link_sif_lo        ),
+  .link_sif_o      (loader_link_sif_li        ),
+  .my_x_i          (mcl_x_cord_li             ),
+  .my_y_i          (mcl_y_cord_li             ),
+  .print_stat_v_o  (print_stat_v_lo           ),
+  .print_stat_tag_o(print_stat_tag_lo         )
+);
 
 
  // --------------------------------------------------------------

@@ -37,6 +37,7 @@ create_ip -name axi_dwidth_converter -vendor xilinx.com -library ip \
 set_property -dict [list \
 CONFIG.SI_DATA_WIDTH {64} \
 CONFIG.MI_DATA_WIDTH {512} \
+CONFIG.SI_ID_WIDTH {4} \
 CONFIG.MAX_SPLIT_BEATS {16} \
 CONFIG.FIFO_MODE {1} \
 CONFIG.ACLK_ASYNC {0}

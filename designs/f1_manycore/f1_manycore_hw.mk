@@ -30,8 +30,8 @@ VSOURCES += $(BASEJUMP_STL_DIR)/hard/ultrascale_plus/bsg_mem/bsg_mem_1rw_sync_ma
 VSOURCES := $(filter-out ${BSG_F1_DIR}/hardware/cl_manycore_pkg.v,$(VHEADERS) $(VSOURCES))
 VSOURCES += $(BSG_QCL_DIR)/hdl/bsg_bladerunner_pkg.v
 
-VSOURCES := $(filter-out ${BSG_F1_DIR}/hardware/s_axil_mcl_adapter.v,$(VHEADERS) $(VSOURCES))
-VSOURCES += $(BSG_QCL_DIR)/hdl/s_axil_mcl_adapter.v
+# VSOURCES := $(filter-out ${BSG_F1_DIR}/hardware/s_axil_mcl_adapter.v,$(VHEADERS) $(VSOURCES))
+# VSOURCES += $(BSG_QCL_DIR)/hdl/s_axil_mcl_adapter.v
 
 VSOURCES += $(BSG_QCL_DIR)/hdl/xilinx_dma_pcie_ep.v
 VSOURCES += $(BSG_QCL_DIR)/hdl/bsg_bladerunner_wrapper.v
