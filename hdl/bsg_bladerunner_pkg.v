@@ -6,6 +6,8 @@
 `ifndef BSG_BLADERUNNER_PKG_V
 `define BSG_BLADERUNNER_PKG_V
 
+`include "bsg_bladerunner_defines.vh"
+
 package bsg_bladerunner_pkg;
 
   `include "bsg_defines.v"

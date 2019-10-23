@@ -238,7 +238,7 @@ bsg_axisN_miso_bus_s  miso_axisN_bus ;
                    );
 */
 
-axis_dwidth_converter_v1_1_16_axis_dwidth_converter #(
+axis_dwidth_converter_v1_1_18_axis_dwidth_converter #(
   .C_FAMILY(fpga_version_p),
   .C_S_AXIS_TDATA_WIDTH(32),
   .C_M_AXIS_TDATA_WIDTH(mcl_width_p),
@@ -330,7 +330,7 @@ bsg_fifo_1r1w_small #(
   ,.yumi_i (rcv_fifo_yumi_li)
 );
 
-axis_dwidth_converter_v1_1_16_axis_dwidth_converter #(
+axis_dwidth_converter_v1_1_18_axis_dwidth_converter #(
   .C_FAMILY            (fpga_version_p                    ),
   .C_S_AXIS_TDATA_WIDTH(mcl_width_p                       ),
   .C_M_AXIS_TDATA_WIDTH(32                                ),

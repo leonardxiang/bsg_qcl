@@ -96,7 +96,7 @@ module axi4_mux #(
 	assign m_axi4_bus_o      = m_axi4_bus_o_cast;
 	assign m_axi4_bus_i_cast = m_axi4_bus_i;
 
-	axi_crossbar_v2_1_18_axi_crossbar #(
+	axi_crossbar_v2_1_20_axi_crossbar #(
 		.C_FAMILY                   ("virtexuplus"                        ),
 		.C_NUM_SLAVE_SLOTS          (slot_num_p                           ),
 		.C_NUM_MASTER_SLOTS         (1                                    ),

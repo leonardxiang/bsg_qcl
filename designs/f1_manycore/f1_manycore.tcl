@@ -50,7 +50,7 @@ generate_target all [get_files  ${PRJ_IP_DIR}/axi_dwidth_converter_0/axi_dwidth_
 # axi bram
 # -------------------------------------
 create_ip -name axi_bram_ctrl -vendor xilinx.com -library ip \
-  -version 4.0 -module_name axi_bram_ctrl_0
+  -version 4.1 -module_name axi_bram_ctrl_0
 # set_property -dict [list \
 # CONFIG.DATA_WIDTH {256} \
 # CONFIG.ID_WIDTH {6} \
@@ -101,19 +101,19 @@ set_property generate_synth_checkpoint false [get_files  ${PRJ_IP_DIR}/blk_mem_g
 generate_target all [get_files  ${PRJ_IP_DIR}/blk_mem_gen_1/blk_mem_gen_1.xci]
 
 
-# -------------------------------------
-# axi stream fifo
-# -------------------------------------
-create_ip -name axi_fifo_mm_s -vendor xilinx.com -library ip \
-  -version 4.1 -module_name axi_fifo_mm_s_0
+# # -------------------------------------
+# # axi stream fifo
+# # -------------------------------------
+# create_ip -name axi_fifo_mm_s -vendor xilinx.com -library ip \
+#   -version 4.1 -module_name axi_fifo_mm_s_0
 
-set_property -dict [list \
-CONFIG.C_TX_FIFO_PE_THRESHOLD {5} \
-CONFIG.C_RX_FIFO_PE_THRESHOLD {5}
-] [get_ips axi_fifo_mm_s_0]
-generate_target {instantiation_template} [get_files ${PRJ_IP_DIR}/axi_fifo_mm_s_0/axi_fifo_mm_s_0.xci]
-set_property generate_synth_checkpoint false [get_files ${PRJ_IP_DIR}/axi_fifo_mm_s_0/axi_fifo_mm_s_0.xci]
-generate_target all [get_files  ${PRJ_IP_DIR}/axi_fifo_mm_s_0/axi_fifo_mm_s_0.xci]
+# set_property -dict [list \
+# CONFIG.C_TX_FIFO_PE_THRESHOLD {5} \
+# CONFIG.C_RX_FIFO_PE_THRESHOLD {5}
+# ] [get_ips axi_fifo_mm_s_0]
+# generate_target {instantiation_template} [get_files ${PRJ_IP_DIR}/axi_fifo_mm_s_0/axi_fifo_mm_s_0.xci]
+# set_property generate_synth_checkpoint false [get_files ${PRJ_IP_DIR}/axi_fifo_mm_s_0/axi_fifo_mm_s_0.xci]
+# generate_target all [get_files  ${PRJ_IP_DIR}/axi_fifo_mm_s_0/axi_fifo_mm_s_0.xci]
 
 
 # -------------------------------------

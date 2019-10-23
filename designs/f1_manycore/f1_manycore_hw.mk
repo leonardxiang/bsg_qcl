@@ -33,16 +33,17 @@ VSOURCES += $(BSG_QCL_DIR)/hdl/bsg_bladerunner_pkg.v
 # VSOURCES := $(filter-out ${BSG_F1_DIR}/hardware/s_axil_mcl_adapter.v,$(VHEADERS) $(VSOURCES))
 # VSOURCES += $(BSG_QCL_DIR)/hdl/s_axil_mcl_adapter.v
 
-VSOURCES += $(BSG_QCL_DIR)/hdl/xilinx_dma_pcie_ep.v
+VSOURCES += $(BSG_QCL_DIR)/hdl/xilinx_ip/axi4_mux.v
+VSOURCES += $(BSG_QCL_DIR)/hdl/xilinx_ip/axi_register_slice.v
+VSOURCES += $(BSG_QCL_DIR)/hdl/xilinx_ip/axi_register_slice_light.v
+VSOURCES += $(BSG_QCL_DIR)/hdl/xilinx_ip/axi_register_slice_light.v
+VSOURCES += $(BSG_QCL_DIR)/hdl/xilinx_ip/xilinx_dma_pcie_ep.v
+
 VSOURCES += $(BSG_QCL_DIR)/hdl/bsg_bladerunner_wrapper.v
 VSOURCES += $(BSG_QCL_DIR)/hdl/lib_pip.v
 VSOURCES += $(BSG_QCL_DIR)/hdl/qcl_debounce.v
 VSOURCES += $(BSG_QCL_DIR)/hdl/qcl_counter_dynamic_limit_en.v
 VSOURCES += $(BSG_QCL_DIR)/hdl/qcl_breath_en.v
-VSOURCES += $(BSG_QCL_DIR)/hdl/axi4_mux.v
-VSOURCES += $(BSG_QCL_DIR)/hdl/axi_register_slice.v
-VSOURCES += $(BSG_QCL_DIR)/hdl/axi_register_slice_light.v
-VSOURCES += $(BSG_QCL_DIR)/hdl/axi_register_slice_light.v
 
 # TODO: CHECK if this is necessary
 bladerunner_setup:
