@@ -3,8 +3,7 @@ XDMA_DRIVER_DIR = $(BSG_QCL_DIR)/drivers/xdma
 DESIGN_RUNTIME_DIR = $(BSG_QCL_DIR)/runtime/$(DESIGN_NAME)
 
 .PHONY: install_driver uninstall_driver \
-	patch_f1_lib install_f1_runtime uninstall_f1_runtime \
-	software remove_sw
+				patch_f1_lib install_f1_runtime uninstall_f1_runtime \
 
 install_driver:
 	$(MAKE) -C $(XDMA_DRIVER_DIR) install
@@ -30,6 +29,9 @@ uninstall_f1_runtime: uninstall_driver
 	rm -rf $(DESIGN_RUNTIME_DIR)/bsg_manycore_cpp.patch
 	@echo "<===uninstall the f1 bladerunner libraries"
 	$(MAKE) -C $(F1_LIB_DIR) uninstall
+
+
+# targets below are exposed to outside
 
 software: install_driver install_f1_runtime
 

@@ -2,7 +2,9 @@ DESINS_TARGETS = f1_manycore
 
 .DEFAULT_GOAL := help
 
-.PHONY: help create_prj open_prj clean bleach bleach_all %.bleach
+.PHONY: help create_prj open_prj \
+				install_sw uninstall_sw \
+				%.bleach bleach_all
 
 create_prj:
 	$(MAKE) -C designs create DESIGN_NAME=$(DESIGN_NAME)
@@ -22,11 +24,9 @@ bleach_all: $(addsuffix .bleach,$(DESINS_TARGETS))
 
 help:
 	@echo "Usage:"
-	@echo "make {create_prj|open_prj|install_sw|uninstall_sw|clean|bleach|bleach_all}"
+	@echo "make {create_prj|open_prj|install_sw|uninstall_sw|bleach_all}"
 	@echo "      create_prj:   Create a new Vivado project"
-	@echo "      open_prj:     Open a existing Vivado project"
+	@echo "      open_prj:     Open an existing Vivado project"
 	@echo	"      install_sw:   Install the software of DESIGN_NAME (sudo -E)"
 	@echo	"      uninstall_sw: Uninstall the software of DESIGN_NAME (sudo -E)"
-	@echo "      clean:        Clear Vivado logs"
-	@echo "      bleach:       Remove the project files of DESIGN_NAME"
 	@echo "      bleach_all:   Remove all project files"

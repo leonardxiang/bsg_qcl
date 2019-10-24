@@ -12,7 +12,7 @@ This repository contains the following folders:
 
 ## Dependencies
 
-   1. Vivado 2018.2
+   1. Vivado 2019.1
    2. A clone of [bsg_bladerunner](https://github.com/bespoke-silicon-group/bsg_bladerunner) and proper setup
    3. Reference Repositories:
     - [bsg_f1](https://github.com/bespoke-silicon-group/bsg_f1)

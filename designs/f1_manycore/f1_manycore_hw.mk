@@ -49,5 +49,8 @@ VSOURCES += $(BSG_QCL_DIR)/hdl/qcl_breath_en.v
 bladerunner_setup:
 	$(MAKE) -C $(BSG_BLADERUNNER_DIR) setup-uw
 
+
+# targets below are exposed to outside
+
 hardware:
 	$(MAKE) -C ${HARDWARE_PATH} hardware

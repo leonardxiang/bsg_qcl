@@ -14,17 +14,20 @@ DEBUG ?= 0
 include ./$(DESIGN_NAME)/$(DESIGN_NAME)_hw.mk
 include ./$(DESIGN_NAME)/$(DESIGN_NAME)_sw.mk
 
-.PHONY: hardware create open synth remove_sw clean bleach
-
 .DEFAULT_GOAL := help
+
+.PHONY: hardware create open synth \
+ 				software remove_sw \
+ 			  bleach
+
 help:
 	@echo "Usage:"
-	@echo "make {hardware|software|create|open|clean|bleach}"
-	@echo "      hardware: prepare for creating the hardware"
-	@echo "      software: install softwares for this design (sudo -E)"
-	@echo "      create: create the vivado project of this design"
-	@echo "      clean: remove all vivado log files (sudo -E)"
-	@echo "      bleach: remove all vivado project files"
+	@echo "make {hardware|software|create|open|bleach}"
+	@echo "      hardware: 	Prepare hardware source file of the design"
+	@echo "      software: 	Install the software for this design (sudo -E)"
+	@echo "      create: 		Create the Vivado project"
+	@echo "      open:  		Open an existing Vivado project"
+	@echo "      bleach: 		remove all project files"
 
 create: $(DESIGN_NAME).log
 
@@ -37,10 +40,11 @@ $(DESIGN_NAME).log: hardware
 open:
 	vivado -mode $(MODE) -log $@ $(DESIGN_PRJ_DIR)/$(DESIGN_NAME).xpr
 
-bleach: clean
-	rm -rf $(DESIGN_PRJ_DIR)/$(DESIGN_NAME).xpr
-	rm -rf $(DESIGN_PRJ_DIR)/$(DESIGN_NAME)*
+bleach:
+	rm -rf $(DESIGN_NAME).log
 	rm -rf vivado.*
 	rm -rf vivado_*
 	rm -rf open*
-	rm -rf $(DESIGN_NAME).log
+	rm -rf $(DESIGN_PRJ_DIR)/$(DESIGN_NAME).xpr
+	rm -rf $(DESIGN_PRJ_DIR)/$(DESIGN_NAME)*
+
