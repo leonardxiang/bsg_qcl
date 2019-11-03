@@ -1,12 +1,12 @@
 /**
-*  axi4_mux.v
+*  axi4_mux2.v
 *
 */
 
-`include "bsg_axi4_bus_pkg.vh"
+`include "bsg_axi_bus_pkg.vh"
 
-module axi4_mux #(
-	parameter slot_num_p = "inv"
+module axi4_mux2 #(
+	localparam slot_num_p = 2
 	, parameter id_width_p = "inv"
 	, parameter addr_width_p = "inv"
 	, parameter data_width_p = "inv"

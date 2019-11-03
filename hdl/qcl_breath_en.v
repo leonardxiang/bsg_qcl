@@ -5,8 +5,6 @@
 * the breach period is 1 / F_clk_i * val_p * 2
 */
 
-`include "bsg_defines.v"
-
 module qcl_breath_en #(parameter val_p = 'd10_000_000) (
   input  clk_i  
   ,input  reset_i
@@ -14,7 +12,7 @@ module qcl_breath_en #(parameter val_p = 'd10_000_000) (
   ,output o
 );
 
-  localparam counter_width_lp = `BSG_SAFE_CLOG2(val_p+1); // use safe clog2 in case val_p=0
+  localparam counter_width_lp = $clog2(val_p+1); // use safe clog2 in case val_p=0
 
   logic overflow_lo;
 
