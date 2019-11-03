@@ -533,7 +533,10 @@ module hbm_manycore_top
   // bladerunner manycore
   // ---------------------------------------------
 
-   localparam num_axi_slot_lp = mem_cfg_p == e_vcache_blocking_axi4_hbm ? num_tiles_x_p : 1;
+   localparam num_axi_slot_lp = (mem_cfg_p == e_vcache_blocking_axi4_xbar_dram ||
+                                 mem_cfg_p == e_vcache_blocking_axi4_xbar_model ||
+                                 mem_cfg_p == e_vcache_blocking_axi4_hbm) ?
+                                num_tiles_x_p : 1;
 
   `declare_bsg_axi4_bus_s(1, axi_id_width_p, axi_addr_width_p, axi_data_width_p,
                           bsg_axi4_mosi_bus_s, bsg_axi4_miso_bus_s);
@@ -562,44 +565,11 @@ module hbm_manycore_top
   // axi4 memory level 3
   // ---------------------------------------------
 
-  // //  mosi signals
-  // assign m_axi_awid_o    = m_axi4_ddr_lo_cast.awid;
-  // assign m_axi_awaddr_o  = m_axi4_ddr_lo_cast.awaddr;
-  // assign m_axi_awlen_o   = m_axi4_ddr_lo_cast.awlen;
-  // assign m_axi_awsize_o  = m_axi4_ddr_lo_cast.awsize;
-  // assign m_axi_awburst_o = m_axi4_ddr_lo_cast.awburst;
-  // assign m_axi_awvalid_o = m_axi4_ddr_lo_cast.awvalid;
-  // assign m_axi_wdata_o   = m_axi4_ddr_lo_cast.wdata;
-  // assign m_axi_wstrb_o   = m_axi4_ddr_lo_cast.wstrb;
-  // assign m_axi_wlast_o   = m_axi4_ddr_lo_cast.wlast;
-  // assign m_axi_wvalid_o  = m_axi4_ddr_lo_cast.wvalid;
-  // assign m_axi_bready_o  = m_axi4_ddr_lo_cast.bready;
-  // assign m_axi_arid_o    = m_axi4_ddr_lo_cast.arid;
-  // assign m_axi_araddr_o  = m_axi4_ddr_lo_cast.araddr;
-  // assign m_axi_arlen_o   = m_axi4_ddr_lo_cast.arlen;
-  // assign m_axi_arsize_o  = m_axi4_ddr_lo_cast.arsize;
-  // assign m_axi_arburst_o = m_axi4_ddr_lo_cast.arburst;
-  // assign m_axi_arvalid_o = m_axi4_ddr_lo_cast.arvalid;
-  // assign m_axi_rready_o  = m_axi4_ddr_lo_cast.rready;
-
-  // //  miso signals
-  // assign m_axi4_ddr_li_cast.awready = m_axi_awready_i;
-  // assign m_axi4_ddr_li_cast.wready  = m_axi_wready_i;
-  // assign m_axi4_ddr_li_cast.bid     = m_axi_bid_i;
-  // assign m_axi4_ddr_li_cast.bresp   = m_axi_bresp_i;
-  // assign m_axi4_ddr_li_cast.bvalid  = m_axi_bvalid_i;
-  // assign m_axi4_ddr_li_cast.arready = m_axi_arready_i;
-  // assign m_axi4_ddr_li_cast.rid     = m_axi_rid_i;
-  // assign m_axi4_ddr_li_cast.rdata   = m_axi_rdata_i;
-  // assign m_axi4_ddr_li_cast.rresp   = m_axi_rresp_i;
-  // assign m_axi4_ddr_li_cast.rlast   = m_axi_rlast_i;
-  // assign m_axi4_ddr_li_cast.rvalid  = m_axi_rvalid_i;
-
   if (mem_cfg_p == e_vcache_blocking_axi4_bram) begin : lv3_axi4_bram
 
-  `declare_bsg_axi4_bus_s(1, mem_axi_id_width_lp, mem_axi_addr_width_lp, mem_axi_data_width_lp, mem_axi_mosi_s, mem_axi_miso_s);
-    mem_axi_mosi_s m_axi4_bram_lo_cast;
-    mem_axi_miso_s m_axi4_bram_li_cast;
+    `declare_bsg_axi4_bus_s(1, mem_axi_id_width_lp, mem_axi_addr_width_lp, mem_axi_data_width_lp, mem_axi_mosi_s, mem_axi_miso_s);
+    mem_axi_mosi_s m_axi4_bram_lo;
+    mem_axi_miso_s m_axi4_bram_li;
 
     (* dont_touch = "true" *) logic axi_mem_rstn;
     lib_pipe #(.WIDTH(1), .STAGES(4)) AXI4_MUX_RST_N (
@@ -609,57 +579,58 @@ module hbm_manycore_top
       .out_bus(axi_mem_rstn)
     );
 
-    axi4_mux2 #(
+    axi4_mux #(
+      .slot_num_p  (2               ),
       .id_width_p  (axi_id_width_p  ),
       .addr_width_p(axi_addr_width_p),
       .data_width_p(axi_data_width_p)
     ) axi4_multiplexer (
       .clk_i       (clk_i                                ),
-      .reset_i     (~axi_mem_rstn                       ),
-      .s_axi4_mux_i({axi4_mc_cols_lo, s_pcis_axi_li_cast}),
-      .s_axi4_mux_o({axi4_mc_cols_li, s_pcis_axi_lo_cast}),
-      .m_axi4_bus_o(m_axi4_bram_lo_cast                  ),
-      .m_axi4_bus_i(m_axi4_bram_li_cast                  )
+      .reset_i     (~axi_mem_rstn                        ),
+      .s_axi4_par_i({axi4_mc_cols_lo, s_pcis_axi_li_cast}),
+      .s_axi4_par_o({axi4_mc_cols_li, s_pcis_axi_lo_cast}),
+      .m_axi4_ser_o(m_axi4_bram_lo                       ),
+      .m_axi4_ser_i(m_axi4_bram_li                       )
     );
 
     axi_bram_ctrl_0 hb_mc_bram (
-      .s_axi_aclk   (clk_i                                               ), // input wire s_axi_aclk
-      .s_axi_aresetn(~mc_reset_i                                         ), // input wire s_axi_aresetn
-      .s_axi_awid   (m_axi4_bram_lo_cast.awid[0]                         ), // input wire [5 : 0] s_axi_awid
-      .s_axi_awaddr (m_axi4_bram_lo_cast.awaddr[0][bram_addr_width_p-1:0]), // input wire [17 : 0] s_axi_awaddr
-      .s_axi_awlen  (m_axi4_bram_lo_cast.awlen[0]                        ), // input wire [7 : 0] s_axi_awlen
-      .s_axi_awsize (m_axi4_bram_lo_cast.awsize[0]                       ), // input wire [2 : 0] s_axi_awsize
-      .s_axi_awburst(m_axi4_bram_lo_cast.awburst[0]                      ), // input wire [1 : 0] s_axi_awburst
-      .s_axi_awlock (m_axi4_bram_lo_cast.awlock[0]                       ), // input wire s_axi_awlock
-      .s_axi_awcache(m_axi4_bram_lo_cast.awcache[0]                      ), // input wire [3 : 0] s_axi_awcache
-      .s_axi_awprot (m_axi4_bram_lo_cast.awprot[0]                       ), // input wire [2 : 0] s_axi_awprot
-      .s_axi_awvalid(m_axi4_bram_lo_cast.awvalid[0]                      ), // input wire s_axi_awvalid
-      .s_axi_awready(m_axi4_bram_li_cast.awready[0]                      ), // output wire s_axi_awready
-      .s_axi_wdata  (m_axi4_bram_lo_cast.wdata[0]                        ), // input wire [mem_dwidth-1 : 0] s_axi_wdata
-      .s_axi_wstrb  (m_axi4_bram_lo_cast.wstrb[0]                        ), // input wire [31 : 0] s_axi_wstrb
-      .s_axi_wlast  (m_axi4_bram_lo_cast.wlast[0]                        ), // input wire s_axi_wlast
-      .s_axi_wvalid (m_axi4_bram_lo_cast.wvalid[0]                       ), // input wire s_axi_wvalid
-      .s_axi_wready (m_axi4_bram_li_cast.wready[0]                       ), // output wire s_axi_wready
-      .s_axi_bid    (m_axi4_bram_li_cast.bid[0]                          ), // output wire [5 : 0] s_axi_bid
-      .s_axi_bresp  (m_axi4_bram_li_cast.bresp[0]                        ), // output wire [1 : 0] s_axi_bresp
-      .s_axi_bvalid (m_axi4_bram_li_cast.bvalid[0]                       ), // output wire s_axi_bvalid
-      .s_axi_bready (m_axi4_bram_lo_cast.bready[0]                       ), // input wire s_axi_bready
-      .s_axi_arid   (m_axi4_bram_lo_cast.arid[0]                         ), // input wire [5 : 0] s_axi_arid
-      .s_axi_araddr (m_axi4_bram_lo_cast.araddr[0][bram_addr_width_p-1:0]), // input wire [17 : 0] s_axi_araddr
-      .s_axi_arlen  (m_axi4_bram_lo_cast.arlen[0]                        ), // input wire [7 : 0] s_axi_arlen
-      .s_axi_arsize (m_axi4_bram_lo_cast.arsize[0]                       ), // input wire [2 : 0] s_axi_arsize
-      .s_axi_arburst(m_axi4_bram_lo_cast.arburst[0]                      ), // input wire [1 : 0] s_axi_arburst
-      .s_axi_arlock (m_axi4_bram_lo_cast.arlock[0]                       ), // input wire s_axi_arlock
-      .s_axi_arcache(m_axi4_bram_lo_cast.arcache[0]                      ), // input wire [3 : 0] s_axi_arcache
-      .s_axi_arprot (m_axi4_bram_lo_cast.arprot[0]                       ), // input wire [2 : 0] s_axi_arprot
-      .s_axi_arvalid(m_axi4_bram_lo_cast.arvalid[0]                      ), // input wire s_axi_arvalid
-      .s_axi_arready(m_axi4_bram_li_cast.arready[0]                      ), // output wire s_axi_arready
-      .s_axi_rid    (m_axi4_bram_li_cast.rid[0]                          ), // output wire [5 : 0] s_axi_rid
-      .s_axi_rdata  (m_axi4_bram_li_cast.rdata[0]                        ), // output wire [mem_dwidth-1 : 0] s_axi_rdata
-      .s_axi_rresp  (m_axi4_bram_li_cast.rresp[0]                        ), // output wire [1 : 0] s_axi_rresp
-      .s_axi_rlast  (m_axi4_bram_li_cast.rlast[0]                        ), // output wire s_axi_rlast
-      .s_axi_rvalid (m_axi4_bram_li_cast.rvalid[0]                       ), // output wire s_axi_rvalid
-      .s_axi_rready (m_axi4_bram_lo_cast.rready[0]                       )  // input wire s_axi_rready
+      .s_axi_aclk   (clk_i                                          ), // input wire s_axi_aclk
+      .s_axi_aresetn(~mc_reset_i                                    ), // input wire s_axi_aresetn
+      .s_axi_awid   (m_axi4_bram_lo.awid[0]                         ), // input wire [5 : 0] s_axi_awid
+      .s_axi_awaddr (m_axi4_bram_lo.awaddr[0][bram_addr_width_p-1:0]), // input wire [17 : 0] s_axi_awaddr
+      .s_axi_awlen  (m_axi4_bram_lo.awlen[0]                        ), // input wire [7 : 0] s_axi_awlen
+      .s_axi_awsize (m_axi4_bram_lo.awsize[0]                       ), // input wire [2 : 0] s_axi_awsize
+      .s_axi_awburst(m_axi4_bram_lo.awburst[0]                      ), // input wire [1 : 0] s_axi_awburst
+      .s_axi_awlock (m_axi4_bram_lo.awlock[0]                       ), // input wire s_axi_awlock
+      .s_axi_awcache(m_axi4_bram_lo.awcache[0]                      ), // input wire [3 : 0] s_axi_awcache
+      .s_axi_awprot (m_axi4_bram_lo.awprot[0]                       ), // input wire [2 : 0] s_axi_awprot
+      .s_axi_awvalid(m_axi4_bram_lo.awvalid[0]                      ), // input wire s_axi_awvalid
+      .s_axi_awready(m_axi4_bram_li.awready[0]                      ), // output wire s_axi_awready
+      .s_axi_wdata  (m_axi4_bram_lo.wdata[0]                        ), // input wire [mem_dwidth-1 : 0] s_axi_wdata
+      .s_axi_wstrb  (m_axi4_bram_lo.wstrb[0]                        ), // input wire [31 : 0] s_axi_wstrb
+      .s_axi_wlast  (m_axi4_bram_lo.wlast[0]                        ), // input wire s_axi_wlast
+      .s_axi_wvalid (m_axi4_bram_lo.wvalid[0]                       ), // input wire s_axi_wvalid
+      .s_axi_wready (m_axi4_bram_li.wready[0]                       ), // output wire s_axi_wready
+      .s_axi_bid    (m_axi4_bram_li.bid[0]                          ), // output wire [5 : 0] s_axi_bid
+      .s_axi_bresp  (m_axi4_bram_li.bresp[0]                        ), // output wire [1 : 0] s_axi_bresp
+      .s_axi_bvalid (m_axi4_bram_li.bvalid[0]                       ), // output wire s_axi_bvalid
+      .s_axi_bready (m_axi4_bram_lo.bready[0]                       ), // input wire s_axi_bready
+      .s_axi_arid   (m_axi4_bram_lo.arid[0]                         ), // input wire [5 : 0] s_axi_arid
+      .s_axi_araddr (m_axi4_bram_lo.araddr[0][bram_addr_width_p-1:0]), // input wire [17 : 0] s_axi_araddr
+      .s_axi_arlen  (m_axi4_bram_lo.arlen[0]                        ), // input wire [7 : 0] s_axi_arlen
+      .s_axi_arsize (m_axi4_bram_lo.arsize[0]                       ), // input wire [2 : 0] s_axi_arsize
+      .s_axi_arburst(m_axi4_bram_lo.arburst[0]                      ), // input wire [1 : 0] s_axi_arburst
+      .s_axi_arlock (m_axi4_bram_lo.arlock[0]                       ), // input wire s_axi_arlock
+      .s_axi_arcache(m_axi4_bram_lo.arcache[0]                      ), // input wire [3 : 0] s_axi_arcache
+      .s_axi_arprot (m_axi4_bram_lo.arprot[0]                       ), // input wire [2 : 0] s_axi_arprot
+      .s_axi_arvalid(m_axi4_bram_lo.arvalid[0]                      ), // input wire s_axi_arvalid
+      .s_axi_arready(m_axi4_bram_li.arready[0]                      ), // output wire s_axi_arready
+      .s_axi_rid    (m_axi4_bram_li.rid[0]                          ), // output wire [5 : 0] s_axi_rid
+      .s_axi_rdata  (m_axi4_bram_li.rdata[0]                        ), // output wire [mem_dwidth-1 : 0] s_axi_rdata
+      .s_axi_rresp  (m_axi4_bram_li.rresp[0]                        ), // output wire [1 : 0] s_axi_rresp
+      .s_axi_rlast  (m_axi4_bram_li.rlast[0]                        ), // output wire s_axi_rlast
+      .s_axi_rvalid (m_axi4_bram_li.rvalid[0]                       ), // output wire s_axi_rvalid
+      .s_axi_rready (m_axi4_bram_lo.rready[0]                       )  // input wire s_axi_rready
     );
 
   end : lv3_axi4_bram
