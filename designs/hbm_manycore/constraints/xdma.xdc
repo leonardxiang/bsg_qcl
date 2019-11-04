@@ -96,6 +96,8 @@ set_property LOC [get_package_pins -filter {PIN_FUNC =~ *_PERSTN0_65}] [get_port
 set_false_path -to [get_pins -hier *sync_reg[0]/D]
 #
 
+set_false_path -to [get_pins -hier *leds_*]
+
 ##-----------------------------------------------------------------------------
 ##
 ## Project    : UltraScale+ FPGA PCI Express CCIX v4.0 Integrated Block

@@ -517,8 +517,8 @@ BUFGCE_DIV #(.BUFGCE_DIVIDE(2)) u_AXI_vio_CLK_st0 (
   // ---------------------------------------------
 
   `declare_bsg_axil_bus_s(1, bsg_axil_mosi_bus_s, bsg_axil_miso_bus_s);
-  bsg_axil_mosi_bus_s s_axil_ocl_li;
-  bsg_axil_miso_bus_s s_axil_ocl_lo;
+   bsg_axil_mosi_bus_s s_axil_ocl_li;
+   bsg_axil_miso_bus_s s_axil_ocl_lo;
 
   assign s_axil_ocl_li.awaddr  = m_axil_awaddr;
   assign s_axil_ocl_li.awvalid = m_axil_awvalid;
@@ -587,8 +587,8 @@ BUFGCE_DIV #(.BUFGCE_DIVIDE(2)) u_AXI_vio_CLK_st0 (
   bsg_pcie_axi4_miso_s pcis_axi4_lo;
 
   `declare_bsg_axi4_bus_s(1, mem_axi_id_width_lp, mem_axi_addr_width_lp, mem_axi_data_width_lp, pcis_axi_mosi_s, pcis_axi_miso_s);
-  pcis_axi_mosi_s m_axi4_pcie_lo;
-  pcis_axi_miso_s m_axi4_pcie_li;
+  pcis_axi_mosi_s axi4_pcie_lo;
+  pcis_axi_miso_s axi4_pcie_li;
 
   assign pcis_axi4_li.awid     = m_axib_awid;
   assign pcis_axi4_li.awaddr   = m_axib_awaddr;
@@ -674,46 +674,47 @@ BUFGCE_DIV #(.BUFGCE_DIVIDE(2)) u_AXI_vio_CLK_st0 (
     .s_axi_rvalid  (pcis_axi4_lo.rvalid    ), // output wire s_axi_rvalid
     .s_axi_rready  (pcis_axi4_li.rready    ), // input wire s_axi_rready
 
-    .m_axi_awaddr  (m_axi4_pcie_lo.awaddr  ), // output wire [63 : 0] m_axi_awaddr
-    .m_axi_awlen   (m_axi4_pcie_lo.awlen   ), // output wire [7 : 0] m_axi_awlen
-    .m_axi_awsize  (m_axi4_pcie_lo.awsize  ), // output wire [2 : 0] m_axi_awsize
-    .m_axi_awburst (m_axi4_pcie_lo.awburst ), // output wire [1 : 0] m_axi_awburst
-    .m_axi_awlock  (m_axi4_pcie_lo.awlock  ), // output wire [0 : 0] m_axi_awlock
-    .m_axi_awcache (m_axi4_pcie_lo.awcache ), // output wire [3 : 0] m_axi_awcache
-    .m_axi_awprot  (m_axi4_pcie_lo.awprot  ), // output wire [2 : 0] m_axi_awprot
-    .m_axi_awregion(m_axi4_pcie_lo.awregion), // output wire [3 : 0] m_axi_awregion
-    .m_axi_awqos   (m_axi4_pcie_lo.awqos   ), // output wire [3 : 0] m_axi_awqos
-    .m_axi_awvalid (m_axi4_pcie_lo.awvalid ), // output wire m_axi_awvalid
-    .m_axi_awready (m_axi4_pcie_li.awready ), // input wire m_axi_awready
-    .m_axi_wdata   (m_axi4_pcie_lo.wdata   ), // output wire [mem_dwidth-1 : 0] m_axi_wdata
-    .m_axi_wstrb   (m_axi4_pcie_lo.wstrb   ), // output wire [31 : 0] m_axi_wstrb
-    .m_axi_wlast   (m_axi4_pcie_lo.wlast   ), // output wire m_axi_wlast
-    .m_axi_wvalid  (m_axi4_pcie_lo.wvalid  ), // output wire m_axi_wvalid
-    .m_axi_wready  (m_axi4_pcie_li.wready  ), // input wire m_axi_wready
-    .m_axi_bresp   (m_axi4_pcie_li.bresp   ), // input wire [1 : 0] m_axi_bresp
-    .m_axi_bvalid  (m_axi4_pcie_li.bvalid  ), // input wire m_axi_bvalid
-    .m_axi_bready  (m_axi4_pcie_lo.bready  ), // output wire m_axi_bready
-    .m_axi_araddr  (m_axi4_pcie_lo.araddr  ), // output wire [63 : 0] m_axi_araddr
-    .m_axi_arlen   (m_axi4_pcie_lo.arlen   ), // output wire [7 : 0] m_axi_arlen
-    .m_axi_arsize  (m_axi4_pcie_lo.arsize  ), // output wire [2 : 0] m_axi_arsize
-    .m_axi_arburst (m_axi4_pcie_lo.arburst ), // output wire [1 : 0] m_axi_arburst
-    .m_axi_arlock  (m_axi4_pcie_lo.arlock  ), // output wire [0 : 0] m_axi_arlock
-    .m_axi_arcache (m_axi4_pcie_lo.arcache ), // output wire [3 : 0] m_axi_arcache
-    .m_axi_arprot  (m_axi4_pcie_lo.arprot  ), // output wire [2 : 0] m_axi_arprot
-    .m_axi_arregion(m_axi4_pcie_lo.arregion), // output wire [3 : 0] m_axi_arregion
-    .m_axi_arqos   (m_axi4_pcie_lo.arqos   ), // output wire [3 : 0] m_axi_arqos
-    .m_axi_arvalid (m_axi4_pcie_lo.arvalid ), // output wire m_axi_arvalid
-    .m_axi_arready (m_axi4_pcie_li.arready ), // input wire m_axi_arready
-    .m_axi_rdata   (m_axi4_pcie_li.rdata   ), // input wire [mem_dwidth-1 : 0] m_axi_rdata
-    .m_axi_rresp   (m_axi4_pcie_li.rresp   ), // input wire [1 : 0] m_axi_rresp
-    .m_axi_rlast   (m_axi4_pcie_li.rlast   ), // input wire m_axi_rlast
-    .m_axi_rvalid  (m_axi4_pcie_li.rvalid  ), // input wire m_axi_rvalid
-    .m_axi_rready  (m_axi4_pcie_lo.rready  )  // output wire m_axi_rready
+    .m_axi_awaddr  (axi4_pcie_lo.awaddr  ), // output wire [63 : 0] m_axi_awaddr
+    .m_axi_awlen   (axi4_pcie_lo.awlen   ), // output wire [7 : 0] m_axi_awlen
+    .m_axi_awsize  (axi4_pcie_lo.awsize  ), // output wire [2 : 0] m_axi_awsize
+    .m_axi_awburst (axi4_pcie_lo.awburst ), // output wire [1 : 0] m_axi_awburst
+    .m_axi_awlock  (axi4_pcie_lo.awlock  ), // output wire [0 : 0] m_axi_awlock
+    .m_axi_awcache (axi4_pcie_lo.awcache ), // output wire [3 : 0] m_axi_awcache
+    .m_axi_awprot  (axi4_pcie_lo.awprot  ), // output wire [2 : 0] m_axi_awprot
+    .m_axi_awregion(axi4_pcie_lo.awregion), // output wire [3 : 0] m_axi_awregion
+    .m_axi_awqos   (axi4_pcie_lo.awqos   ), // output wire [3 : 0] m_axi_awqos
+    .m_axi_awvalid (axi4_pcie_lo.awvalid ), // output wire m_axi_awvalid
+    .m_axi_awready (axi4_pcie_li.awready ), // input wire m_axi_awready
+    .m_axi_wdata   (axi4_pcie_lo.wdata   ), // output wire [mem_dwidth-1 : 0] m_axi_wdata
+    .m_axi_wstrb   (axi4_pcie_lo.wstrb   ), // output wire [31 : 0] m_axi_wstrb
+    .m_axi_wlast   (axi4_pcie_lo.wlast   ), // output wire m_axi_wlast
+    .m_axi_wvalid  (axi4_pcie_lo.wvalid  ), // output wire m_axi_wvalid
+    .m_axi_wready  (axi4_pcie_li.wready  ), // input wire m_axi_wready
+    .m_axi_bresp   (axi4_pcie_li.bresp   ), // input wire [1 : 0] m_axi_bresp
+    .m_axi_bvalid  (axi4_pcie_li.bvalid  ), // input wire m_axi_bvalid
+    .m_axi_bready  (axi4_pcie_lo.bready  ), // output wire m_axi_bready
+    .m_axi_araddr  (axi4_pcie_lo.araddr  ), // output wire [63 : 0] m_axi_araddr
+    .m_axi_arlen   (axi4_pcie_lo.arlen   ), // output wire [7 : 0] m_axi_arlen
+    .m_axi_arsize  (axi4_pcie_lo.arsize  ), // output wire [2 : 0] m_axi_arsize
+    .m_axi_arburst (axi4_pcie_lo.arburst ), // output wire [1 : 0] m_axi_arburst
+    .m_axi_arlock  (axi4_pcie_lo.arlock  ), // output wire [0 : 0] m_axi_arlock
+    .m_axi_arcache (axi4_pcie_lo.arcache ), // output wire [3 : 0] m_axi_arcache
+    .m_axi_arprot  (axi4_pcie_lo.arprot  ), // output wire [2 : 0] m_axi_arprot
+    .m_axi_arregion(axi4_pcie_lo.arregion), // output wire [3 : 0] m_axi_arregion
+    .m_axi_arqos   (axi4_pcie_lo.arqos   ), // output wire [3 : 0] m_axi_arqos
+    .m_axi_arvalid (axi4_pcie_lo.arvalid ), // output wire m_axi_arvalid
+    .m_axi_arready (axi4_pcie_li.arready ), // input wire m_axi_arready
+    .m_axi_rdata   (axi4_pcie_li.rdata   ), // input wire [mem_dwidth-1 : 0] m_axi_rdata
+    .m_axi_rresp   (axi4_pcie_li.rresp   ), // input wire [1 : 0] m_axi_rresp
+    .m_axi_rlast   (axi4_pcie_li.rlast   ), // input wire m_axi_rlast
+    .m_axi_rvalid  (axi4_pcie_li.rvalid  ), // input wire m_axi_rvalid
+    .m_axi_rready  (axi4_pcie_lo.rready  )  // output wire m_axi_rready
   );
 
-  assign m_axi4_pcie_lo.awid    = '0;
-  assign m_axi4_pcie_lo.arid    = '0;
-
+  assign axi4_pcie_lo.awid = '0;
+  assign axi4_pcie_lo.arid = '0;
+//  assign axi4_pcie_lo.bid  = '0;
+//  assign axi4_pcie_lo.rid  = '0;
 
   // ---------------------------------------------
   // axil traffic monitor LEDs
@@ -738,7 +739,7 @@ BUFGCE_DIV #(.BUFGCE_DIVIDE(2)) u_AXI_vio_CLK_st0 (
  //--------------------------------------------
  // AXI-Lite OCL System
  //---------------------------------------------
-  (* dont_touch = "true" *) logic axil_rstn_buf;
+  logic axil_rstn_buf;
   lib_pipe #(.WIDTH(1), .STAGES(4)) AXIL_RST_N (
     .clk    (pcie_axi_clk_li ),
     .rst_n  (1'b1            ),
@@ -795,214 +796,218 @@ BUFGCE_DIV #(.BUFGCE_DIVIDE(2)) u_AXI_vio_CLK_st0 (
   // bladerunner manycore
   // ---------------------------------------------
 
-   localparam num_axi_slot_lp = (mem_cfg_p == e_vcache_blocking_axi4_xbar_dram ||
-                                 mem_cfg_p == e_vcache_blocking_axi4_xbar_model ||
-                                 mem_cfg_p == e_vcache_blocking_axi4_hbm) ?
+  localparam mc_axi4_els_lp = (mem_cfg_p == e_vcache_blocking_axi4_xbar_dram ||
+                                mem_cfg_p == e_vcache_blocking_axi4_xbar_model ||
+                                mem_cfg_p == e_vcache_blocking_axi4_hbm) ?
                                 num_tiles_x_p : 1;
+
+  localparam num_cdc_slot_lp = mc_axi4_els_lp + 1;
 
   `declare_bsg_axi4_bus_s(1, axi_id_width_p, axi_addr_width_p, axi_data_width_p,
                           bsg_axi4_mosi_bus_s, bsg_axi4_miso_bus_s);
 
-    bsg_axi4_mosi_bus_s [num_axi_slot_lp+1-1:0] axi4_mc_cols_lo, axi4_mc_cols_cdc_lo;
-    bsg_axi4_miso_bus_s [num_axi_slot_lp+1-1:0] axi4_mc_cols_li, axi4_mc_cols_cdc_li;
+  bsg_axi4_mosi_bus_s [mc_axi4_els_lp-1:0] axi4_mc_cols_lo;
+  bsg_axi4_miso_bus_s [mc_axi4_els_lp-1:0] axi4_mc_cols_li;
 
-  wire clk2_li = pcie_axi_clk_li;
-  wire reset2_li = mc_reset_i;
+  (* dont_touch = "true" *) bsg_axi4_mosi_bus_s [num_cdc_slot_lp-1:0] s_axi4_cdc_li, m_axi4_cdc_lo;
+  (* dont_touch = "true" *) bsg_axi4_miso_bus_s [num_cdc_slot_lp-1:0] s_axi4_cdc_lo, m_axi4_cdc_li;
 
-  bsg_bladerunner_wrapper #(.num_axi_slot_p(num_axi_slot_lp)) bladerunner_inst (
-    .clk_i       (pcie_axi_clk_li                     ),
-    .reset_i     (mc_reset_i                          ),
-    .clk2_i      (clk2_li                             ),
-    .reset2_i    (reset2_li                           ),
+  bsg_bladerunner_wrapper #(.num_axi_slot_p(mc_axi4_els_lp)) bladerunner_inst (
+    .clk_i       (pcie_axi_clk_li),
+    .reset_i     (mc_reset_i     ),
+    .clk2_i      (pcie_axi_clk_li),
+    .reset2_i    (mc_reset_i     ),
     // AXI-Lite
-    .s_axil_bus_i(s_axil_mc_li                        ),
-    .s_axil_bus_o(s_axil_mc_lo                        ),
+    .s_axil_bus_i(s_axil_mc_li   ),
+    .s_axil_bus_o(s_axil_mc_lo   ),
     // AXI4 Master
-    .m_axi4_bus_o(axi4_mc_cols_lo[num_axi_slot_lp-1:0]),
-    .m_axi4_bus_i(axi4_mc_cols_li[num_axi_slot_lp-1:0])
+    .m_axi4_bus_o(axi4_mc_cols_lo),
+    .m_axi4_bus_i(axi4_mc_cols_li)
   );
 
-  assign axi4_mc_cols_lo[num_axi_slot_lp] = m_axi4_pcie_lo;
-  assign m_axi4_pcie_li = axi4_mc_cols_li[num_axi_slot_lp];
+  assign s_axi4_cdc_li[num_cdc_slot_lp-1] = axi4_pcie_lo;
+  assign axi4_pcie_li = s_axi4_cdc_lo[num_cdc_slot_lp-1];
+
+  for (genvar i = 0; i < mc_axi4_els_lp; i++) begin : mc_cdc
+    assign s_axi4_cdc_li[i] = axi4_mc_cols_lo[i];
+    assign axi4_mc_cols_li[i] = s_axi4_cdc_lo[i];
+  end
+
 
   // ---------------------------------------------
   // axi4 memory clock domain crossing
   // ---------------------------------------------
+  logic [num_max_hbm_chs_lp-1:0] axi_aclk_ch_buf;
+  logic [num_max_hbm_chs_lp-1:0] axi_rstn_ch_buf;
 
-    logic [num_max_hbm_chs_lp-1:0] axi_aclk_ch_buf;
-    logic [num_max_hbm_chs_lp-1:0] axi_rstn_ch_buf;
+  assign axi_aclk_ch_buf[0] = AXI_ACLK0_st0_buf;
+  assign axi_rstn_ch_buf[0] = axi_rst0_st0_n;
+  assign axi_aclk_ch_buf[1] = AXI_ACLK0_st0_buf;
+  assign axi_rstn_ch_buf[1] = axi_rst0_st0_n;
 
-    assign axi_aclk_ch_buf[0] = AXI_ACLK0_st0_buf;
-    assign axi_rstn_ch_buf[0] = axi_rst0_st0_n;
-    assign axi_aclk_ch_buf[1] = AXI_ACLK0_st0_buf;
-    assign axi_rstn_ch_buf[1] = axi_rst0_st0_n;
+  assign axi_aclk_ch_buf[2] = AXI_ACLK1_st0_buf;
+  assign axi_rstn_ch_buf[2] = axi_rst1_st0_n;
+  assign axi_aclk_ch_buf[3] = AXI_ACLK1_st0_buf;
+  assign axi_rstn_ch_buf[3] = axi_rst1_st0_n;
 
-    assign axi_aclk_ch_buf[2] = AXI_ACLK1_st0_buf;
-    assign axi_rstn_ch_buf[2] = axi_rst1_st0_n;
-    assign axi_aclk_ch_buf[3] = AXI_ACLK1_st0_buf;
-    assign axi_rstn_ch_buf[3] = axi_rst1_st0_n;
+  assign axi_aclk_ch_buf[4] = AXI_ACLK2_st0_buf;
+  assign axi_rstn_ch_buf[4] = axi_rst2_st0_n;
+  assign axi_aclk_ch_buf[5] = AXI_ACLK2_st0_buf;
+  assign axi_rstn_ch_buf[5] = axi_rst2_st0_n;
 
-    assign axi_aclk_ch_buf[4] = AXI_ACLK2_st0_buf;
-    assign axi_rstn_ch_buf[4] = axi_rst2_st0_n;
-    assign axi_aclk_ch_buf[5] = AXI_ACLK2_st0_buf;
-    assign axi_rstn_ch_buf[5] = axi_rst2_st0_n;
+  assign axi_aclk_ch_buf[6] = AXI_ACLK3_st0_buf;
+  assign axi_rstn_ch_buf[6] = axi_rst3_st0_n;
+  assign axi_aclk_ch_buf[7] = AXI_ACLK3_st0_buf;
+  assign axi_rstn_ch_buf[7] = axi_rst3_st0_n;
 
-    assign axi_aclk_ch_buf[6] = AXI_ACLK3_st0_buf;
-    assign axi_rstn_ch_buf[6] = axi_rst3_st0_n;
-    assign axi_aclk_ch_buf[7] = AXI_ACLK3_st0_buf;
-    assign axi_rstn_ch_buf[7] = axi_rst3_st0_n;
+  assign axi_aclk_ch_buf[8] = AXI_ACLK4_st0_buf;
+  assign axi_rstn_ch_buf[8] = axi_rst4_st0_n;
+  assign axi_aclk_ch_buf[9] = AXI_ACLK4_st0_buf;
+  assign axi_rstn_ch_buf[9] = axi_rst4_st0_n;
 
-    assign axi_aclk_ch_buf[8] = AXI_ACLK4_st0_buf;
-    assign axi_rstn_ch_buf[8] = axi_rst4_st0_n;
-    assign axi_aclk_ch_buf[9] = AXI_ACLK4_st0_buf;
-    assign axi_rstn_ch_buf[9] = axi_rst4_st0_n;
+  assign axi_aclk_ch_buf[10] = AXI_ACLK5_st0_buf;
+  assign axi_rstn_ch_buf[10] = axi_rst5_st0_n;
+  assign axi_aclk_ch_buf[11] = AXI_ACLK5_st0_buf;
+  assign axi_rstn_ch_buf[11] = axi_rst5_st0_n;
+  assign axi_aclk_ch_buf[12] = AXI_ACLK5_st0_buf;
+  assign axi_rstn_ch_buf[12] = axi_rst5_st0_n;
 
-    assign axi_aclk_ch_buf[10] = AXI_ACLK5_st0_buf;
-    assign axi_rstn_ch_buf[10] = axi_rst5_st0_n;
-    assign axi_aclk_ch_buf[11] = AXI_ACLK5_st0_buf;
-    assign axi_rstn_ch_buf[11] = axi_rst5_st0_n;
-    assign axi_aclk_ch_buf[12] = AXI_ACLK5_st0_buf;
-    assign axi_rstn_ch_buf[12] = axi_rst5_st0_n;
+  assign axi_aclk_ch_buf[13] = AXI_ACLK6_st0_buf;
+  assign axi_rstn_ch_buf[13] = axi_rst6_st0_n;
+  assign axi_aclk_ch_buf[14] = AXI_ACLK6_st0_buf;
+  assign axi_rstn_ch_buf[14] = axi_rst6_st0_n;
+  assign axi_aclk_ch_buf[15] = AXI_ACLK6_st0_buf;
+  assign axi_rstn_ch_buf[15] = axi_rst6_st0_n;
 
-    assign axi_aclk_ch_buf[13] = AXI_ACLK6_st0_buf;
-    assign axi_rstn_ch_buf[13] = axi_rst6_st0_n;
-    assign axi_aclk_ch_buf[14] = AXI_ACLK6_st0_buf;
-    assign axi_rstn_ch_buf[14] = axi_rst6_st0_n;
-    assign axi_aclk_ch_buf[15] = AXI_ACLK6_st0_buf;
-    assign axi_rstn_ch_buf[15] = axi_rst6_st0_n;
+  for (genvar i = 0; i < num_cdc_slot_lp; i++) begin : mem_cdc
 
-  for (genvar i = 0; i < num_axi_slot_lp+1; i++) begin
+  axi_clock_converter_v2_1_18_axi_clock_converter #(
+    .C_FAMILY                   (DEVICE_FAMILY),
+    .C_AXI_ID_WIDTH             (6            ),
+    .C_AXI_ADDR_WIDTH           (64           ),
+    .C_AXI_DATA_WIDTH           (512          ),
+    .C_S_AXI_ACLK_RATIO         (1            ),
+    .C_M_AXI_ACLK_RATIO         (2            ),
+    .C_AXI_IS_ACLK_ASYNC        (0            ),
+    .C_AXI_PROTOCOL             (0            ),
+    .C_AXI_SUPPORTS_USER_SIGNALS(0            ),
+    .C_AXI_AWUSER_WIDTH         (1            ),
+    .C_AXI_ARUSER_WIDTH         (1            ),
+    .C_AXI_WUSER_WIDTH          (1            ),
+    .C_AXI_RUSER_WIDTH          (1            ),
+    .C_AXI_BUSER_WIDTH          (1            ),
+    .C_AXI_SUPPORTS_WRITE       (1            ),
+    .C_AXI_SUPPORTS_READ        (1            ),
+    .C_SYNCHRONIZER_STAGE       (3            )
+  ) cdc_axi4 (
+    .s_axi_aclk    (pcie_axi_clk_li          ),
+    .s_axi_aresetn (pcie_axi_rstn_li         ),
 
+    .s_axi_awid    (s_axi4_cdc_li[i].awid    ),
+    .s_axi_awaddr  (s_axi4_cdc_li[i].awaddr  ),
+    .s_axi_awlen   (s_axi4_cdc_li[i].awlen   ),
+    .s_axi_awsize  (s_axi4_cdc_li[i].awsize  ),
+    .s_axi_awburst (s_axi4_cdc_li[i].awburst ),
+    .s_axi_awlock  (s_axi4_cdc_li[i].awlock  ),
+    .s_axi_awcache (s_axi4_cdc_li[i].awcache ),
+    .s_axi_awprot  (s_axi4_cdc_li[i].awprot  ),
+    .s_axi_awregion(s_axi4_cdc_li[i].awregion),
+    .s_axi_awqos   (s_axi4_cdc_li[i].awqos   ),
+    .s_axi_awuser  (1'H0                     ),
+    .s_axi_awvalid (s_axi4_cdc_li[i].awvalid ),
+    .s_axi_awready (s_axi4_cdc_lo[i].awready ),
 
-  // axi_clock_converter_v2_1_18_axi_clock_converter #(
-  //   .C_FAMILY                   (DEVICE_FAMILY                                   ),
-  //   .C_AXI_ID_WIDTH             (axi_id_width_p                                  ),
-  //   .C_AXI_ADDR_WIDTH           (axi_addr_width_p                                ), // Width of s_axi_awaddr, s_axi_araddr, m_axi_awaddr and
-  //   .C_AXI_DATA_WIDTH           (axi_data_width_p                                ), // Width of WDATA and RDATA (either side).
-  //   .C_S_AXI_ACLK_RATIO         (1                                               ), // Clock frequency ratio of SI w.r.t. MI. (Slowest of all clock inputs should have ratio=1.)
-  //   .C_M_AXI_ACLK_RATIO         (lc_core_mem_clk_period_p/lc_hbm_axi_clk_period_p),
-  //   // S:M or M:S must be integer ratio.
-  //   // Format: Bit32; Range: >='h00000001.
-  //   .C_AXI_IS_ACLK_ASYNC        (1                                               ), // Indicates whether S and M clocks are asynchronous.
-  //   // FUTURE FEATURE
-  //   // Format: Bit1. Range = 1'b0.
-  //   .C_AXI_PROTOCOL             (0                                               ), // Protocol of this SI/MI slot.
-  //   .C_AXI_SUPPORTS_USER_SIGNALS(0                                               ),
-  //   .C_AXI_SUPPORTS_WRITE       (1                                               ),
-  //   .C_AXI_SUPPORTS_READ        (1                                               ),
-  //   .C_SYNCHRONIZER_STAGE       (3                                               )
-  // )
-
-  axi_clock_converter_0 axi4_hbm_cdc (
-    .s_axi_aclk    (pcie_axi_clk_li             ),
-    .s_axi_aresetn (pcie_axi_rstn_li            ),
-
-    // Slave Interface Write Address Ports
-    .s_axi_awid    (axi4_mc_cols_lo[i].awid     ),
-    .s_axi_awaddr  (axi4_mc_cols_lo[i].awaddr   ),
-    .s_axi_awlen   (axi4_mc_cols_lo[i].awlen    ),
-    .s_axi_awsize  (axi4_mc_cols_lo[i].awsize   ),
-    .s_axi_awburst (axi4_mc_cols_lo[i].awburst  ),
-    .s_axi_awlock  (axi4_mc_cols_lo[i].awlock   ),
-    .s_axi_awcache (axi4_mc_cols_lo[i].awcache  ),
-    .s_axi_awprot  (axi4_mc_cols_lo[i].awprot   ),
-    .s_axi_awregion(axi4_mc_cols_lo[i].awregion ),
-    .s_axi_awqos   (axi4_mc_cols_lo[i].awqos    ),
-    .s_axi_awvalid (axi4_mc_cols_lo[i].awvalid  ),
-    .s_axi_awready (axi4_mc_cols_li[i].awready  ),
-
-    // Slave Interface Write Data Ports
     // .s_axi_wid     ('0                          ),
-    .s_axi_wdata   (axi4_mc_cols_lo[i].wdata    ),
-    .s_axi_wstrb   (axi4_mc_cols_lo[i].wstrb    ),
-    .s_axi_wlast   (axi4_mc_cols_lo[i].wlast    ),
-    .s_axi_wvalid  (axi4_mc_cols_lo[i].wvalid   ),
-    .s_axi_wready  (axi4_mc_cols_li[i].wready   ),
+    .s_axi_wid     (6'H00                    ),
+    .s_axi_wdata   (s_axi4_cdc_li[i].wdata   ),
+    .s_axi_wstrb   (s_axi4_cdc_li[i].wstrb   ),
+    .s_axi_wlast   (s_axi4_cdc_li[i].wlast   ),
+    .s_axi_wuser   (1'H0                     ),
+    .s_axi_wvalid  (s_axi4_cdc_li[i].wvalid  ),
+    .s_axi_wready  (s_axi4_cdc_lo[i].wready  ),
 
-    // Slave Interface Write Response Ports
-    .s_axi_bid     (axi4_mc_cols_li[i].bid      ),
-    .s_axi_bresp   (axi4_mc_cols_li[i].bresp    ),
-    .s_axi_bvalid  (axi4_mc_cols_li[i].bvalid   ),
-    .s_axi_bready  (axi4_mc_cols_lo[i].bready   ),
+    .s_axi_bid     (s_axi4_cdc_lo[i].bid     ),
+    .s_axi_bresp   (s_axi4_cdc_lo[i].bresp   ),
+    .s_axi_buser   (                         ),
+    .s_axi_bvalid  (s_axi4_cdc_lo[i].bvalid  ),
+    .s_axi_bready  (s_axi4_cdc_li[i].bready  ),
 
-    // Slave Interface Read Address Ports
-    .s_axi_arid    (axi4_mc_cols_lo[i].arid     ),
-    .s_axi_araddr  (axi4_mc_cols_lo[i].araddr   ),
-    .s_axi_arlen   (axi4_mc_cols_lo[i].arlen    ),
-    .s_axi_arsize  (axi4_mc_cols_lo[i].arsize   ),
-    .s_axi_arburst (axi4_mc_cols_lo[i].arburst  ),
-    .s_axi_arlock  (axi4_mc_cols_lo[i].arlock   ),
-    .s_axi_arcache (axi4_mc_cols_lo[i].arcache  ),
-    .s_axi_arprot  (axi4_mc_cols_lo[i].arprot   ),
-    .s_axi_arregion(axi4_mc_cols_lo[i].arregion ),
-    .s_axi_arqos   (axi4_mc_cols_lo[i].arqos    ),
-    .s_axi_arvalid (axi4_mc_cols_lo[i].arvalid  ),
-    .s_axi_arready (axi4_mc_cols_li[i].arready  ),
+    .s_axi_arid    (s_axi4_cdc_li[i].arid    ),
+    .s_axi_araddr  (s_axi4_cdc_li[i].araddr  ),
+    .s_axi_arlen   (s_axi4_cdc_li[i].arlen   ),
+    .s_axi_arsize  (s_axi4_cdc_li[i].arsize  ),
+    .s_axi_arburst (s_axi4_cdc_li[i].arburst ),
+    .s_axi_arlock  (s_axi4_cdc_li[i].arlock  ),
+    .s_axi_arcache (s_axi4_cdc_li[i].arcache ),
+    .s_axi_arprot  (s_axi4_cdc_li[i].arprot  ),
+    .s_axi_arregion(s_axi4_cdc_li[i].arregion),
+    .s_axi_arqos   (s_axi4_cdc_li[i].arqos   ),
+    .s_axi_aruser  (1'H0                     ),
+    .s_axi_arvalid (s_axi4_cdc_li[i].arvalid ),
+    .s_axi_arready (s_axi4_cdc_lo[i].arready ),
 
-    // Slave Interface Read Data Ports
-    .s_axi_rid     (axi4_mc_cols_li[i].rid      ),
-    .s_axi_rdata   (axi4_mc_cols_li[i].rdata    ),
-    .s_axi_rresp   (axi4_mc_cols_li[i].rresp    ),
-    .s_axi_rlast   (axi4_mc_cols_li[i].rlast    ),
-    .s_axi_rvalid  (axi4_mc_cols_li[i].rvalid   ),
-    .s_axi_rready  (axi4_mc_cols_lo[i].rready   ),
+    .s_axi_rid     (s_axi4_cdc_lo[i].rid     ),
+    .s_axi_rdata   (s_axi4_cdc_lo[i].rdata   ),
+    .s_axi_rresp   (s_axi4_cdc_lo[i].rresp   ),
+    .s_axi_rlast   (s_axi4_cdc_lo[i].rlast   ),
+    .s_axi_ruser   (                         ),
+    .s_axi_rvalid  (s_axi4_cdc_lo[i].rvalid  ),
+    .s_axi_rready  (s_axi4_cdc_li[i].rready  ),
 
+    .m_axi_aclk    (axi_aclk_ch_buf[i]       ),
+    .m_axi_aresetn (axi_rstn_ch_buf[i]       ),
 
-    // Master Interface System Signals
-    .m_axi_aclk    (axi_aclk_ch_buf[i]          ),
-    .m_axi_aresetn (axi_rstn_ch_buf[i]          ),
+    .m_axi_awid    (m_axi4_cdc_lo[i].awid    ),
+    .m_axi_awaddr  (m_axi4_cdc_lo[i].awaddr  ),
+    .m_axi_awlen   (m_axi4_cdc_lo[i].awlen   ),
+    .m_axi_awsize  (m_axi4_cdc_lo[i].awsize  ),
+    .m_axi_awburst (m_axi4_cdc_lo[i].awburst ),
+    .m_axi_awlock  (m_axi4_cdc_lo[i].awlock  ),
+    .m_axi_awcache (m_axi4_cdc_lo[i].awcache ),
+    .m_axi_awprot  (m_axi4_cdc_lo[i].awprot  ),
+    .m_axi_awregion(m_axi4_cdc_lo[i].awregion),
+    .m_axi_awqos   (m_axi4_cdc_lo[i].awqos   ),
+    .m_axi_awuser  (                         ),
+    .m_axi_awvalid (m_axi4_cdc_lo[i].awvalid ),
+    .m_axi_awready (m_axi4_cdc_li[i].awready ),
+    .m_axi_wid     (                         ),
+    .m_axi_wdata   (m_axi4_cdc_lo[i].wdata   ),
+    .m_axi_wstrb   (m_axi4_cdc_lo[i].wstrb   ),
+    .m_axi_wlast   (m_axi4_cdc_lo[i].wlast   ),
+    .m_axi_wuser   (                         ),
+    .m_axi_wvalid  (m_axi4_cdc_lo[i].wvalid  ),
+    .m_axi_wready  (m_axi4_cdc_li[i].wready  ),
 
-    // Master Interface Write Address Port
-    .m_axi_awid    (axi4_mc_cols_cdc_lo[i].awid    ),
-    .m_axi_awaddr  (axi4_mc_cols_cdc_lo[i].awaddr  ),
-    .m_axi_awlen   (axi4_mc_cols_cdc_lo[i].awlen   ),
-    .m_axi_awsize  (axi4_mc_cols_cdc_lo[i].awsize  ),
-    .m_axi_awburst (axi4_mc_cols_cdc_lo[i].awburst ),
-    .m_axi_awlock  (axi4_mc_cols_cdc_lo[i].awlock  ),
-    .m_axi_awcache (axi4_mc_cols_cdc_lo[i].awcache ),
-    .m_axi_awprot  (axi4_mc_cols_cdc_lo[i].awprot  ),
-    .m_axi_awregion(axi4_mc_cols_cdc_lo[i].awregion),
-    .m_axi_awqos   (axi4_mc_cols_cdc_lo[i].awqos   ),
-    .m_axi_awvalid (axi4_mc_cols_cdc_lo[i].awvalid ),
-    .m_axi_awready (axi4_mc_cols_cdc_li[i].awready ),
+    .m_axi_bid     (m_axi4_cdc_li[i].bid     ),
+    .m_axi_bresp   (m_axi4_cdc_li[i].bresp   ),
+    .m_axi_buser   (1'H0                     ),
+    .m_axi_bvalid  (m_axi4_cdc_li[i].bvalid  ),
+    .m_axi_bready  (m_axi4_cdc_lo[i].bready  ),
 
-    // Master Interface Write Data Ports
-    .m_axi_wdata   (axi4_mc_cols_cdc_lo[i].wdata   ),
-    .m_axi_wstrb   (axi4_mc_cols_cdc_lo[i].wstrb   ),
-    .m_axi_wlast   (axi4_mc_cols_cdc_lo[i].wlast   ),
-    .m_axi_wvalid  (axi4_mc_cols_cdc_lo[i].wvalid  ),
-    .m_axi_wready  (axi4_mc_cols_cdc_li[i].wready  ),
+    .m_axi_arid    (m_axi4_cdc_lo[i].arid    ),
+    .m_axi_araddr  (m_axi4_cdc_lo[i].araddr  ),
+    .m_axi_arlen   (m_axi4_cdc_lo[i].arlen   ),
+    .m_axi_arsize  (m_axi4_cdc_lo[i].arsize  ),
+    .m_axi_arburst (m_axi4_cdc_lo[i].arburst ),
+    .m_axi_arlock  (m_axi4_cdc_lo[i].arlock  ),
+    .m_axi_arcache (m_axi4_cdc_lo[i].arcache ),
+    .m_axi_arprot  (m_axi4_cdc_lo[i].arprot  ),
+    .m_axi_arregion(m_axi4_cdc_lo[i].arregion),
+    .m_axi_arqos   (m_axi4_cdc_lo[i].arqos   ),
+    .m_axi_aruser  (                         ),
+    .m_axi_arvalid (m_axi4_cdc_lo[i].arvalid ),
+    .m_axi_arready (m_axi4_cdc_li[i].arready ),
 
-    // Master Interface Write Response Ports
-    .m_axi_bid     (axi4_mc_cols_cdc_li[i].bid     ),
-    .m_axi_bresp   (axi4_mc_cols_cdc_li[i].bresp   ),
-    .m_axi_bvalid  (axi4_mc_cols_cdc_li[i].bvalid  ),
-    .m_axi_bready  (axi4_mc_cols_cdc_lo[i].bready  ),
-
-    // Master Interface Read Address Port
-    .m_axi_arid    (axi4_mc_cols_cdc_lo[i].arid    ),
-    .m_axi_araddr  (axi4_mc_cols_cdc_lo[i].araddr  ),
-    .m_axi_arlen   (axi4_mc_cols_cdc_lo[i].arlen   ),
-    .m_axi_arsize  (axi4_mc_cols_cdc_lo[i].arsize  ),
-    .m_axi_arburst (axi4_mc_cols_cdc_lo[i].arburst ),
-    .m_axi_arlock  (axi4_mc_cols_cdc_lo[i].arlock  ),
-    .m_axi_arcache (axi4_mc_cols_cdc_lo[i].arcache ),
-    .m_axi_arprot  (axi4_mc_cols_cdc_lo[i].arprot  ),
-    .m_axi_arregion(axi4_mc_cols_cdc_lo[i].arregion),
-    .m_axi_arqos   (axi4_mc_cols_cdc_lo[i].arqos   ),
-    .m_axi_arvalid (axi4_mc_cols_cdc_lo[i].arvalid ),
-    .m_axi_arready (axi4_mc_cols_cdc_li[i].arready ),
-
-    // Master Interface Read Data Ports
-    .m_axi_rid     (axi4_mc_cols_cdc_li[i].rid     ),
-    .m_axi_rdata   (axi4_mc_cols_cdc_li[i].rdata   ),
-    .m_axi_rresp   (axi4_mc_cols_cdc_li[i].rresp   ),
-    .m_axi_rlast   (axi4_mc_cols_cdc_li[i].rlast   ),
-    .m_axi_rvalid  (axi4_mc_cols_cdc_li[i].rvalid  ),
-    .m_axi_rready  (axi4_mc_cols_cdc_lo[i].rready  )
+    .m_axi_rid     (m_axi4_cdc_li[i].rid     ),
+    .m_axi_rdata   (m_axi4_cdc_li[i].rdata   ),
+    .m_axi_rresp   (m_axi4_cdc_li[i].rresp   ),
+    .m_axi_rlast   (m_axi4_cdc_li[i].rlast   ),
+    .m_axi_ruser   (1'H0                     ),
+    .m_axi_rvalid  (m_axi4_cdc_li[i].rvalid  ),
+    .m_axi_rready  (m_axi4_cdc_lo[i].rready  )
   );
 
-  end
+  end : mem_cdc
 
 
   // ---------------------------------------------
@@ -1012,80 +1017,70 @@ BUFGCE_DIV #(.BUFGCE_DIVIDE(2)) u_AXI_vio_CLK_st0 (
   if (mem_cfg_p == e_vcache_blocking_axi4_bram) begin : lv3_axi4_bram
 
     `declare_bsg_axi4_bus_s(1, mem_axi_id_width_lp, mem_axi_addr_width_lp, mem_axi_data_width_lp, mem_axi_mosi_s, mem_axi_miso_s);
-    mem_axi_mosi_s m_axi4_bram_lo;
-    mem_axi_miso_s m_axi4_bram_li;
+    (* dont_touch = "true" *) mem_axi_mosi_s axi4_bram_li;
+    (* dont_touch = "true" *) mem_axi_miso_s axi4_bram_lo;
 
-    (* dont_touch = "true" *) logic axi4_rstn_buf;
-    lib_pipe #(.WIDTH(1), .STAGES(4)) AXI4_MUX_RST_N (
-      .clk    (axi_aclk_ch_buf[0]),
-      .rst_n  (1'b1              ),
-      .in_bus (axi_rstn_ch_buf[0]),
-      .out_bus(axi4_rstn_buf     )
-    );
+    wire axi4_clk_bram_li = axi_aclk_ch_buf[0];
+    wire axi4_rstn_bram_li = axi_rstn_ch_buf[0];
 
-    axi4_mux #(
-      .slot_num_p  (2               ),
-      .id_width_p  (axi_id_width_p  ),
-      .addr_width_p(axi_addr_width_p),
-      .data_width_p(axi_data_width_p)
-    ) axi4_multiplexer (
-      .clk_i       (axi_aclk_ch_buf[0] ),
-      .reset_i     (~axi4_rstn_buf     ),
-      .s_axi4_par_i(axi4_mc_cols_cdc_lo),
-      .s_axi4_par_o(axi4_mc_cols_cdc_li),
-      .m_axi4_ser_o(m_axi4_bram_lo     ),
-      .m_axi4_ser_i(m_axi4_bram_li     )
-    );
+    assign axi4_bram_li = m_axi4_cdc_lo[0];
+    assign m_axi4_cdc_li[0] = axi4_bram_lo;
+
+    // tie off pcie_axi4
+    // assign m_axi4_cdc_li[1].bid = '0;
+    // assign m_axi4_cdc_li[1].rid = '0;
+    assign m_axi4_cdc_li[1] = '0;
 
     axi_bram_ctrl_0 hb_mc_bram (
-      .s_axi_aclk   (axi_aclk_ch_buf[0]                             ), // input wire s_axi_aclk
-      .s_axi_aresetn(axi4_rstn_buf                                  ), // input wire s_axi_aresetn
-      .s_axi_awid   (m_axi4_bram_lo.awid[0]                         ), // input wire [5 : 0] s_axi_awid
-      .s_axi_awaddr (m_axi4_bram_lo.awaddr[0][bram_addr_width_p-1:0]), // input wire [17 : 0] s_axi_awaddr
-      .s_axi_awlen  (m_axi4_bram_lo.awlen[0]                        ), // input wire [7 : 0] s_axi_awlen
-      .s_axi_awsize (m_axi4_bram_lo.awsize[0]                       ), // input wire [2 : 0] s_axi_awsize
-      .s_axi_awburst(m_axi4_bram_lo.awburst[0]                      ), // input wire [1 : 0] s_axi_awburst
-      .s_axi_awlock (m_axi4_bram_lo.awlock[0]                       ), // input wire s_axi_awlock
-      .s_axi_awcache(m_axi4_bram_lo.awcache[0]                      ), // input wire [3 : 0] s_axi_awcache
-      .s_axi_awprot (m_axi4_bram_lo.awprot[0]                       ), // input wire [2 : 0] s_axi_awprot
-      .s_axi_awvalid(m_axi4_bram_lo.awvalid[0]                      ), // input wire s_axi_awvalid
-      .s_axi_awready(m_axi4_bram_li.awready[0]                      ), // output wire s_axi_awready
-      .s_axi_wdata  (m_axi4_bram_lo.wdata[0]                        ), // input wire [mem_dwidth-1 : 0] s_axi_wdata
-      .s_axi_wstrb  (m_axi4_bram_lo.wstrb[0]                        ), // input wire [31 : 0] s_axi_wstrb
-      .s_axi_wlast  (m_axi4_bram_lo.wlast[0]                        ), // input wire s_axi_wlast
-      .s_axi_wvalid (m_axi4_bram_lo.wvalid[0]                       ), // input wire s_axi_wvalid
-      .s_axi_wready (m_axi4_bram_li.wready[0]                       ), // output wire s_axi_wready
-      .s_axi_bid    (m_axi4_bram_li.bid[0]                          ), // output wire [5 : 0] s_axi_bid
-      .s_axi_bresp  (m_axi4_bram_li.bresp[0]                        ), // output wire [1 : 0] s_axi_bresp
-      .s_axi_bvalid (m_axi4_bram_li.bvalid[0]                       ), // output wire s_axi_bvalid
-      .s_axi_bready (m_axi4_bram_lo.bready[0]                       ), // input wire s_axi_bready
-      .s_axi_arid   (m_axi4_bram_lo.arid[0]                         ), // input wire [5 : 0] s_axi_arid
-      .s_axi_araddr (m_axi4_bram_lo.araddr[0][bram_addr_width_p-1:0]), // input wire [17 : 0] s_axi_araddr
-      .s_axi_arlen  (m_axi4_bram_lo.arlen[0]                        ), // input wire [7 : 0] s_axi_arlen
-      .s_axi_arsize (m_axi4_bram_lo.arsize[0]                       ), // input wire [2 : 0] s_axi_arsize
-      .s_axi_arburst(m_axi4_bram_lo.arburst[0]                      ), // input wire [1 : 0] s_axi_arburst
-      .s_axi_arlock (m_axi4_bram_lo.arlock[0]                       ), // input wire s_axi_arlock
-      .s_axi_arcache(m_axi4_bram_lo.arcache[0]                      ), // input wire [3 : 0] s_axi_arcache
-      .s_axi_arprot (m_axi4_bram_lo.arprot[0]                       ), // input wire [2 : 0] s_axi_arprot
-      .s_axi_arvalid(m_axi4_bram_lo.arvalid[0]                      ), // input wire s_axi_arvalid
-      .s_axi_arready(m_axi4_bram_li.arready[0]                      ), // output wire s_axi_arready
-      .s_axi_rid    (m_axi4_bram_li.rid[0]                          ), // output wire [5 : 0] s_axi_rid
-      .s_axi_rdata  (m_axi4_bram_li.rdata[0]                        ), // output wire [mem_dwidth-1 : 0] s_axi_rdata
-      .s_axi_rresp  (m_axi4_bram_li.rresp[0]                        ), // output wire [1 : 0] s_axi_rresp
-      .s_axi_rlast  (m_axi4_bram_li.rlast[0]                        ), // output wire s_axi_rlast
-      .s_axi_rvalid (m_axi4_bram_li.rvalid[0]                       ), // output wire s_axi_rvalid
-      .s_axi_rready (m_axi4_bram_lo.rready[0]                       )  // input wire s_axi_rready
+      .s_axi_aclk   (axi4_clk_bram_li                             ), // input wire s_axi_aclk
+      .s_axi_aresetn(axi4_rstn_bram_li                            ), // input wire s_axi_aresetn
+      .s_axi_awid   (axi4_bram_li.awid                            ), // input wire [5 : 0] s_axi_awid
+      .s_axi_awaddr (axi4_bram_li.awaddr[0][bram_addr_width_p-1:0]), // input wire [17 : 0] s_axi_awaddr
+      .s_axi_awlen  (axi4_bram_li.awlen                           ), // input wire [7 : 0] s_axi_awlen
+      .s_axi_awsize (axi4_bram_li.awsize                          ), // input wire [2 : 0] s_axi_awsize
+      .s_axi_awburst(axi4_bram_li.awburst                         ), // input wire [1 : 0] s_axi_awburst
+      .s_axi_awlock (axi4_bram_li.awlock                          ), // input wire s_axi_awlock
+      .s_axi_awcache(axi4_bram_li.awcache                         ), // input wire [3 : 0] s_axi_awcache
+      .s_axi_awprot (axi4_bram_li.awprot                          ), // input wire [2 : 0] s_axi_awprot
+      .s_axi_awvalid(axi4_bram_li.awvalid                         ), // input wire s_axi_awvalid
+      .s_axi_awready(axi4_bram_lo.awready                         ), // output wire s_axi_awready
+      .s_axi_wdata  (axi4_bram_li.wdata                           ), // input wire [mem_dwidth-1 : 0] s_axi_wdata
+      .s_axi_wstrb  (axi4_bram_li.wstrb                           ), // input wire [31 : 0] s_axi_wstrb
+      .s_axi_wlast  (axi4_bram_li.wlast                           ), // input wire s_axi_wlast
+      .s_axi_wvalid (axi4_bram_li.wvalid                          ), // input wire s_axi_wvalid
+      .s_axi_wready (axi4_bram_lo.wready                          ), // output wire s_axi_wready
+      .s_axi_bid    (axi4_bram_lo.bid                             ), // output wire [5 : 0] s_axi_bid
+      .s_axi_bresp  (axi4_bram_lo.bresp                           ), // output wire [1 : 0] s_axi_bresp
+      .s_axi_bvalid (axi4_bram_lo.bvalid                          ), // output wire s_axi_bvalid
+      .s_axi_bready (axi4_bram_li.bready                          ), // input wire s_axi_bready
+      .s_axi_arid   (axi4_bram_li.arid                            ), // input wire [5 : 0] s_axi_arid
+      .s_axi_araddr (axi4_bram_li.araddr[0][bram_addr_width_p-1:0]), // input wire [17 : 0] s_axi_araddr
+      .s_axi_arlen  (axi4_bram_li.arlen                           ), // input wire [7 : 0] s_axi_arlen
+      .s_axi_arsize (axi4_bram_li.arsize                          ), // input wire [2 : 0] s_axi_arsize
+      .s_axi_arburst(axi4_bram_li.arburst                         ), // input wire [1 : 0] s_axi_arburst
+      .s_axi_arlock (axi4_bram_li.arlock                          ), // input wire s_axi_arlock
+      .s_axi_arcache(axi4_bram_li.arcache                         ), // input wire [3 : 0] s_axi_arcache
+      .s_axi_arprot (axi4_bram_li.arprot                          ), // input wire [2 : 0] s_axi_arprot
+      .s_axi_arvalid(axi4_bram_li.arvalid                         ), // input wire s_axi_arvalid
+      .s_axi_arready(axi4_bram_lo.arready                         ), // output wire s_axi_arready
+      .s_axi_rid    (axi4_bram_lo.rid                             ), // output wire [5 : 0] s_axi_rid
+      .s_axi_rdata  (axi4_bram_lo.rdata                           ), // output wire [mem_dwidth-1 : 0] s_axi_rdata
+      .s_axi_rresp  (axi4_bram_lo.rresp                           ), // output wire [1 : 0] s_axi_rresp
+      .s_axi_rlast  (axi4_bram_lo.rlast                           ), // output wire s_axi_rlast
+      .s_axi_rvalid (axi4_bram_lo.rvalid                          ), // output wire s_axi_rvalid
+      .s_axi_rready (axi4_bram_li.rready                          )  // input wire s_axi_rready
     );
 
   end : lv3_axi4_bram
 
-  else if (mem_cfg_p == e_vcache_blocking_axi4_xbar_dram || mem_cfg_p == e_vcache_blocking_axi4_xbar_model) begin : lv3_axi4_xbar
-    //synopsys translate_off
-    initial begin
-      $fatal(0, "xbar_dram Not supported!\n");
-    end
-    // synopsys translate_on
-  end : lv3_axi4_xbar
+  // else if (mem_cfg_p == e_vcache_blocking_axi4_xbar_dram ||
+  //          mem_cfg_p == e_vcache_blocking_axi4_xbar_model) begin : lv3_axi4_xbar
+  //   //synopsys translate_off
+  //   initial begin
+  //     $fatal(0, "xbar_dram Not supported!\n");
+  //   end
+  //   // synopsys translate_on
+  // end : lv3_axi4_xbar
 
   // ===================================
   // hbm memory system
@@ -1097,99 +1092,100 @@ BUFGCE_DIV #(.BUFGCE_DIVIDE(2)) u_AXI_vio_CLK_st0 (
     bsg_axi4_hbm_mosi_bus_s [num_enable_hbm_chs_p-1:0] axi4_hbm_chs_li;
     bsg_axi4_hbm_miso_bus_s [num_enable_hbm_chs_p-1:0] axi4_hbm_chs_lo;
 
-    for (genvar i = 0; i < num_axi_slot_lp + 1; i++) begin : axi_dv_cvt
+    for (genvar i = 0; i < num_cdc_slot_lp; i++) begin : axi_dv_cvt
+
+      assign m_axi4_cdc_li[i].bid = '0;
+      assign m_axi4_cdc_li[i].rid = '0;
 
       axi_dwidth_converter_1 axi_dw_cvt_mc_to_mem (
-        .s_axi_aclk    (axi_aclk_ch_buf[i]             ), // input wire s_axi_aclk
-        .s_axi_aresetn (axi_rstn_ch_buf[i]             ), // input wire s_axi_aresetn
-//        .s_axi_awid    (axi4_mc_cols_cdc_lo[i].awid    ), // input wire [3 : 0] s_axi_awid
-        .s_axi_awaddr  (axi4_mc_cols_cdc_lo[i].awaddr  ), // input wire [63 : 0] s_axi_awaddr
-        .s_axi_awlen   (axi4_mc_cols_cdc_lo[i].awlen   ), // input wire [7 : 0] s_axi_awlen
-        .s_axi_awsize  (axi4_mc_cols_cdc_lo[i].awsize  ), // input wire [2 : 0] s_axi_awsize
-        .s_axi_awburst (axi4_mc_cols_cdc_lo[i].awburst ), // input wire [1 : 0] s_axi_awburst
-        .s_axi_awlock  (axi4_mc_cols_cdc_lo[i].awlock  ), // input wire [0 : 0] s_axi_awlock
-        .s_axi_awcache (axi4_mc_cols_cdc_lo[i].awcache ), // input wire [3 : 0] s_axi_awcache
-        .s_axi_awprot  (axi4_mc_cols_cdc_lo[i].awprot  ), // input wire [2 : 0] s_axi_awprot
-        .s_axi_awregion(axi4_mc_cols_cdc_lo[i].awregion), // input wire [3 : 0] s_axi_awregion
-        .s_axi_awqos   (axi4_mc_cols_cdc_lo[i].awqos   ), // input wire [3 : 0] s_axi_awqos
-        .s_axi_awvalid (axi4_mc_cols_cdc_lo[i].awvalid ), // input wire s_axi_awvalid
-        .s_axi_awready (axi4_mc_cols_cdc_li[i].awready ), // output wire s_axi_awready
-        .s_axi_wdata   (axi4_mc_cols_cdc_lo[i].wdata   ), // input wire [63 : 0] s_axi_wdata
-        .s_axi_wstrb   (axi4_mc_cols_cdc_lo[i].wstrb   ), // input wire [7 : 0] s_axi_wstrb
-        .s_axi_wlast   (axi4_mc_cols_cdc_lo[i].wlast   ), // input wire s_axi_wlast
-        .s_axi_wvalid  (axi4_mc_cols_cdc_lo[i].wvalid  ), // input wire s_axi_wvalid
-        .s_axi_wready  (axi4_mc_cols_cdc_li[i].wready  ), // output wire s_axi_wready
-//        .s_axi_bid     (axi4_mc_cols_cdc_li[i].bid     ), // output wire [3 : 0] s_axi_bid
-        .s_axi_bresp   (axi4_mc_cols_cdc_li[i].bresp   ), // output wire [1 : 0] s_axi_bresp
-        .s_axi_bvalid  (axi4_mc_cols_cdc_li[i].bvalid  ), // output wire s_axi_bvalid
-        .s_axi_bready  (axi4_mc_cols_cdc_lo[i].bready  ), // input wire s_axi_bready
-//        .s_axi_arid    (axi4_mc_cols_cdc_lo[i].arid    ), // input wire [3 : 0] s_axi_arid
-        .s_axi_araddr  (axi4_mc_cols_cdc_lo[i].araddr  ), // input wire [63 : 0] s_axi_araddr
-        .s_axi_arlen   (axi4_mc_cols_cdc_lo[i].arlen   ), // input wire [7 : 0] s_axi_arlen
-        .s_axi_arsize  (axi4_mc_cols_cdc_lo[i].arsize  ), // input wire [2 : 0] s_axi_arsize
-        .s_axi_arburst (axi4_mc_cols_cdc_lo[i].arburst ), // input wire [1 : 0] s_axi_arburst
-        .s_axi_arlock  (axi4_mc_cols_cdc_lo[i].arlock  ), // input wire [0 : 0] s_axi_arlock
-        .s_axi_arcache (axi4_mc_cols_cdc_lo[i].arcache ), // input wire [3 : 0] s_axi_arcache
-        .s_axi_arprot  (axi4_mc_cols_cdc_lo[i].arprot  ), // input wire [2 : 0] s_axi_arprot
-        .s_axi_arregion(axi4_mc_cols_cdc_lo[i].arregion), // input wire [3 : 0] s_axi_arregion
-        .s_axi_arqos   (axi4_mc_cols_cdc_lo[i].arqos   ), // input wire [3 : 0] s_axi_arqos
-        .s_axi_arvalid (axi4_mc_cols_cdc_lo[i].arvalid ), // input wire s_axi_arvalid
-        .s_axi_arready (axi4_mc_cols_cdc_li[i].arready ), // output wire s_axi_arready
-//        .s_axi_rid     (axi4_mc_cols_cdc_li[i].rid     ), // output wire [3 : 0] s_axi_rid
-        .s_axi_rdata   (axi4_mc_cols_cdc_li[i].rdata   ), // output wire [63 : 0] s_axi_rdata
-        .s_axi_rresp   (axi4_mc_cols_cdc_li[i].rresp   ), // output wire [1 : 0] s_axi_rresp
-        .s_axi_rlast   (axi4_mc_cols_cdc_li[i].rlast   ), // output wire s_axi_rlast
-        .s_axi_rvalid  (axi4_mc_cols_cdc_li[i].rvalid  ), // output wire s_axi_rvalid
-        .s_axi_rready  (axi4_mc_cols_cdc_lo[i].rready  ), // input wire s_axi_rready
+        .s_axi_aclk    (axi_aclk_ch_buf[i]         ), // input wire s_axi_aclk
+        .s_axi_aresetn (axi_rstn_ch_buf[i]         ), // input wire s_axi_aresetn
+        .s_axi_awaddr  (m_axi4_cdc_lo[i].awaddr    ), // input wire [63 : 0] s_axi_awaddr
+        .s_axi_awlen   (m_axi4_cdc_lo[i].awlen     ), // input wire [7 : 0] s_axi_awlen
+        .s_axi_awsize  (m_axi4_cdc_lo[i].awsize    ), // input wire [2 : 0] s_axi_awsize
+        .s_axi_awburst (m_axi4_cdc_lo[i].awburst   ), // input wire [1 : 0] s_axi_awburst
+        .s_axi_awlock  (m_axi4_cdc_lo[i].awlock    ), // input wire [0 : 0] s_axi_awlock
+        .s_axi_awcache (m_axi4_cdc_lo[i].awcache   ), // input wire [3 : 0] s_axi_awcache
+        .s_axi_awprot  (m_axi4_cdc_lo[i].awprot    ), // input wire [2 : 0] s_axi_awprot
+        .s_axi_awregion(m_axi4_cdc_lo[i].awregion  ), // input wire [3 : 0] s_axi_awregion
+        .s_axi_awqos   (m_axi4_cdc_lo[i].awqos     ), // input wire [3 : 0] s_axi_awqos
+        .s_axi_awvalid (m_axi4_cdc_lo[i].awvalid   ), // input wire s_axi_awvalid
+        .s_axi_awready (m_axi4_cdc_li[i].awready   ), // output wire s_axi_awready
+        .s_axi_wdata   (m_axi4_cdc_lo[i].wdata     ), // input wire [63 : 0] s_axi_wdata
+        .s_axi_wstrb   (m_axi4_cdc_lo[i].wstrb     ), // input wire [7 : 0] s_axi_wstrb
+        .s_axi_wlast   (m_axi4_cdc_lo[i].wlast     ), // input wire s_axi_wlast
+        .s_axi_wvalid  (m_axi4_cdc_lo[i].wvalid    ), // input wire s_axi_wvalid
+        .s_axi_wready  (m_axi4_cdc_li[i].wready    ), // output wire s_axi_wready
+        .s_axi_bresp   (m_axi4_cdc_li[i].bresp     ), // output wire [1 : 0] s_axi_bresp
+        .s_axi_bvalid  (m_axi4_cdc_li[i].bvalid    ), // output wire s_axi_bvalid
+        .s_axi_bready  (m_axi4_cdc_lo[i].bready    ), // input wire s_axi_bready
+        .s_axi_araddr  (m_axi4_cdc_lo[i].araddr    ), // input wire [63 : 0] s_axi_araddr
+        .s_axi_arlen   (m_axi4_cdc_lo[i].arlen     ), // input wire [7 : 0] s_axi_arlen
+        .s_axi_arsize  (m_axi4_cdc_lo[i].arsize    ), // input wire [2 : 0] s_axi_arsize
+        .s_axi_arburst (m_axi4_cdc_lo[i].arburst   ), // input wire [1 : 0] s_axi_arburst
+        .s_axi_arlock  (m_axi4_cdc_lo[i].arlock    ), // input wire [0 : 0] s_axi_arlock
+        .s_axi_arcache (m_axi4_cdc_lo[i].arcache   ), // input wire [3 : 0] s_axi_arcache
+        .s_axi_arprot  (m_axi4_cdc_lo[i].arprot    ), // input wire [2 : 0] s_axi_arprot
+        .s_axi_arregion(m_axi4_cdc_lo[i].arregion  ), // input wire [3 : 0] s_axi_arregion
+        .s_axi_arqos   (m_axi4_cdc_lo[i].arqos     ), // input wire [3 : 0] s_axi_arqos
+        .s_axi_arvalid (m_axi4_cdc_lo[i].arvalid   ), // input wire s_axi_arvalid
+        .s_axi_arready (m_axi4_cdc_li[i].arready   ), // output wire s_axi_arready
+        .s_axi_rdata   (m_axi4_cdc_li[i].rdata     ), // output wire [63 : 0] s_axi_rdata
+        .s_axi_rresp   (m_axi4_cdc_li[i].rresp     ), // output wire [1 : 0] s_axi_rresp
+        .s_axi_rlast   (m_axi4_cdc_li[i].rlast     ), // output wire s_axi_rlast
+        .s_axi_rvalid  (m_axi4_cdc_li[i].rvalid    ), // output wire s_axi_rvalid
+        .s_axi_rready  (m_axi4_cdc_lo[i].rready    ), // input wire s_axi_rready
 
-        .m_axi_awaddr  (axi4_hbm_chs_li[i].awaddr      ), // output wire [63 : 0] m_axi_awaddr
-        .m_axi_awlen   (axi4_hbm_chs_li[i].awlen       ), // output wire [7 : 0] m_axi_awlen
-        .m_axi_awsize  (axi4_hbm_chs_li[i].awsize      ), // output wire [2 : 0] m_axi_awsize
-        .m_axi_awburst (axi4_hbm_chs_li[i].awburst     ), // output wire [1 : 0] m_axi_awburst
-        .m_axi_awlock  (axi4_hbm_chs_li[i].awlock      ), // output wire [0 : 0] m_axi_awlock
-        .m_axi_awcache (axi4_hbm_chs_li[i].awcache     ), // output wire [3 : 0] m_axi_awcache
-        .m_axi_awprot  (axi4_hbm_chs_li[i].awprot      ), // output wire [2 : 0] m_axi_awprot
-        .m_axi_awregion(axi4_hbm_chs_li[i].awregion    ), // output wire [3 : 0] m_axi_awregion
-        .m_axi_awqos   (axi4_hbm_chs_li[i].awqos       ), // output wire [3 : 0] m_axi_awqos
-        .m_axi_awvalid (axi4_hbm_chs_li[i].awvalid     ), // output wire m_axi_awvalid
-        .m_axi_awready (axi4_hbm_chs_lo[i].awready     ), // input wire m_axi_awready
-        .m_axi_wdata   (axi4_hbm_chs_li[i].wdata       ), // output wire [mem_dwidth-1 : 0] m_axi_wdata
-        .m_axi_wstrb   (axi4_hbm_chs_li[i].wstrb       ), // output wire [31 : 0] m_axi_wstrb
-        .m_axi_wlast   (axi4_hbm_chs_li[i].wlast       ), // output wire m_axi_wlast
-        .m_axi_wvalid  (axi4_hbm_chs_li[i].wvalid      ), // output wire m_axi_wvalid
-        .m_axi_wready  (axi4_hbm_chs_lo[i].wready      ), // input wire m_axi_wready
-        .m_axi_bresp   (axi4_hbm_chs_lo[i].bresp       ), // input wire [1 : 0] m_axi_bresp
-        .m_axi_bvalid  (axi4_hbm_chs_lo[i].bvalid      ), // input wire m_axi_bvalid
-        .m_axi_bready  (axi4_hbm_chs_li[i].bready      ), // output wire m_axi_bready
-        .m_axi_araddr  (axi4_hbm_chs_li[i].araddr      ), // output wire [63 : 0] m_axi_araddr
-        .m_axi_arlen   (axi4_hbm_chs_li[i].arlen       ), // output wire [7 : 0] m_axi_arlen
-        .m_axi_arsize  (axi4_hbm_chs_li[i].arsize      ), // output wire [2 : 0] m_axi_arsize
-        .m_axi_arburst (axi4_hbm_chs_li[i].arburst     ), // output wire [1 : 0] m_axi_arburst
-        .m_axi_arlock  (axi4_hbm_chs_li[i].arlock      ), // output wire [0 : 0] m_axi_arlock
-        .m_axi_arcache (axi4_hbm_chs_li[i].arcache     ), // output wire [3 : 0] m_axi_arcache
-        .m_axi_arprot  (axi4_hbm_chs_li[i].arprot      ), // output wire [2 : 0] m_axi_arprot
-        .m_axi_arregion(axi4_hbm_chs_li[i].arregion    ), // output wire [3 : 0] m_axi_arregion
-        .m_axi_arqos   (axi4_hbm_chs_li[i].arqos       ), // output wire [3 : 0] m_axi_arqos
-        .m_axi_arvalid (axi4_hbm_chs_li[i].arvalid     ), // output wire m_axi_arvalid
-        .m_axi_arready (axi4_hbm_chs_lo[i].arready     ), // input wire m_axi_arready
-        .m_axi_rdata   (axi4_hbm_chs_lo[i].rdata       ), // input wire [mem_dwidth-1 : 0] m_axi_rdata
-        .m_axi_rresp   (axi4_hbm_chs_lo[i].rresp       ), // input wire [1 : 0] m_axi_rresp
-        .m_axi_rlast   (axi4_hbm_chs_lo[i].rlast       ), // input wire m_axi_rlast
-        .m_axi_rvalid  (axi4_hbm_chs_lo[i].rvalid      ), // input wire m_axi_rvalid
-        .m_axi_rready  (axi4_hbm_chs_li[i].rready      )  // output wire m_axi_rready
+        .m_axi_awaddr  (axi4_hbm_chs_li[i].awaddr  ), // output wire [63 : 0] m_axi_awaddr
+        .m_axi_awlen   (axi4_hbm_chs_li[i].awlen   ), // output wire [7 : 0] m_axi_awlen
+        .m_axi_awsize  (axi4_hbm_chs_li[i].awsize  ), // output wire [2 : 0] m_axi_awsize
+        .m_axi_awburst (axi4_hbm_chs_li[i].awburst ), // output wire [1 : 0] m_axi_awburst
+        .m_axi_awlock  (axi4_hbm_chs_li[i].awlock  ), // output wire [0 : 0] m_axi_awlock
+        .m_axi_awcache (axi4_hbm_chs_li[i].awcache ), // output wire [3 : 0] m_axi_awcache
+        .m_axi_awprot  (axi4_hbm_chs_li[i].awprot  ), // output wire [2 : 0] m_axi_awprot
+        .m_axi_awregion(axi4_hbm_chs_li[i].awregion), // output wire [3 : 0] m_axi_awregion
+        .m_axi_awqos   (axi4_hbm_chs_li[i].awqos   ), // output wire [3 : 0] m_axi_awqos
+        .m_axi_awvalid (axi4_hbm_chs_li[i].awvalid ), // output wire m_axi_awvalid
+        .m_axi_awready (axi4_hbm_chs_lo[i].awready ), // input wire m_axi_awready
+        .m_axi_wdata   (axi4_hbm_chs_li[i].wdata   ), // output wire [mem_dwidth-1 : 0] m_axi_wdata
+        .m_axi_wstrb   (axi4_hbm_chs_li[i].wstrb   ), // output wire [31 : 0] m_axi_wstrb
+        .m_axi_wlast   (axi4_hbm_chs_li[i].wlast   ), // output wire m_axi_wlast
+        .m_axi_wvalid  (axi4_hbm_chs_li[i].wvalid  ), // output wire m_axi_wvalid
+        .m_axi_wready  (axi4_hbm_chs_lo[i].wready  ), // input wire m_axi_wready
+        .m_axi_bresp   (axi4_hbm_chs_lo[i].bresp   ), // input wire [1 : 0] m_axi_bresp
+        .m_axi_bvalid  (axi4_hbm_chs_lo[i].bvalid  ), // input wire m_axi_bvalid
+        .m_axi_bready  (axi4_hbm_chs_li[i].bready  ), // output wire m_axi_bready
+        .m_axi_araddr  (axi4_hbm_chs_li[i].araddr  ), // output wire [63 : 0] m_axi_araddr
+        .m_axi_arlen   (axi4_hbm_chs_li[i].arlen   ), // output wire [7 : 0] m_axi_arlen
+        .m_axi_arsize  (axi4_hbm_chs_li[i].arsize  ), // output wire [2 : 0] m_axi_arsize
+        .m_axi_arburst (axi4_hbm_chs_li[i].arburst ), // output wire [1 : 0] m_axi_arburst
+        .m_axi_arlock  (axi4_hbm_chs_li[i].arlock  ), // output wire [0 : 0] m_axi_arlock
+        .m_axi_arcache (axi4_hbm_chs_li[i].arcache ), // output wire [3 : 0] m_axi_arcache
+        .m_axi_arprot  (axi4_hbm_chs_li[i].arprot  ), // output wire [2 : 0] m_axi_arprot
+        .m_axi_arregion(axi4_hbm_chs_li[i].arregion), // output wire [3 : 0] m_axi_arregion
+        .m_axi_arqos   (axi4_hbm_chs_li[i].arqos   ), // output wire [3 : 0] m_axi_arqos
+        .m_axi_arvalid (axi4_hbm_chs_li[i].arvalid ), // output wire m_axi_arvalid
+        .m_axi_arready (axi4_hbm_chs_lo[i].arready ), // input wire m_axi_arready
+        .m_axi_rdata   (axi4_hbm_chs_lo[i].rdata   ), // input wire [mem_dwidth-1 : 0] m_axi_rdata
+        .m_axi_rresp   (axi4_hbm_chs_lo[i].rresp   ), // input wire [1 : 0] m_axi_rresp
+        .m_axi_rlast   (axi4_hbm_chs_lo[i].rlast   ), // input wire m_axi_rlast
+        .m_axi_rvalid  (axi4_hbm_chs_lo[i].rvalid  ), // input wire m_axi_rvalid
+        .m_axi_rready  (axi4_hbm_chs_li[i].rready  )  // output wire m_axi_rready
       );
 
-      assign axi4_hbm_chs_li[i].awid    = '0;
-      assign axi4_hbm_chs_li[i].arid    = '0;
+        // input wire [3 : 0] s_axi_awid
+        // output wire [3 : 0] s_axi_bid
+        // input wire [3 : 0] s_axi_arid
+        // output wire [3 : 0] s_axi_rid
+        assign axi4_hbm_chs_li[i].awid    = '0;
+        assign axi4_hbm_chs_li[i].arid    = '0;
 
     end : axi_dv_cvt
 
-    for (genvar i = num_axi_slot_lp + 1; i < 8; i++) begin : tie_off_enabled
-
-      assign axi4_hbm_chs_li[i] = '0;
+    for (genvar i = num_cdc_slot_lp; i < num_enable_hbm_chs_p; i++) begin : tie_off_hbm_axi4
+      assign axi4_hbm_chs_li[i] = '0; // to hbm_channels
       // assign axi4_hbm_chs_lo_cast = axi4_hbm_chs_lo
-
-    end : tie_off_enabled
+    end : tie_off_hbm_axi4
 
 
   wire          apb_seq_complete_0_s;
@@ -8027,6 +8023,9 @@ assign axi_trans_err = axi_00_data_msmatch_err || axi_01_data_msmatch_err ||
 
 
 
-  end : lv3_hbm
+  end // lv3_hbm
+
+  else begin : noop
+  end : noop
 
 endmodule

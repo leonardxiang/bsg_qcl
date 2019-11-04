@@ -205,15 +205,15 @@ generate_target all [get_files  ${PRJ_IP_DIR}/axi_dwidth_converter_1/axi_dwidth_
 # -------------------------------------
 # axi clock converter
 # -------------------------------------
-create_ip -name axi_clock_converter -vendor xilinx.com -library ip -version 2.1 -module_name axi_clock_converter_0
-set_property -dict [list \
-CONFIG.ADDR_WIDTH {64} \
-CONFIG.DATA_WIDTH {512} \
-CONFIG.ID_WIDTH {6}
-] [get_ips axi_clock_converter_0]
-generate_target {instantiation_template} [get_files ${PRJ_IP_DIR}/axi_clock_converter_0/axi_clock_converter_0.xci]
-set_property generate_synth_checkpoint false [get_files  ${PRJ_IP_DIR}/axi_clock_converter_0/axi_clock_converter_0.xci]
-generate_target all [get_files  ${PRJ_IP_DIR}/axi_clock_converter_0/axi_clock_converter_0.xci]
+# create_ip -name axi_clock_converter -vendor xilinx.com -library ip -version 2.1 -module_name axi_clock_converter_0
+# set_property -dict [list \
+# CONFIG.ADDR_WIDTH {64} \
+# CONFIG.DATA_WIDTH {512} \
+# CONFIG.ID_WIDTH {6}
+# ] [get_ips axi_clock_converter_0]
+# generate_target {instantiation_template} [get_files ${PRJ_IP_DIR}/axi_clock_converter_0/axi_clock_converter_0.xci]
+# set_property generate_synth_checkpoint false [get_files  ${PRJ_IP_DIR}/axi_clock_converter_0/axi_clock_converter_0.xci]
+# generate_target all [get_files  ${PRJ_IP_DIR}/axi_clock_converter_0/axi_clock_converter_0.xci]
 
 # =====================================
 # add constraints
