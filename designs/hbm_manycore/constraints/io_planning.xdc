@@ -1,9 +1,15 @@
 # =====================================
 # Add constraints
 # =====================================
-set_property PACKAGE_PIN BM29           [get_ports ex_btn_reset_i]
-set_property IOSTANDARD  LVCMOS12       [get_ports ex_btn_reset_i]
-set_false_path -from                    [get_ports ex_btn_reset_i]
+#create_clock -name sys_clk -period 10 [get_ports mem_clk_i_p]
+set_property PACKAGE_PIN BH51 [get_ports mem_clk_i_p]
+set_property PACKAGE_PIN BJ51 [get_ports mem_clk_i_n]
+set_property IOSTANDARD  DIFF_SSTL12 [get_ports mem_clk_i_p] ;# Bank  66 VCCO - DDR4_VDDQ_1V2 - IO_L11N_T1U_N9_GC_66
+set_property IOSTANDARD  DIFF_SSTL12 [get_ports mem_clk_i_n] ;# Bank  66 VCCO - DDR4_VDDQ_1V2 - IO_L11N_T1U_N9_GC_66
+
+set_property PACKAGE_PIN BM29           [get_ports ext_btn_reset_i]
+set_property IOSTANDARD  LVCMOS12       [get_ports ext_btn_reset_i]
+set_false_path -from                    [get_ports ext_btn_reset_i]
 
 set_property PACKAGE_PIN BH24           [get_ports leds_o[0]]
 set_property PACKAGE_PIN BG24           [get_ports leds_o[1]]

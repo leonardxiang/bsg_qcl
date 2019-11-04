@@ -877,24 +877,27 @@ BUFGCE_DIV #(
 
   for (genvar i = 0; i < num_axi_slot_lp+1; i++) begin
 
-  axi_clock_converter_v2_1_18_axi_clock_converter #(
-    .C_FAMILY                   (DEVICE_FAMILY                                   ),
-    .C_AXI_ID_WIDTH             (axi_id_width_p                                  ),
-    .C_AXI_ADDR_WIDTH           (axi_addr_width_p                                ), // Width of s_axi_awaddr, s_axi_araddr, m_axi_awaddr and
-    .C_AXI_DATA_WIDTH           (axi_data_width_p                                ), // Width of WDATA and RDATA (either side).
-    .C_S_AXI_ACLK_RATIO         (1                                               ), // Clock frequency ratio of SI w.r.t. MI. (Slowest of all clock inputs should have ratio=1.)
-    .C_M_AXI_ACLK_RATIO         (lc_core_mem_clk_period_p/lc_hbm_axi_clk_period_p),
-    // S:M or M:S must be integer ratio.
-    // Format: Bit32; Range: >='h00000001.
-    .C_AXI_IS_ACLK_ASYNC        (1                                               ), // Indicates whether S and M clocks are asynchronous.
-    // FUTURE FEATURE
-    // Format: Bit1. Range = 1'b0.
-    .C_AXI_PROTOCOL             (0                                               ), // Protocol of this SI/MI slot.
-    .C_AXI_SUPPORTS_USER_SIGNALS(0                                               ),
-    .C_AXI_SUPPORTS_WRITE       (1                                               ),
-    .C_AXI_SUPPORTS_READ        (1                                               ),
-    .C_SYNCHRONIZER_STAGE       (3                                               )
-  ) axi4_hbm_cdc (
+
+  // axi_clock_converter_v2_1_18_axi_clock_converter #(
+  //   .C_FAMILY                   (DEVICE_FAMILY                                   ),
+  //   .C_AXI_ID_WIDTH             (axi_id_width_p                                  ),
+  //   .C_AXI_ADDR_WIDTH           (axi_addr_width_p                                ), // Width of s_axi_awaddr, s_axi_araddr, m_axi_awaddr and
+  //   .C_AXI_DATA_WIDTH           (axi_data_width_p                                ), // Width of WDATA and RDATA (either side).
+  //   .C_S_AXI_ACLK_RATIO         (1                                               ), // Clock frequency ratio of SI w.r.t. MI. (Slowest of all clock inputs should have ratio=1.)
+  //   .C_M_AXI_ACLK_RATIO         (lc_core_mem_clk_period_p/lc_hbm_axi_clk_period_p),
+  //   // S:M or M:S must be integer ratio.
+  //   // Format: Bit32; Range: >='h00000001.
+  //   .C_AXI_IS_ACLK_ASYNC        (1                                               ), // Indicates whether S and M clocks are asynchronous.
+  //   // FUTURE FEATURE
+  //   // Format: Bit1. Range = 1'b0.
+  //   .C_AXI_PROTOCOL             (0                                               ), // Protocol of this SI/MI slot.
+  //   .C_AXI_SUPPORTS_USER_SIGNALS(0                                               ),
+  //   .C_AXI_SUPPORTS_WRITE       (1                                               ),
+  //   .C_AXI_SUPPORTS_READ        (1                                               ),
+  //   .C_SYNCHRONIZER_STAGE       (3                                               )
+  // )
+
+  axi_clock_converter_0 axi4_hbm_cdc (
     .s_axi_aclk    (pcie_axi_clk_li             ),
     .s_axi_aresetn (axi4_rstn_buf               ),
 
@@ -913,7 +916,7 @@ BUFGCE_DIV #(
     .s_axi_awready (axi4_mc_cols_li[i].awready  ),
 
     // Slave Interface Write Data Ports
-    .s_axi_wid     ('0                          ),
+    // .s_axi_wid     ('0                          ),
     .s_axi_wdata   (axi4_mc_cols_lo[i].wdata    ),
     .s_axi_wstrb   (axi4_mc_cols_lo[i].wstrb    ),
     .s_axi_wlast   (axi4_mc_cols_lo[i].wlast    ),

@@ -1,8 +1,8 @@
 
 
-create_clock -period 10 [get_ports APB_0_PCLK]
+# create_clock -period 10 [get_ports APB_0_PCLK]
 
-create_clock -period 10.000 [get_ports AXI_ACLK_IN_0]
+# create_clock -period 10.000 [get_ports AXI_ACLK_IN_0]
 set_property LOC MMCM_X0Y0 [get_cells -hier -filter {NAME =~ u_mmcm_0}]
 
 
