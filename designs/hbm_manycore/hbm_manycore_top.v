@@ -264,21 +264,17 @@ BUFG u_AXI_ACLK6_st0  (
   .O (AXI_ACLK6_st0_buf)
 );
 
-BUFGCE_DIV #(
-      .BUFGCE_DIVIDE(2)
-   )
-    u_AXI_vio_CLK_st0  (
-  .I (AXI_ACLK0_st0),
-  .CE (1'b1),
-  .CLR (1'b0),
-  .O (i_clk_atg_axi_vio_st0)
+BUFGCE_DIV #(.BUFGCE_DIVIDE(2)) u_AXI_vio_CLK_st0 (
+  .I  (AXI_ACLK0_st0        ),
+  .CE (1'b1                 ),
+  .CLR(1'b0                 ),
+  .O  (i_clk_atg_axi_vio_st0)
 );
 
 
-  //
-  // ---------------------------------------------
-  // RESETS
-  // ---------------------------------------------
+// ---------------------------------------------
+// RESETS
+// ---------------------------------------------
   // PCIe
   wire pcie_axi_rstn_li;
 
@@ -1127,7 +1123,7 @@ BUFGCE_DIV #(
         .s_axi_bresp   (axi4_mc_cols_cdc_li[i].bresp   ), // output wire [1 : 0] s_axi_bresp
         .s_axi_bvalid  (axi4_mc_cols_cdc_li[i].bvalid  ), // output wire s_axi_bvalid
         .s_axi_bready  (axi4_mc_cols_cdc_lo[i].bready  ), // input wire s_axi_bready
-        .s_axi_arid    (axi4_mc_cols_cdc_lo[i].arid    ), // input wire [3 : 0] s_axi_arid
+//        .s_axi_arid    (axi4_mc_cols_cdc_lo[i].arid    ), // input wire [3 : 0] s_axi_arid
         .s_axi_araddr  (axi4_mc_cols_cdc_lo[i].araddr  ), // input wire [63 : 0] s_axi_araddr
         .s_axi_arlen   (axi4_mc_cols_cdc_lo[i].arlen   ), // input wire [7 : 0] s_axi_arlen
         .s_axi_arsize  (axi4_mc_cols_cdc_lo[i].arsize  ), // input wire [2 : 0] s_axi_arsize
@@ -1139,7 +1135,7 @@ BUFGCE_DIV #(
         .s_axi_arqos   (axi4_mc_cols_cdc_lo[i].arqos   ), // input wire [3 : 0] s_axi_arqos
         .s_axi_arvalid (axi4_mc_cols_cdc_lo[i].arvalid ), // input wire s_axi_arvalid
         .s_axi_arready (axi4_mc_cols_cdc_li[i].arready ), // output wire s_axi_arready
-        .s_axi_rid     (axi4_mc_cols_cdc_li[i].rid     ), // output wire [3 : 0] s_axi_rid
+//        .s_axi_rid     (axi4_mc_cols_cdc_li[i].rid     ), // output wire [3 : 0] s_axi_rid
         .s_axi_rdata   (axi4_mc_cols_cdc_li[i].rdata   ), // output wire [63 : 0] s_axi_rdata
         .s_axi_rresp   (axi4_mc_cols_cdc_li[i].rresp   ), // output wire [1 : 0] s_axi_rresp
         .s_axi_rlast   (axi4_mc_cols_cdc_li[i].rlast   ), // output wire s_axi_rlast
