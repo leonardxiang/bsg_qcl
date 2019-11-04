@@ -2,6 +2,7 @@
 # Add vivado ip source files
 # =====================================
 set VIVADO_IP_DIR $env(XILINX_VIVADO_DIR)/data/ip/xilinx
+set XILINX_EX_DIR $env(BSG_QCL_DIR)/hdl/xilinx_ip
 add_files -fileset sources_1 -norecurse [join "
 ${VIVADO_IP_DIR}/axi_infrastructure_v1_1/hdl/axi_infrastructure_v1_1_0.vh
 ${VIVADO_IP_DIR}/axi_infrastructure_v1_1/hdl/axi_infrastructure_v1_1_vl_rfs.v
@@ -13,7 +14,20 @@ ${VIVADO_IP_DIR}/axis_infrastructure_v1_1/hdl/axis_infrastructure_v1_1_0.vh
 ${VIVADO_IP_DIR}/axis_infrastructure_v1_1/hdl/axis_infrastructure_v1_1_vl_rfs.v
 ${VIVADO_IP_DIR}/axis_register_slice_v1_1/hdl/axis_register_slice_v1_1_vl_rfs.v
 ${VIVADO_IP_DIR}/axis_dwidth_converter_v1_1/hdl/axis_dwidth_converter_v1_1_vl_rfs.v
+
+${VIVADO_IP_DIR}/axi_clock_converter_v2_1/hdl/axi_clock_converter_v2_1_vl_rfs.v
+${VIVADO_IP_DIR}/fifo_generator_v13_2/hdl/fifo_generator_v13_2_rfs.v
+${VIVADO_IP_DIR}/fifo_generator_v13_2/simulation/fifo_generator_vlog_beh.v
 "]
+
+add_files -fileset sources_1 ${XILINX_EX_DIR}/hbm_atg/
+
+
+# ${VIVADO_IP_DIR}/fifo_generator_v13_2/hdl/fifo_generator_v13_2_rfs.vhd
+# ${VIVADO_IP_DIR}/fifo_generator_v13_2/hdl/fifo_generator_v13_2_vhsyn_rfs.vhd
+# read_verilog -vhd [join "
+# ${VIVADO_IP_DIR}/fifo_generator_v13_2/hdl/fifo_generator_v13_2_rfs.v
+# "]
 
 
 # =====================================
@@ -24,10 +38,8 @@ set PRJ_IP_DIR ${DESIGN_PRJ_DIR}/${DESIGN_NAME}.srcs/sources_1/ip
 # -------------------------------------
 # axi data width converter
 # -------------------------------------
-create_ip -name axi_dwidth_converter -vendor xilinx.com -library ip \
-  -version 2.1 -module_name axi_dwidth_converter_0
+create_ip -name axi_dwidth_converter -vendor xilinx.com -library ip -version 2.1 -module_name axi_dwidth_converter_0
 # set_property -dict [list \
-# CONFIG.ADDR_WIDTH {64} \
 # CONFIG.SI_DATA_WIDTH {64} \
 # CONFIG.MI_DATA_WIDTH {256} \
 # CONFIG.SI_ID_WIDTH {4} \
@@ -35,6 +47,7 @@ create_ip -name axi_dwidth_converter -vendor xilinx.com -library ip \
 # CONFIG.FIFO_MODE {1}
 # ] [get_ips axi_dwidth_converter_0]
 set_property -dict [list \
+CONFIG.ADDR_WIDTH {64} \
 CONFIG.SI_DATA_WIDTH {64} \
 CONFIG.MI_DATA_WIDTH {512} \
 CONFIG.SI_ID_WIDTH {4} \
@@ -49,8 +62,7 @@ generate_target all [get_files  ${PRJ_IP_DIR}/axi_dwidth_converter_0/axi_dwidth_
 # -------------------------------------
 # axi bram
 # -------------------------------------
-create_ip -name axi_bram_ctrl -vendor xilinx.com -library ip \
-  -version 4.1 -module_name axi_bram_ctrl_0
+create_ip -name axi_bram_ctrl -vendor xilinx.com -library ip -version 4.1 -module_name axi_bram_ctrl_0
 # set_property -dict [list \
 # CONFIG.DATA_WIDTH {256} \
 # CONFIG.ID_WIDTH {6} \
@@ -71,8 +83,7 @@ generate_target all [get_files  ${PRJ_IP_DIR}/axi_bram_ctrl_0/axi_bram_ctrl_0.xc
 # -------------------------------------
 # block memory
 # -------------------------------------
-create_ip -name blk_mem_gen -vendor xilinx.com -library ip \
-  -version 8.4 -module_name blk_mem_gen_1
+create_ip -name blk_mem_gen -vendor xilinx.com -library ip -version 8.4 -module_name blk_mem_gen_1
 set_property -dict [list \
 CONFIG.Component_Name {blk_mem_gen_1} \
 CONFIG.Interface_Type {AXI4} \
@@ -104,9 +115,7 @@ generate_target all [get_files  ${PRJ_IP_DIR}/blk_mem_gen_1/blk_mem_gen_1.xci]
 # -------------------------------------
 # axi stream fifo
 # -------------------------------------
-create_ip -name axi_fifo_mm_s -vendor xilinx.com -library ip \
-  -version 4.2 -module_name axi_fifo_mm_s_0
-
+create_ip -name axi_fifo_mm_s -vendor xilinx.com -library ip -version 4.2 -module_name axi_fifo_mm_s_0
 set_property -dict [list \
 CONFIG.C_TX_FIFO_PE_THRESHOLD {5} \
 CONFIG.C_RX_FIFO_PE_THRESHOLD {5}
@@ -119,8 +128,7 @@ generate_target all [get_files  ${PRJ_IP_DIR}/axi_fifo_mm_s_0/axi_fifo_mm_s_0.xc
 # -------------------------------------
 # pcie subsystem
 # -------------------------------------
-create_ip -name xdma -vendor xilinx.com -library ip \
-  -version 4.1 -module_name xdma_0
+create_ip -name xdma -vendor xilinx.com -library ip -version 4.1 -module_name xdma_0
 set_property -dict [list \
 CONFIG.pcie_blk_locn {PCIE4C_X1Y0} \
 CONFIG.pl_link_cap_max_link_width {X4} \
@@ -140,6 +148,62 @@ set_property generate_synth_checkpoint false [get_files ${PRJ_IP_DIR}/xdma_0/xdm
 generate_target all [get_files ${PRJ_IP_DIR}/xdma_0/xdma_0.xci]
 
 
+# -------------------------------------
+# clocks
+# -------------------------------------
+create_ip -name clk_wiz -vendor xilinx.com -library ip -version 6.0 -module_name clk_wiz_0
+set_property -dict [list \
+CONFIG.PRIM_SOURCE {Differential_clock_capable_pin} \
+CONFIG.CLKOUT2_USED {true} \
+CONFIG.CLKOUT3_USED {true} \
+CONFIG.MMCM_CLKOUT1_DIVIDE {12} \
+CONFIG.MMCM_CLKOUT2_DIVIDE {12} \
+CONFIG.NUM_OUT_CLKS {3} \
+CONFIG.CLKOUT2_JITTER {115.831} \
+CONFIG.CLKOUT2_PHASE_ERROR {87.180} \
+CONFIG.CLKOUT3_JITTER {115.831} \
+CONFIG.CLKOUT3_PHASE_ERROR {87.180}
+] [get_ips clk_wiz_0]
+generate_target {instantiation_template} [get_files ${PRJ_IP_DIR}/clk_wiz_0/clk_wiz_0.xci]
+set_property generate_synth_checkpoint false [get_files  ${PRJ_IP_DIR}/clk_wiz_0/clk_wiz_0.xci]
+generate_target all [get_files  ${PRJ_IP_DIR}/clk_wiz_0/clk_wiz_0.xci]
+
+
+create_ip -name clk_wiz -vendor xilinx.com -library ip -version 6.0 -module_name clk_wiz_1
+generate_target {instantiation_template} [get_files ${PRJ_IP_DIR}/clk_wiz_1/clk_wiz_1.xci]
+set_property generate_synth_checkpoint false [get_files  ${PRJ_IP_DIR}/clk_wiz_1/clk_wiz_1.xci]
+generate_target all [get_files  ${PRJ_IP_DIR}/clk_wiz_1/clk_wiz_1.xci]
+
+# -------------------------------------
+# HBM
+# -------------------------------------
+create_ip -name hbm -vendor xilinx.com -library ip -version 1.0 -module_name hbm_0
+set_property -dict [list \
+CONFIG.USER_AXI_CLK_FREQ {250} \
+CONFIG.HBM_MMCM_FBOUT_MULT0 {70}
+] [get_ips hbm_0]
+generate_target {instantiation_template} [get_files ${PRJ_IP_DIR}/hbm_0/hbm_0.xci]
+set_property generate_synth_checkpoint false [get_files  ${PRJ_IP_DIR}/hbm_0/hbm_0.xci]
+generate_target all [get_files  ${PRJ_IP_DIR}/hbm_0/hbm_0.xci]
+
+
+# -------------------------------------
+# axi data width converter
+# -------------------------------------
+create_ip -name axi_dwidth_converter -vendor xilinx.com -library ip -version 2.1 -module_name axi_dwidth_converter_1
+set_property -dict [list \
+CONFIG.ADDR_WIDTH {64} \
+CONFIG.SI_DATA_WIDTH {512} \
+CONFIG.MI_DATA_WIDTH {256} \
+CONFIG.MAX_SPLIT_BEATS {16}
+] [get_ips axi_dwidth_converter_1]
+generate_target {instantiation_template} [get_files ${PRJ_IP_DIR}/axi_dwidth_converter_1/axi_dwidth_converter_1.xci]
+set_property generate_synth_checkpoint false [get_files ${PRJ_IP_DIR}/axi_dwidth_converter_1/axi_dwidth_converter_1.xci]
+generate_target all [get_files  ${PRJ_IP_DIR}/axi_dwidth_converter_1/axi_dwidth_converter_1.xci]
+
+
+
+
 # =====================================
 # add constraints
 # =====================================
@@ -147,5 +211,7 @@ set DESIGN_CONSTRAINT_DIR ./${DESIGN_NAME}/constraints
 add_files -fileset constrs_1 ${DESIGN_CONSTRAINT_DIR}/xdma.xdc
 add_files -fileset constrs_1 ${DESIGN_CONSTRAINT_DIR}/io_planning.xdc
 add_files -fileset constrs_1 ${DESIGN_CONSTRAINT_DIR}/configuration.xdc
+add_files -fileset constrs_1 ${DESIGN_CONSTRAINT_DIR}/hbm.xdc
+add_files -fileset constrs_1 ${DESIGN_CONSTRAINT_DIR}/hbm_false_path.xdc
 add_files -fileset constrs_1 ${DESIGN_CONSTRAINT_DIR}/debug_core.xdc
 set_property target_constrs_file ${DESIGN_CONSTRAINT_DIR}/debug_core.xdc [current_fileset -constrset]
