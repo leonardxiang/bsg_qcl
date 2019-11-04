@@ -899,7 +899,7 @@ BUFGCE_DIV #(
 
   axi_clock_converter_0 axi4_hbm_cdc (
     .s_axi_aclk    (pcie_axi_clk_li             ),
-    .s_axi_aresetn (axi4_rstn_buf               ),
+    .s_axi_aresetn (pcie_axi_rstn_li            ),
 
     // Slave Interface Write Address Ports
     .s_axi_awid    (axi4_mc_cols_lo[i].awid     ),
@@ -1021,10 +1021,10 @@ BUFGCE_DIV #(
 
     (* dont_touch = "true" *) logic axi4_rstn_buf;
     lib_pipe #(.WIDTH(1), .STAGES(4)) AXI4_MUX_RST_N (
-      .clk    (axi_aclk_ch_buf[0] ),
-      .rst_n  (1'b1            ),
+      .clk    (axi_aclk_ch_buf[0]),
+      .rst_n  (1'b1              ),
       .in_bus (axi_rstn_ch_buf[0]),
-      .out_bus(axi4_rstn_buf   )
+      .out_bus(axi4_rstn_buf     )
     );
 
     axi4_mux #(
@@ -1103,10 +1103,10 @@ BUFGCE_DIV #(
 
     for (genvar i = 0; i < num_axi_slot_lp + 1; i++) begin : axi_dv_cvt
 
-      axi_dwidth_converter_1 axi_dwidth_converter_mc_to_mem (
+      axi_dwidth_converter_1 axi_dw_cvt_mc_to_mem (
         .s_axi_aclk    (axi_aclk_ch_buf[i]             ), // input wire s_axi_aclk
         .s_axi_aresetn (axi_rstn_ch_buf[i]             ), // input wire s_axi_aresetn
-        .s_axi_awid    (axi4_mc_cols_cdc_lo[i].awid    ), // input wire [3 : 0] s_axi_awid
+//        .s_axi_awid    (axi4_mc_cols_cdc_lo[i].awid    ), // input wire [3 : 0] s_axi_awid
         .s_axi_awaddr  (axi4_mc_cols_cdc_lo[i].awaddr  ), // input wire [63 : 0] s_axi_awaddr
         .s_axi_awlen   (axi4_mc_cols_cdc_lo[i].awlen   ), // input wire [7 : 0] s_axi_awlen
         .s_axi_awsize  (axi4_mc_cols_cdc_lo[i].awsize  ), // input wire [2 : 0] s_axi_awsize
