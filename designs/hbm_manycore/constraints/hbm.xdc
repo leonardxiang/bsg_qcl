@@ -12,10 +12,10 @@ set_property IOSTANDARD LVCMOS12 [get_ports AXI_ACLK_IN_0]
 set_property IOSTANDARD LVCMOS12 [get_ports AXI_ARESET_N_0]
 set_property IOSTANDARD LVCMOS12 [get_ports axi_trans_err]
 
-create_pblock pblock_1
+#create_pblock pblock_1
 
-      resize_pblock pblock_1 -add {SLICE_X0Y0:SLICE_X116Y121 DSP48E2_X0Y0:DSP48E2_X15Y41 RAMB18_X0Y0:RAMB18_X7Y47 RAMB36_X0Y0:RAMB36_X7Y23 URAM288_X0Y0:URAM288_X1Y31}
-add_cells_to_pblock pblock_1 -top
+#      resize_pblock pblock_1 -add {SLICE_X0Y0:SLICE_X116Y121 DSP48E2_X0Y0:DSP48E2_X15Y41 RAMB18_X0Y0:RAMB18_X7Y47 RAMB36_X0Y0:RAMB36_X7Y23 URAM288_X0Y0:URAM288_X1Y31}
+#add_cells_to_pblock pblock_1 -top
 
 
 

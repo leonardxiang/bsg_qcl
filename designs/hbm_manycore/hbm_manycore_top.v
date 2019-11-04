@@ -635,7 +635,7 @@ BUFGCE_DIV #(
   assign m_axib_rlast   = pcis_axi4_lo.rlast;
   assign m_axib_rvalid  = pcis_axi4_lo.rvalid;
 
-  axi_dwidth_converter_0 axi_dwidth_converter_64_to_mem_dwidth (
+  axi_dwidth_converter_0 axi_dw_cvt_pcie_to_mem_dwidth (
     .s_axi_aclk    (pcie_axi_clk_li        ), // input wire s_axi_aclk
     .s_axi_aresetn (pcie_axi_rstn_li       ), // input wire s_axi_aresetn
     .s_axi_awid    (pcis_axi4_li.awid      ), // input wire [3 : 0] s_axi_awid
@@ -1123,7 +1123,7 @@ BUFGCE_DIV #(
         .s_axi_wlast   (axi4_mc_cols_cdc_lo[i].wlast   ), // input wire s_axi_wlast
         .s_axi_wvalid  (axi4_mc_cols_cdc_lo[i].wvalid  ), // input wire s_axi_wvalid
         .s_axi_wready  (axi4_mc_cols_cdc_li[i].wready  ), // output wire s_axi_wready
-        .s_axi_bid     (axi4_mc_cols_cdc_li[i].bid     ), // output wire [3 : 0] s_axi_bid
+//        .s_axi_bid     (axi4_mc_cols_cdc_li[i].bid     ), // output wire [3 : 0] s_axi_bid
         .s_axi_bresp   (axi4_mc_cols_cdc_li[i].bresp   ), // output wire [1 : 0] s_axi_bresp
         .s_axi_bvalid  (axi4_mc_cols_cdc_li[i].bvalid  ), // output wire s_axi_bvalid
         .s_axi_bready  (axi4_mc_cols_cdc_lo[i].bready  ), // input wire s_axi_bready
