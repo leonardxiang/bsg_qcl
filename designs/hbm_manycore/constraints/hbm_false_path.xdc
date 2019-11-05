@@ -14,3 +14,4 @@ set_false_path -from [get_pins */*/*/*/apb_switch_r_reg/C] -to [get_pins *apb_se
 set_false_path -from [get_pins */*/*/*/apb_switch_r_reg/C] -to [get_pins *apb_seq_complete_5_st0_r0_reg/D]
 set_false_path -from [get_pins */*/*/*/apb_switch_r_reg/C] -to [get_pins *apb_seq_complete_6_st0_r0_reg/D]
 
+set_false_path -from [get_cells -hier -filter {name =~ *reset_debounce*/o_r*}] -to [get_cells -hier -filter {name =~ *_RST_N/pipe*}]

@@ -167,22 +167,22 @@ module hbm_manycore_top
 // Wire Delcaration
 ////////////////////////////////////////////////////////////////////////////////
 // (* keep = "TRUE" *)   wire          AXI_ACLK_IN_0_buf;
-(* keep = "TRUE" *)   wire          AXI_ACLK_IN_0_iobuf;
-(* keep = "TRUE" *)   wire          AXI_ACLK0_st0;
-(* keep = "TRUE" *)   wire          AXI_ACLK1_st0;
-(* keep = "TRUE" *)   wire          AXI_ACLK2_st0;
-(* keep = "TRUE" *)   wire          AXI_ACLK3_st0;
-(* keep = "TRUE" *)   wire          AXI_ACLK4_st0;
-(* keep = "TRUE" *)   wire          AXI_ACLK5_st0;
-(* keep = "TRUE" *)   wire          AXI_ACLK6_st0;
-(* keep = "TRUE" *)   wire          AXI_ACLK0_st0_buf;
-(* keep = "TRUE" *)   wire          AXI_ACLK1_st0_buf;
-(* keep = "TRUE" *)   wire          AXI_ACLK2_st0_buf;
-(* keep = "TRUE" *)   wire          AXI_ACLK3_st0_buf;
-(* keep = "TRUE" *)   wire          AXI_ACLK4_st0_buf;
-(* keep = "TRUE" *)   wire          AXI_ACLK5_st0_buf;
-(* keep = "TRUE" *)   wire          AXI_ACLK6_st0_buf;
-(* keep = "TRUE" *)  wire          i_clk_atg_axi_vio_st0;
+(* dont_touch = "true" *)   wire          AXI_ACLK_IN_0_iobuf;
+(* dont_touch = "true" *)   wire          AXI_ACLK0_st0;
+(* dont_touch = "true" *)   wire          AXI_ACLK1_st0;
+(* dont_touch = "true" *)   wire          AXI_ACLK2_st0;
+(* dont_touch = "true" *)   wire          AXI_ACLK3_st0;
+(* dont_touch = "true" *)   wire          AXI_ACLK4_st0;
+(* dont_touch = "true" *)   wire          AXI_ACLK5_st0;
+(* dont_touch = "true" *)   wire          AXI_ACLK6_st0;
+(* dont_touch = "true" *)   wire          AXI_ACLK0_st0_buf;
+(* dont_touch = "true" *)   wire          AXI_ACLK1_st0_buf;
+(* dont_touch = "true" *)   wire          AXI_ACLK2_st0_buf;
+(* dont_touch = "true" *)   wire          AXI_ACLK3_st0_buf;
+(* dont_touch = "true" *)   wire          AXI_ACLK4_st0_buf;
+(* dont_touch = "true" *)   wire          AXI_ACLK5_st0_buf;
+(* dont_touch = "true" *)   wire          AXI_ACLK6_st0_buf;
+(* dont_touch = "true" *)  wire          i_clk_atg_axi_vio_st0;
   wire          MMCM_LOCK_0;
 reg           axi_rst_0_mmcm_n_0;
 
@@ -296,6 +296,46 @@ BUFGCE_DIV #(.BUFGCE_DIVIDE(2)) u_AXI_vio_CLK_st0 (
   .O  (i_clk_atg_axi_vio_st0)
 );
 
+
+// ---------------------------------------------
+// RESETS
+// ---------------------------------------------
+  // PCIe
+  wire rstn_axi4_pcie_li;
+
+  // external
+  logic ext_reset_dbnc;
+  qcl_debounce #(.width_p(22)) reset_debounce (
+    .clk_i(clk_axi4_pcie_li),
+    .i    (ext_btn_reset_i),
+    .o    (ext_reset_dbnc )
+  );
+
+  // manycore reset
+  // TODO: add system hard reset
+  wire mc_reset_i = (ext_reset_dbnc  | ~rstn_axi4_pcie_li);
+
+  // hbm system reset
+  wire APB_0_PRESET_N = ~ext_reset_dbnc;
+  wire AXI_ARESET_N_0 = ~ext_reset_dbnc;
+
+  wire axi_trans_err;
+  assign leds_o[5] = ~(&locked_pll) | axi_trans_err;
+
+(* dont_touch = "true" *) reg           axi_rst0_st0_n;
+(* ASYNC_REG = "TRUE" *) reg           axi_rst1_st0_r1_n, axi_rst1_st0_r2_n;
+(* dont_touch = "true" *) reg           axi_rst1_st0_n;
+(* ASYNC_REG = "TRUE" *) reg           axi_rst2_st0_r1_n, axi_rst2_st0_r2_n;
+(* dont_touch = "true" *) reg           axi_rst2_st0_n;
+(* ASYNC_REG = "TRUE" *) reg           axi_rst3_st0_r1_n, axi_rst3_st0_r2_n;
+(* dont_touch = "true" *) reg           axi_rst3_st0_n;
+(* ASYNC_REG = "TRUE" *) reg           axi_rst4_st0_r1_n, axi_rst4_st0_r2_n;
+(* dont_touch = "true" *) reg           axi_rst4_st0_n;
+(* ASYNC_REG = "TRUE" *) reg           axi_rst5_st0_r1_n, axi_rst5_st0_r2_n;
+(* dont_touch = "true" *) reg           axi_rst5_st0_n;
+(* ASYNC_REG = "TRUE" *) reg           axi_rst6_st0_r1_n, axi_rst6_st0_r2_n;
+(* dont_touch = "true" *) reg           axi_rst6_st0_n;
+
   logic [num_max_hbm_chs_lp-1:0] aclk_mem_ch_buf;
   logic [num_max_hbm_chs_lp-1:0] rstn_mem_ch_buf;
 
@@ -337,47 +377,6 @@ BUFGCE_DIV #(.BUFGCE_DIVIDE(2)) u_AXI_vio_CLK_st0 (
   assign rstn_mem_ch_buf[14] = axi_rst6_st0_n;
   assign aclk_mem_ch_buf[15] = AXI_ACLK6_st0_buf;
   assign rstn_mem_ch_buf[15] = axi_rst6_st0_n;
-
-
-
-// ---------------------------------------------
-// RESETS
-// ---------------------------------------------
-  // PCIe
-  wire rstn_axi4_pcie_li;
-
-  // external
-  logic ext_reset_dbnc;
-  qcl_debounce #(.width_p(22)) dbnc (
-    .clk_i(clk_axi4_pcie_li),
-    .i    (ext_btn_reset_i),
-    .o    (ext_reset_dbnc )
-  );
-
-  // manycore reset
-  // TODO: add system hard reset
-  wire mc_reset_i = (ext_reset_dbnc  | ~rstn_axi4_pcie_li);
-
-  // hbm system reset
-  wire APB_0_PRESET_N = ~ext_reset_dbnc;
-  wire AXI_ARESET_N_0 = ~ext_reset_dbnc;
-
-  wire axi_trans_err;
-  assign leds_o[5] = ~(&locked_pll) | axi_trans_err;
-
-(* keep = "TRUE" *) reg           axi_rst0_st0_n;
-(* ASYNC_REG = "TRUE" *) reg           axi_rst1_st0_r1_n, axi_rst1_st0_r2_n;
-(* keep = "TRUE" *) reg           axi_rst1_st0_n;
-(* ASYNC_REG = "TRUE" *) reg           axi_rst2_st0_r1_n, axi_rst2_st0_r2_n;
-(* keep = "TRUE" *) reg           axi_rst2_st0_n;
-(* ASYNC_REG = "TRUE" *) reg           axi_rst3_st0_r1_n, axi_rst3_st0_r2_n;
-(* keep = "TRUE" *) reg           axi_rst3_st0_n;
-(* ASYNC_REG = "TRUE" *) reg           axi_rst4_st0_r1_n, axi_rst4_st0_r2_n;
-(* keep = "TRUE" *) reg           axi_rst4_st0_n;
-(* ASYNC_REG = "TRUE" *) reg           axi_rst5_st0_r1_n, axi_rst5_st0_r2_n;
-(* keep = "TRUE" *) reg           axi_rst5_st0_n;
-(* ASYNC_REG = "TRUE" *) reg           axi_rst6_st0_r1_n, axi_rst6_st0_r2_n;
-(* keep = "TRUE" *) reg           axi_rst6_st0_n;
 
   // ---------------------------------------------
   // PCIe endpoint
@@ -896,7 +895,7 @@ BUFGCE_DIV #(.BUFGCE_DIVIDE(2)) u_AXI_vio_CLK_st0 (
   end
 
   logic axi4_rstn_buf;
-  lib_pipe #(.WIDTH(1), .STAGES(4)) AXI4_RST_N (
+  lib_pipe #(.WIDTH(1), .STAGES(4)) AXI4_DW_CVT_RST_N (
     .clk    (clk_axi4_pcie_li ),
     .rst_n  (1'b1            ),
     .in_bus (rstn_axi4_pcie_li),
@@ -993,6 +992,14 @@ BUFGCE_DIV #(.BUFGCE_DIVIDE(2)) u_AXI_vio_CLK_st0 (
   // axi4 memory clock domain crossing
   // ---------------------------------------------
 
+  logic axi4_clk_cvt_rstn_buf;
+  lib_pipe #(.WIDTH(1), .STAGES(4)) AXI4_CDC_RST_N (
+    .clk    (clk_axi4_pcie_li     ),
+    .rst_n  (1'b1                 ),
+    .in_bus (rstn_axi4_pcie_li    ),
+    .out_bus(axi4_clk_cvt_rstn_buf)
+  );
+
   for (genvar i = 0; i < num_mem_slot_lp; i++) begin : mem_cdc
 
     axi_clock_converter_v2_1_18_axi_clock_converter #(
@@ -1015,7 +1022,7 @@ BUFGCE_DIV #(.BUFGCE_DIVIDE(2)) u_AXI_vio_CLK_st0 (
       .C_SYNCHRONIZER_STAGE       (3                    )
     ) cdc_axi4 (
       .s_axi_aclk    (clk_axi4_pcie_li         ),
-      .s_axi_aresetn (rstn_axi4_pcie_li        ),
+      .s_axi_aresetn (axi4_clk_cvt_rstn_buf        ),
 
       .s_axi_awid    (s_axi4_cdc_li[i].awid    ),
       .s_axi_awaddr  (s_axi4_cdc_li[i].awaddr  ),
@@ -1195,9 +1202,6 @@ BUFGCE_DIV #(.BUFGCE_DIVIDE(2)) u_AXI_vio_CLK_st0 (
   else if (mem_cfg_p == e_vcache_blocking_axi4_hbm) begin : lv3_hbm
 
     for (genvar i = 0; i < num_mem_slot_lp; i++) begin : axi_dv_cvt
-
-      assign axi4_hbm_chs_lo[i].bid = '0;
-      assign axi4_hbm_chs_lo[i].rid = '0;
 
       assign axi4_hbm_chs_li[i] = m_axi4_cdc_lo[i];
       assign m_axi4_cdc_li[i] = axi4_hbm_chs_lo[i];
