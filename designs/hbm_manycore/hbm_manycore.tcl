@@ -17,13 +17,19 @@ ${VIVADO_IP_DIR}/axis_dwidth_converter_v1_1/hdl/axis_dwidth_converter_v1_1_vl_rf
 
 ${VIVADO_IP_DIR}/axi_clock_converter_v2_1/hdl/axi_clock_converter_v2_1_vl_rfs.v
 ${VIVADO_IP_DIR}/fifo_generator_v13_2/hdl/fifo_generator_v13_2_rfs.v
+${VIVADO_IP_DIR}/fifo_generator_v13_2/hdl/fifo_generator_v13_2_vhsyn_rfs.vhd
 ${VIVADO_IP_DIR}/fifo_generator_v13_2/simulation/fifo_generator_vlog_beh.v
+
+${VIVADO_IP_DIR}/axi_dwidth_converter_v2_1/hdl/axi_dwidth_converter_v2_1_vlsyn_rfs.v
+${VIVADO_IP_DIR}/axi_protocol_converter_v2_1/hdl/axi_protocol_converter_v2_1_vl_rfs.v
+${VIVADO_IP_DIR}/axi_data_fifo_v2_1/hdl/axi_data_fifo_v2_1_vl_rfs.v
 "]
 
 add_files -fileset sources_1 ${XILINX_EX_DIR}/hbm_atg/
 
-
+# ${VIVADO_IP_DIR}/axi_dwidth_converter_v2_1/hdl/axi_dwidth_converter_v2_1_vl_rfs.v
 # ${VIVADO_IP_DIR}/fifo_generator_v13_2/hdl/fifo_generator_v13_2_rfs.vhd
+# ${VIVADO_IP_DIR}/fifo_generator_v13_2/hdl/fifo_generator_v13_2_vhsyn_rfs.vhd
 # ${VIVADO_IP_DIR}/fifo_generator_v13_2/hdl/fifo_generator_v13_2_vhsyn_rfs.vhd
 # read_verilog -vhd [join "
 # ${VIVADO_IP_DIR}/fifo_generator_v13_2/hdl/fifo_generator_v13_2_rfs.v
@@ -38,26 +44,26 @@ set PRJ_IP_DIR ${DESIGN_PRJ_DIR}/${DESIGN_NAME}.srcs/sources_1/ip
 # -------------------------------------
 # axi data width converter
 # -------------------------------------
-create_ip -name axi_dwidth_converter -vendor xilinx.com -library ip -version 2.1 -module_name axi_dwidth_converter_0
+# create_ip -name axi_dwidth_converter -vendor xilinx.com -library ip -version 2.1 -module_name axi_dwidth_converter_0
+# # set_property -dict [list \
+# # CONFIG.SI_DATA_WIDTH {64} \
+# # CONFIG.MI_DATA_WIDTH {256} \
+# # CONFIG.SI_ID_WIDTH {4} \
+# # CONFIG.MAX_SPLIT_BEATS {16} \
+# # CONFIG.FIFO_MODE {1}
+# # ] [get_ips axi_dwidth_converter_0]
 # set_property -dict [list \
+# CONFIG.ADDR_WIDTH {64} \
 # CONFIG.SI_DATA_WIDTH {64} \
-# CONFIG.MI_DATA_WIDTH {256} \
+# CONFIG.MI_DATA_WIDTH {512} \
 # CONFIG.SI_ID_WIDTH {4} \
 # CONFIG.MAX_SPLIT_BEATS {16} \
-# CONFIG.FIFO_MODE {1}
+# CONFIG.FIFO_MODE {1} \
+# CONFIG.ACLK_ASYNC {0}
 # ] [get_ips axi_dwidth_converter_0]
-set_property -dict [list \
-CONFIG.ADDR_WIDTH {64} \
-CONFIG.SI_DATA_WIDTH {64} \
-CONFIG.MI_DATA_WIDTH {512} \
-CONFIG.SI_ID_WIDTH {4} \
-CONFIG.MAX_SPLIT_BEATS {16} \
-CONFIG.FIFO_MODE {1} \
-CONFIG.ACLK_ASYNC {0}
-] [get_ips axi_dwidth_converter_0]
-generate_target {instantiation_template} [get_files ${PRJ_IP_DIR}/axi_dwidth_converter_0/axi_dwidth_converter_0.xci]
-set_property generate_synth_checkpoint false [get_files  ${PRJ_IP_DIR}/axi_dwidth_converter_0/axi_dwidth_converter_0.xci]
-generate_target all [get_files  ${PRJ_IP_DIR}/axi_dwidth_converter_0/axi_dwidth_converter_0.xci]
+# generate_target {instantiation_template} [get_files ${PRJ_IP_DIR}/axi_dwidth_converter_0/axi_dwidth_converter_0.xci]
+# set_property generate_synth_checkpoint false [get_files  ${PRJ_IP_DIR}/axi_dwidth_converter_0/axi_dwidth_converter_0.xci]
+# generate_target all [get_files  ${PRJ_IP_DIR}/axi_dwidth_converter_0/axi_dwidth_converter_0.xci]
 
 # # -------------------------------------
 # # axi bram
@@ -214,33 +220,34 @@ set_property generate_synth_checkpoint false [get_files  ${PRJ_IP_DIR}/hbm_0/hbm
 generate_target all [get_files  ${PRJ_IP_DIR}/hbm_0/hbm_0.xci]
 
 
-# -------------------------------------
-# axi data width converter
-# -------------------------------------
-create_ip -name axi_dwidth_converter -vendor xilinx.com -library ip -version 2.1 -module_name axi_dwidth_converter_1
-set_property -dict [list \
-CONFIG.ADDR_WIDTH {64} \
-CONFIG.SI_DATA_WIDTH {512} \
-CONFIG.MI_DATA_WIDTH {256} \
-CONFIG.MAX_SPLIT_BEATS {16}
-] [get_ips axi_dwidth_converter_1]
-generate_target {instantiation_template} [get_files ${PRJ_IP_DIR}/axi_dwidth_converter_1/axi_dwidth_converter_1.xci]
-set_property generate_synth_checkpoint false [get_files ${PRJ_IP_DIR}/axi_dwidth_converter_1/axi_dwidth_converter_1.xci]
-generate_target all [get_files  ${PRJ_IP_DIR}/axi_dwidth_converter_1/axi_dwidth_converter_1.xci]
+# # -------------------------------------
+# # axi data width converter
+# # -------------------------------------
+# create_ip -name axi_dwidth_converter -vendor xilinx.com -library ip -version 2.1 -module_name axi_dwidth_converter_1
+# set_property -dict [list \
+# CONFIG.ADDR_WIDTH {64} \
+# CONFIG.SI_DATA_WIDTH {512} \
+# CONFIG.MI_DATA_WIDTH {256} \
+# CONFIG.ID_WIDTH {6} \
+# CONFIG.MAX_SPLIT_BEATS {16}
+# ] [get_ips axi_dwidth_converter_1]
+# generate_target {instantiation_template} [get_files ${PRJ_IP_DIR}/axi_dwidth_converter_1/axi_dwidth_converter_1.xci]
+# set_property generate_synth_checkpoint false [get_files ${PRJ_IP_DIR}/axi_dwidth_converter_1/axi_dwidth_converter_1.xci]
+# generate_target all [get_files  ${PRJ_IP_DIR}/axi_dwidth_converter_1/axi_dwidth_converter_1.xci]
 
 
 # -------------------------------------
 # axi clock converter
 # -------------------------------------
-# create_ip -name axi_clock_converter -vendor xilinx.com -library ip -version 2.1 -module_name axi_clock_converter_0
-# set_property -dict [list \
-# CONFIG.ADDR_WIDTH {64} \
-# CONFIG.DATA_WIDTH {512} \
-# CONFIG.ID_WIDTH {6}
-# ] [get_ips axi_clock_converter_0]
-# generate_target {instantiation_template} [get_files ${PRJ_IP_DIR}/axi_clock_converter_0/axi_clock_converter_0.xci]
-# set_property generate_synth_checkpoint false [get_files  ${PRJ_IP_DIR}/axi_clock_converter_0/axi_clock_converter_0.xci]
-# generate_target all [get_files  ${PRJ_IP_DIR}/axi_clock_converter_0/axi_clock_converter_0.xci]
+create_ip -name axi_clock_converter -vendor xilinx.com -library ip -version 2.1 -module_name axi_clock_converter_0
+set_property -dict [list \
+CONFIG.ADDR_WIDTH {64} \
+CONFIG.DATA_WIDTH {256} \
+CONFIG.ID_WIDTH {6}
+] [get_ips axi_clock_converter_0]
+generate_target {instantiation_template} [get_files ${PRJ_IP_DIR}/axi_clock_converter_0/axi_clock_converter_0.xci]
+set_property generate_synth_checkpoint false [get_files  ${PRJ_IP_DIR}/axi_clock_converter_0/axi_clock_converter_0.xci]
+generate_target all [get_files  ${PRJ_IP_DIR}/axi_clock_converter_0/axi_clock_converter_0.xci]
 
 # =====================================
 # add constraints

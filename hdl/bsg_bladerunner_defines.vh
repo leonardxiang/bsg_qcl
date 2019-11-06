@@ -7,4 +7,6 @@
 
 `define FPGA_LESS_RST
 
+`define USE_IP_GEN
+
 `endif

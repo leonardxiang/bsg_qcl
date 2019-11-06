@@ -8,20 +8,21 @@ CL_DIR = $(BSG_F1_DIR)
 HARDWARE_PATH = $(BSG_F1_DIR)/hardware
 include $(HARDWARE_PATH)/hardware.mk
 
-# Replace F1 source include folder path with vheads of this repo
-VINCLUDES += $(BSG_QCL_DIR)/hdl
-VINCLUDES += ${BSG_F1_DIR}/hardware
-
-# Replace F1 headerfile with vheads of this repo
-# VHEADERS := $(filter-out ${BSG_F1_DIR}/hardware/bsg_axi_bus_pkg.vh,$(VHEADERS) $(VSOURCES))
-
-VHEADERS := $(filter-out ${BSG_F1_DIR}/hardware/cl_id_defines.vh,$(VHEADERS))
-# VSOURCES := $(filter-out ${BSG_F1_DIR}/hardware/cl_manycore.sv,$(VHEADERS) $(VSOURCES))
-# Replace any xilinx(unsynthesizable or F1 specific) sources with xilinx-synthesizable sources
+# Replace any xilinx(unsynthesizable or F1 specific)
 VSOURCES := $(filter-out $(BASEJUMP_STL_DIR)/bsg_mem/bsg_mem_1rw_sync_mask_write_bit.v,$(VHEADERS) $(VSOURCES))
 VSOURCES += $(BASEJUMP_STL_DIR)/hard/ultrascale_plus/bsg_mem/bsg_mem_1rw_sync_mask_write_bit.v
 
+# Project defines
 VHEADERS := $(BSG_QCL_DIR)/hdl/bsg_bladerunner_defines.vh $(VHEADERS)
+
+# Filter out not used F1 headers
+VHEADERS := $(filter-out ${BSG_F1_DIR}/hardware/cl_id_defines.vh,$(VHEADERS))
+# VSOURCES := $(filter-out ${BSG_F1_DIR}/hardware/cl_manycore.sv,$(VHEADERS) $(VSOURCES))
+
+# include folder path with vheads of this repo
+VINCLUDES += $(BSG_QCL_DIR)/hdl
+VINCLUDES += ${BSG_F1_DIR}/hardware
+
 VSOURCES += $(BSG_QCL_DIR)/hdl/bsg_fpga_board_pkg.v
 VSOURCES := $(filter-out ${BSG_F1_DIR}/hardware/s_axil_mcl_adapter.v,$(VHEADERS) $(VSOURCES))
 VSOURCES += $(BSG_QCL_DIR)/hdl/s_axil_mcl_adapter.v
