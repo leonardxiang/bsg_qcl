@@ -23,7 +23,7 @@ module hbm_manycore_top
   ,parameter pcie_axi_addr_width_p = 64
   ,parameter APP_DATA_WIDTH   = 256
   ,parameter APP_ADDR_WIDTH = 33
-  ,parameter num_hbm_chs_p = 8
+  ,parameter num_hbm_chs_lp = 16
   ,localparam hbm_data_width_lp = 256
   ,localparam num_max_hbm_chs_lp = 16
   `ifdef SIMULATION_MODE
@@ -72,8 +72,8 @@ module hbm_manycore_top
   bsg_axi4_mosi_bus_s s_axi4_bram_li;
   bsg_axi4_miso_bus_s s_axi4_bram_lo;
 
-  bsg_axi4_hbm_si_s [num_hbm_chs_p-1:0] axi4_hbm_chs_li;
-  bsg_axi4_hbm_mo_s [num_hbm_chs_p-1:0] axi4_hbm_chs_lo;
+  bsg_axi4_hbm_si_s [num_hbm_chs_lp-1:0] axi4_hbm_chs_li;
+  bsg_axi4_hbm_mo_s [num_hbm_chs_lp-1:0] axi4_hbm_chs_lo;
 
 
   // ---------------------------------------------
@@ -915,7 +915,7 @@ BUFGCE_DIV #(.BUFGCE_DIVIDE(2)) u_AXI_vio_CLK_st0 (
       assign m_axi4_cdc_li[i] = axi4_hbm_chs_lo[i];
     end : axi_dv_cvt
 
-    for (genvar i = num_axi_slot_lp; i < num_hbm_chs_p; i++) begin : tie_off_hbm_axi4
+    for (genvar i = num_axi_slot_lp; i < num_hbm_chs_lp; i++) begin : tie_off_hbm_axi4
       assign axi4_hbm_chs_li[i] = '0; // to hbm_channels
       // assign axi4_hbm_chs_lo_cast = axi4_hbm_chs_lo
     end : tie_off_hbm_axi4
@@ -5798,8 +5798,8 @@ axi_pmon_v1_0 #(
 ////////////////////////////////////////////////////////////////////////////////
 // Instantiating AXI_TG - 8
 ////////////////////////////////////////////////////////////////////////////////
-assign AXI_08_ARADDR = {vio_tg_glb_start_addr_8[32:28],o_m_axi_araddr_8[27:0]};
-assign AXI_08_AWADDR = {vio_tg_glb_start_addr_8[32:28],o_m_axi_awaddr_8[27:0]};
+// assign AXI_08_ARADDR = {vio_tg_glb_start_addr_8[32:28],o_m_axi_araddr_8[27:0]};
+// assign AXI_08_AWADDR = {vio_tg_glb_start_addr_8[32:28],o_m_axi_awaddr_8[27:0]};
 
 atg_axi#(
   .SIMULATION                          (SIMULATION),
@@ -5897,46 +5897,87 @@ atg_axi#(
   .tg_ila_debug                        (tg_ila_debug_8),
   .tg_qdriv_submode11_app_rd           (1'b0),
   // Slave Interface Write Address Ports
-  .i_m_axi_awready                     (AXI_08_AWREADY),
-  .o_m_axi_awid                        (AXI_08_AWID),
-  .o_m_axi_awaddr                      (o_m_axi_awaddr_8),
-  .o_m_axi_awlen                       (AXI_08_AWLEN),
-  .o_m_axi_awsize                      (AXI_08_AWSIZE),
-  .o_m_axi_awburst                     (AXI_08_AWBURST),
+  .i_m_axi_awready                     ('0),
+  .o_m_axi_awid                        (),
+  .o_m_axi_awaddr                      (),
+  .o_m_axi_awlen                       (),
+  .o_m_axi_awsize                      (),
+  .o_m_axi_awburst                     (),
   .o_m_axi_awlock                      (),
-  .o_m_axi_awcache                     (AXI_08_AWCACHE),
-  .o_m_axi_awprot                      (AXI_08_AWPROT),
-  .o_m_axi_awvalid                     (AXI_08_AWVALID),
+  .o_m_axi_awcache                     (),
+  .o_m_axi_awprot                      (),
+  .o_m_axi_awvalid                     (),
   // Slave Interface Write Data Ports
-  .i_m_axi_wready                      (AXI_08_WREADY),
-  .o_m_axi_wdata                       (AXI_08_WDATA),
-  .o_m_axi_wstrb                       (AXI_08_WSTRB),
-  .o_m_axi_wlast                       (AXI_08_WLAST),
-  .o_m_axi_wvalid                      (AXI_08_WVALID),
+  .i_m_axi_wready                      ('0),
+  .o_m_axi_wdata                       (),
+  .o_m_axi_wstrb                       (),
+  .o_m_axi_wlast                       (),
+  .o_m_axi_wvalid                      (),
   // Slave Interface Write Response Ports
-  .i_m_axi_bid                         (AXI_08_BID),
-  .i_m_axi_bresp                       (AXI_08_BRESP),
-  .i_m_axi_bvalid                      (AXI_08_BVALID),
-  .o_m_axi_bready                      (AXI_08_BREADY),
-  .i_m_axi_arready                     (AXI_08_ARREADY),
+  .i_m_axi_bid                         ('0),
+  .i_m_axi_bresp                       ('0),
+  .i_m_axi_bvalid                      ('0),
+  .o_m_axi_bready                      (),
+  .i_m_axi_arready                     ('0),
   // Slave Interface Read Address Ports
-  .o_m_axi_arid                        (AXI_08_ARID),
-  .o_m_axi_araddr                      (o_m_axi_araddr_8),
-  .o_m_axi_arlen                       (AXI_08_ARLEN),
-  .o_m_axi_arsize                      (AXI_08_ARSIZE),
-  .o_m_axi_arburst                     (AXI_08_ARBURST),
+  .o_m_axi_arid                        (),
+  .o_m_axi_araddr                      (),
+  .o_m_axi_arlen                       (),
+  .o_m_axi_arsize                      (),
+  .o_m_axi_arburst                     (),
   .o_m_axi_arlock                      (),
-  .o_m_axi_arcache                     (AXI_08_ARCACHE),
+  .o_m_axi_arcache                     (),
   .o_m_axi_arprot                      (),
-  .o_m_axi_arvalid                     (AXI_08_ARVALID),
+  .o_m_axi_arvalid                     (),
   // Slave Interface Read Data Ports
-  .i_m_axi_rid                         (AXI_08_RID),
-  .i_m_axi_rresp                       (AXI_08_RRESP),
-  .i_m_axi_rvalid                      (AXI_08_RVALID),
-  .i_m_axi_rdata                       (AXI_08_RDATA),
-  .i_m_axi_rlast                       (AXI_08_RLAST),
-  .o_m_axi_rready                      (AXI_08_RREADY)
+  .i_m_axi_rid                         ('0),
+  .i_m_axi_rresp                       ('0),
+  .i_m_axi_rvalid                      ('0),
+  .i_m_axi_rdata                       ('0),
+  .i_m_axi_rlast                       ('0),
+  .o_m_axi_rready                      ()
 );
+
+  //  mosi signals
+  assign AXI_00_AWID    = axi4_hbm_chs_li[8].awid;
+  assign AXI_00_AWADDR  = axi4_hbm_chs_li[8].awaddr[0][32:0];
+  assign AXI_00_AWLEN   = axi4_hbm_chs_li[8].awlen;
+  assign AXI_00_AWSIZE  = axi4_hbm_chs_li[8].awsize;
+  assign AXI_00_AWBURST = axi4_hbm_chs_li[8].awburst;
+  // assign AXI_00_awlock = axi4_hbm_chs_li[8].awlock;
+  assign AXI_00_AWCACHE = axi4_hbm_chs_li[8].awcache;
+  assign AXI_00_AWPROT  = axi4_hbm_chs_li[8].awprot;
+  assign AXI_00_AWVALID = axi4_hbm_chs_li[8].awvalid;
+  assign AXI_00_WDATA   = axi4_hbm_chs_li[8].wdata;
+  assign AXI_00_WSTRB   = axi4_hbm_chs_li[8].wstrb;
+  assign AXI_00_WLAST   = axi4_hbm_chs_li[8].wlast;
+  assign AXI_00_WVALID  = axi4_hbm_chs_li[8].wvalid;
+  assign AXI_00_BREADY  = axi4_hbm_chs_li[8].bready;
+  assign AXI_00_ARID    = axi4_hbm_chs_li[8].arid;
+  assign AXI_00_ARADDR  = axi4_hbm_chs_li[8].araddr[0][32:0];
+  assign AXI_00_ARLEN   = axi4_hbm_chs_li[8].arlen;
+  assign AXI_00_ARSIZE  = axi4_hbm_chs_li[8].arsize;
+  assign AXI_00_ARBURST = axi4_hbm_chs_li[8].arburst;
+  // assign ( = axi4_hbm_chs_li[8].arburst;
+  assign AXI_00_ARCACHE = axi4_hbm_chs_li[8].arcache;
+  // assign ( = axi4_hbm_chs_li[8].arprot;
+  assign AXI_00_ARVALID = axi4_hbm_chs_li[8].arvalid;
+  assign AXI_00_RREADY  = axi4_hbm_chs_li[8].rready;
+
+  //  miso signals
+  assign axi4_hbm_chs_lo[8].awready = AXI_00_AWREADY;
+  assign axi4_hbm_chs_lo[8].wready  = AXI_00_WREADY;
+  assign axi4_hbm_chs_lo[8].bid     = AXI_00_BID;
+  assign axi4_hbm_chs_lo[8].bresp   = AXI_00_BRESP;
+  assign axi4_hbm_chs_lo[8].bvalid  = AXI_00_BVALID;
+  assign axi4_hbm_chs_lo[8].arready = AXI_00_ARREADY;
+  assign axi4_hbm_chs_lo[8].rid     = AXI_00_RID;
+  assign axi4_hbm_chs_lo[8].rresp   = AXI_00_RRESP;
+  assign axi4_hbm_chs_lo[8].rvalid  = AXI_00_RVALID;
+  assign axi4_hbm_chs_lo[8].rdata   = AXI_00_RDATA;
+  assign axi4_hbm_chs_lo[8].rlast   = AXI_00_RLAST;
+
+
 
 assign  vio_tg_rst_8 =  1'd0;
 assign  i_force_vio_tg_status_done_8 = 16'h0000;
@@ -6035,8 +6076,8 @@ axi_pmon_v1_0 #(
 ////////////////////////////////////////////////////////////////////////////////
 // Instantiating AXI_TG - 9
 ////////////////////////////////////////////////////////////////////////////////
-assign AXI_09_ARADDR = {vio_tg_glb_start_addr_9[32:28],o_m_axi_araddr_9[27:0]};
-assign AXI_09_AWADDR = {vio_tg_glb_start_addr_9[32:28],o_m_axi_awaddr_9[27:0]};
+// assign AXI_09_ARADDR = {vio_tg_glb_start_addr_9[32:28],o_m_axi_araddr_9[27:0]};
+// assign AXI_09_AWADDR = {vio_tg_glb_start_addr_9[32:28],o_m_axi_awaddr_9[27:0]};
 
 atg_axi#(
   .SIMULATION                          (SIMULATION),
@@ -6134,46 +6175,87 @@ atg_axi#(
   .tg_ila_debug                        (tg_ila_debug_9),
   .tg_qdriv_submode11_app_rd           (1'b0),
   // Slave Interface Write Address Ports
-  .i_m_axi_awready                     (AXI_09_AWREADY),
-  .o_m_axi_awid                        (AXI_09_AWID),
-  .o_m_axi_awaddr                      (o_m_axi_awaddr_9),
-  .o_m_axi_awlen                       (AXI_09_AWLEN),
-  .o_m_axi_awsize                      (AXI_09_AWSIZE),
-  .o_m_axi_awburst                     (AXI_09_AWBURST),
+  .i_m_axi_awready                     ('0),
+  .o_m_axi_awid                        (),
+  .o_m_axi_awaddr                      (),
+  .o_m_axi_awlen                       (),
+  .o_m_axi_awsize                      (),
+  .o_m_axi_awburst                     (),
   .o_m_axi_awlock                      (),
-  .o_m_axi_awcache                     (AXI_09_AWCACHE),
-  .o_m_axi_awprot                      (AXI_09_AWPROT),
-  .o_m_axi_awvalid                     (AXI_09_AWVALID),
+  .o_m_axi_awcache                     (),
+  .o_m_axi_awprot                      (),
+  .o_m_axi_awvalid                     (),
   // Slave Interface Write Data Ports
-  .i_m_axi_wready                      (AXI_09_WREADY),
-  .o_m_axi_wdata                       (AXI_09_WDATA),
-  .o_m_axi_wstrb                       (AXI_09_WSTRB),
-  .o_m_axi_wlast                       (AXI_09_WLAST),
-  .o_m_axi_wvalid                      (AXI_09_WVALID),
+  .i_m_axi_wready                      ('0),
+  .o_m_axi_wdata                       (),
+  .o_m_axi_wstrb                       (),
+  .o_m_axi_wlast                       (),
+  .o_m_axi_wvalid                      (),
   // Slave Interface Write Response Ports
-  .i_m_axi_bid                         (AXI_09_BID),
-  .i_m_axi_bresp                       (AXI_09_BRESP),
-  .i_m_axi_bvalid                      (AXI_09_BVALID),
-  .o_m_axi_bready                      (AXI_09_BREADY),
-  .i_m_axi_arready                     (AXI_09_ARREADY),
+  .i_m_axi_bid                         ('0),
+  .i_m_axi_bresp                       ('0),
+  .i_m_axi_bvalid                      ('0),
+  .o_m_axi_bready                      (),
+  .i_m_axi_arready                     ('0),
   // Slave Interface Read Address Ports
-  .o_m_axi_arid                        (AXI_09_ARID),
-  .o_m_axi_araddr                      (o_m_axi_araddr_9),
-  .o_m_axi_arlen                       (AXI_09_ARLEN),
-  .o_m_axi_arsize                      (AXI_09_ARSIZE),
-  .o_m_axi_arburst                     (AXI_09_ARBURST),
+  .o_m_axi_arid                        (),
+  .o_m_axi_araddr                      (),
+  .o_m_axi_arlen                       (),
+  .o_m_axi_arsize                      (),
+  .o_m_axi_arburst                     (),
   .o_m_axi_arlock                      (),
-  .o_m_axi_arcache                     (AXI_09_ARCACHE),
+  .o_m_axi_arcache                     (),
   .o_m_axi_arprot                      (),
-  .o_m_axi_arvalid                     (AXI_09_ARVALID),
+  .o_m_axi_arvalid                     (),
   // Slave Interface Read Data Ports
-  .i_m_axi_rid                         (AXI_09_RID),
-  .i_m_axi_rresp                       (AXI_09_RRESP),
-  .i_m_axi_rvalid                      (AXI_09_RVALID),
-  .i_m_axi_rdata                       (AXI_09_RDATA),
-  .i_m_axi_rlast                       (AXI_09_RLAST),
-  .o_m_axi_rready                      (AXI_09_RREADY)
+  .i_m_axi_rid                         ('0),
+  .i_m_axi_rresp                       ('0),
+  .i_m_axi_rvalid                      ('0),
+  .i_m_axi_rdata                       ('0),
+  .i_m_axi_rlast                       ('0),
+  .o_m_axi_rready                      ()
 );
+
+  //  mosi signals
+  assign AXI_00_AWID    = axi4_hbm_chs_li[9].awid;
+  assign AXI_00_AWADDR  = axi4_hbm_chs_li[9].awaddr[0][32:0];
+  assign AXI_00_AWLEN   = axi4_hbm_chs_li[9].awlen;
+  assign AXI_00_AWSIZE  = axi4_hbm_chs_li[9].awsize;
+  assign AXI_00_AWBURST = axi4_hbm_chs_li[9].awburst;
+  // assign AXI_00_awlock = axi4_hbm_chs_li[9].awlock;
+  assign AXI_00_AWCACHE = axi4_hbm_chs_li[9].awcache;
+  assign AXI_00_AWPROT  = axi4_hbm_chs_li[9].awprot;
+  assign AXI_00_AWVALID = axi4_hbm_chs_li[9].awvalid;
+  assign AXI_00_WDATA   = axi4_hbm_chs_li[9].wdata;
+  assign AXI_00_WSTRB   = axi4_hbm_chs_li[9].wstrb;
+  assign AXI_00_WLAST   = axi4_hbm_chs_li[9].wlast;
+  assign AXI_00_WVALID  = axi4_hbm_chs_li[9].wvalid;
+  assign AXI_00_BREADY  = axi4_hbm_chs_li[9].bready;
+  assign AXI_00_ARID    = axi4_hbm_chs_li[9].arid;
+  assign AXI_00_ARADDR  = axi4_hbm_chs_li[9].araddr[0][32:0];
+  assign AXI_00_ARLEN   = axi4_hbm_chs_li[9].arlen;
+  assign AXI_00_ARSIZE  = axi4_hbm_chs_li[9].arsize;
+  assign AXI_00_ARBURST = axi4_hbm_chs_li[9].arburst;
+  // assign ( = axi4_hbm_chs_li[9].arburst;
+  assign AXI_00_ARCACHE = axi4_hbm_chs_li[9].arcache;
+  // assign ( = axi4_hbm_chs_li[9].arprot;
+  assign AXI_00_ARVALID = axi4_hbm_chs_li[9].arvalid;
+  assign AXI_00_RREADY  = axi4_hbm_chs_li[9].rready;
+
+  //  miso signals
+  assign axi4_hbm_chs_lo[9].awready = AXI_00_AWREADY;
+  assign axi4_hbm_chs_lo[9].wready  = AXI_00_WREADY;
+  assign axi4_hbm_chs_lo[9].bid     = AXI_00_BID;
+  assign axi4_hbm_chs_lo[9].bresp   = AXI_00_BRESP;
+  assign axi4_hbm_chs_lo[9].bvalid  = AXI_00_BVALID;
+  assign axi4_hbm_chs_lo[9].arready = AXI_00_ARREADY;
+  assign axi4_hbm_chs_lo[9].rid     = AXI_00_RID;
+  assign axi4_hbm_chs_lo[9].rresp   = AXI_00_RRESP;
+  assign axi4_hbm_chs_lo[9].rvalid  = AXI_00_RVALID;
+  assign axi4_hbm_chs_lo[9].rdata   = AXI_00_RDATA;
+  assign axi4_hbm_chs_lo[9].rlast   = AXI_00_RLAST;
+
+
 
 assign  vio_tg_rst_9 =  1'd0;
 assign  i_force_vio_tg_status_done_9 = 16'h0000;
@@ -6272,8 +6354,8 @@ axi_pmon_v1_0 #(
 ////////////////////////////////////////////////////////////////////////////////
 // Instantiating AXI_TG - 10
 ////////////////////////////////////////////////////////////////////////////////
-assign AXI_10_ARADDR = {vio_tg_glb_start_addr_10[32:28],o_m_axi_araddr_10[27:0]};
-assign AXI_10_AWADDR = {vio_tg_glb_start_addr_10[32:28],o_m_axi_awaddr_10[27:0]};
+// assign AXI_10_ARADDR = {vio_tg_glb_start_addr_10[32:28],o_m_axi_araddr_10[27:0]};
+// assign AXI_10_AWADDR = {vio_tg_glb_start_addr_10[32:28],o_m_axi_awaddr_10[27:0]};
 
 atg_axi#(
   .SIMULATION                          (SIMULATION),
@@ -6371,46 +6453,87 @@ atg_axi#(
   .tg_ila_debug                        (tg_ila_debug_10),
   .tg_qdriv_submode11_app_rd           (1'b0),
   // Slave Interface Write Address Ports
-  .i_m_axi_awready                     (AXI_10_AWREADY),
-  .o_m_axi_awid                        (AXI_10_AWID),
-  .o_m_axi_awaddr                      (o_m_axi_awaddr_10),
-  .o_m_axi_awlen                       (AXI_10_AWLEN),
-  .o_m_axi_awsize                      (AXI_10_AWSIZE),
-  .o_m_axi_awburst                     (AXI_10_AWBURST),
+  .i_m_axi_awready                     ('0),
+  .o_m_axi_awid                        (),
+  .o_m_axi_awaddr                      (),
+  .o_m_axi_awlen                       (),
+  .o_m_axi_awsize                      (),
+  .o_m_axi_awburst                     (),
   .o_m_axi_awlock                      (),
-  .o_m_axi_awcache                     (AXI_10_AWCACHE),
-  .o_m_axi_awprot                      (AXI_10_AWPROT),
-  .o_m_axi_awvalid                     (AXI_10_AWVALID),
+  .o_m_axi_awcache                     (),
+  .o_m_axi_awprot                      (),
+  .o_m_axi_awvalid                     (),
   // Slave Interface Write Data Ports
-  .i_m_axi_wready                      (AXI_10_WREADY),
-  .o_m_axi_wdata                       (AXI_10_WDATA),
-  .o_m_axi_wstrb                       (AXI_10_WSTRB),
-  .o_m_axi_wlast                       (AXI_10_WLAST),
-  .o_m_axi_wvalid                      (AXI_10_WVALID),
+  .i_m_axi_wready                      ('0),
+  .o_m_axi_wdata                       (),
+  .o_m_axi_wstrb                       (),
+  .o_m_axi_wlast                       (),
+  .o_m_axi_wvalid                      (),
   // Slave Interface Write Response Ports
-  .i_m_axi_bid                         (AXI_10_BID),
-  .i_m_axi_bresp                       (AXI_10_BRESP),
-  .i_m_axi_bvalid                      (AXI_10_BVALID),
-  .o_m_axi_bready                      (AXI_10_BREADY),
-  .i_m_axi_arready                     (AXI_10_ARREADY),
+  .i_m_axi_bid                         ('0),
+  .i_m_axi_bresp                       ('0),
+  .i_m_axi_bvalid                      ('0),
+  .o_m_axi_bready                      (),
+  .i_m_axi_arready                     ('0),
   // Slave Interface Read Address Ports
-  .o_m_axi_arid                        (AXI_10_ARID),
-  .o_m_axi_araddr                      (o_m_axi_araddr_10),
-  .o_m_axi_arlen                       (AXI_10_ARLEN),
-  .o_m_axi_arsize                      (AXI_10_ARSIZE),
-  .o_m_axi_arburst                     (AXI_10_ARBURST),
+  .o_m_axi_arid                        (),
+  .o_m_axi_araddr                      (),
+  .o_m_axi_arlen                       (),
+  .o_m_axi_arsize                      (),
+  .o_m_axi_arburst                     (),
   .o_m_axi_arlock                      (),
-  .o_m_axi_arcache                     (AXI_10_ARCACHE),
+  .o_m_axi_arcache                     (),
   .o_m_axi_arprot                      (),
-  .o_m_axi_arvalid                     (AXI_10_ARVALID),
+  .o_m_axi_arvalid                     (),
   // Slave Interface Read Data Ports
-  .i_m_axi_rid                         (AXI_10_RID),
-  .i_m_axi_rresp                       (AXI_10_RRESP),
-  .i_m_axi_rvalid                      (AXI_10_RVALID),
-  .i_m_axi_rdata                       (AXI_10_RDATA),
-  .i_m_axi_rlast                       (AXI_10_RLAST),
-  .o_m_axi_rready                      (AXI_10_RREADY)
+  .i_m_axi_rid                         ('0),
+  .i_m_axi_rresp                       ('0),
+  .i_m_axi_rvalid                      ('0),
+  .i_m_axi_rdata                       ('0),
+  .i_m_axi_rlast                       ('0),
+  .o_m_axi_rready                      ()
 );
+
+  //  mosi signals
+  assign AXI_00_AWID    = axi4_hbm_chs_li[10].awid;
+  assign AXI_00_AWADDR  = axi4_hbm_chs_li[10].awaddr[0][32:0];
+  assign AXI_00_AWLEN   = axi4_hbm_chs_li[10].awlen;
+  assign AXI_00_AWSIZE  = axi4_hbm_chs_li[10].awsize;
+  assign AXI_00_AWBURST = axi4_hbm_chs_li[10].awburst;
+  // assign AXI_00_awlock = axi4_hbm_chs_li[10].awlock;
+  assign AXI_00_AWCACHE = axi4_hbm_chs_li[10].awcache;
+  assign AXI_00_AWPROT  = axi4_hbm_chs_li[10].awprot;
+  assign AXI_00_AWVALID = axi4_hbm_chs_li[10].awvalid;
+  assign AXI_00_WDATA   = axi4_hbm_chs_li[10].wdata;
+  assign AXI_00_WSTRB   = axi4_hbm_chs_li[10].wstrb;
+  assign AXI_00_WLAST   = axi4_hbm_chs_li[10].wlast;
+  assign AXI_00_WVALID  = axi4_hbm_chs_li[10].wvalid;
+  assign AXI_00_BREADY  = axi4_hbm_chs_li[10].bready;
+  assign AXI_00_ARID    = axi4_hbm_chs_li[10].arid;
+  assign AXI_00_ARADDR  = axi4_hbm_chs_li[10].araddr[0][32:0];
+  assign AXI_00_ARLEN   = axi4_hbm_chs_li[10].arlen;
+  assign AXI_00_ARSIZE  = axi4_hbm_chs_li[10].arsize;
+  assign AXI_00_ARBURST = axi4_hbm_chs_li[10].arburst;
+  // assign ( = axi4_hbm_chs_li[10].arburst;
+  assign AXI_00_ARCACHE = axi4_hbm_chs_li[10].arcache;
+  // assign ( = axi4_hbm_chs_li[10].arprot;
+  assign AXI_00_ARVALID = axi4_hbm_chs_li[10].arvalid;
+  assign AXI_00_RREADY  = axi4_hbm_chs_li[10].rready;
+
+  //  miso signals
+  assign axi4_hbm_chs_lo[10].awready = AXI_00_AWREADY;
+  assign axi4_hbm_chs_lo[10].wready  = AXI_00_WREADY;
+  assign axi4_hbm_chs_lo[10].bid     = AXI_00_BID;
+  assign axi4_hbm_chs_lo[10].bresp   = AXI_00_BRESP;
+  assign axi4_hbm_chs_lo[10].bvalid  = AXI_00_BVALID;
+  assign axi4_hbm_chs_lo[10].arready = AXI_00_ARREADY;
+  assign axi4_hbm_chs_lo[10].rid     = AXI_00_RID;
+  assign axi4_hbm_chs_lo[10].rresp   = AXI_00_RRESP;
+  assign axi4_hbm_chs_lo[10].rvalid  = AXI_00_RVALID;
+  assign axi4_hbm_chs_lo[10].rdata   = AXI_00_RDATA;
+  assign axi4_hbm_chs_lo[10].rlast   = AXI_00_RLAST;
+
+
 
 assign  vio_tg_rst_10 =  1'd0;
 assign  i_force_vio_tg_status_done_10 = 16'h0000;
@@ -6509,8 +6632,8 @@ axi_pmon_v1_0 #(
 ////////////////////////////////////////////////////////////////////////////////
 // Instantiating AXI_TG - 11
 ////////////////////////////////////////////////////////////////////////////////
-assign AXI_11_ARADDR = {vio_tg_glb_start_addr_11[32:28],o_m_axi_araddr_11[27:0]};
-assign AXI_11_AWADDR = {vio_tg_glb_start_addr_11[32:28],o_m_axi_awaddr_11[27:0]};
+// assign AXI_11_ARADDR = {vio_tg_glb_start_addr_11[32:28],o_m_axi_araddr_11[27:0]};
+// assign AXI_11_AWADDR = {vio_tg_glb_start_addr_11[32:28],o_m_axi_awaddr_11[27:0]};
 
 atg_axi#(
   .SIMULATION                          (SIMULATION),
@@ -6608,46 +6731,86 @@ atg_axi#(
   .tg_ila_debug                        (tg_ila_debug_11),
   .tg_qdriv_submode11_app_rd           (1'b0),
   // Slave Interface Write Address Ports
-  .i_m_axi_awready                     (AXI_11_AWREADY),
-  .o_m_axi_awid                        (AXI_11_AWID),
-  .o_m_axi_awaddr                      (o_m_axi_awaddr_11),
-  .o_m_axi_awlen                       (AXI_11_AWLEN),
-  .o_m_axi_awsize                      (AXI_11_AWSIZE),
-  .o_m_axi_awburst                     (AXI_11_AWBURST),
+  .i_m_axi_awready                     ('0),
+  .o_m_axi_awid                        (),
+  .o_m_axi_awaddr                      (),
+  .o_m_axi_awlen                       (),
+  .o_m_axi_awsize                      (),
+  .o_m_axi_awburst                     (),
   .o_m_axi_awlock                      (),
-  .o_m_axi_awcache                     (AXI_11_AWCACHE),
-  .o_m_axi_awprot                      (AXI_11_AWPROT),
-  .o_m_axi_awvalid                     (AXI_11_AWVALID),
+  .o_m_axi_awcache                     (),
+  .o_m_axi_awprot                      (),
+  .o_m_axi_awvalid                     (),
   // Slave Interface Write Data Ports
-  .i_m_axi_wready                      (AXI_11_WREADY),
-  .o_m_axi_wdata                       (AXI_11_WDATA),
-  .o_m_axi_wstrb                       (AXI_11_WSTRB),
-  .o_m_axi_wlast                       (AXI_11_WLAST),
-  .o_m_axi_wvalid                      (AXI_11_WVALID),
+  .i_m_axi_wready                      ('0),
+  .o_m_axi_wdata                       (),
+  .o_m_axi_wstrb                       (),
+  .o_m_axi_wlast                       (),
+  .o_m_axi_wvalid                      (),
   // Slave Interface Write Response Ports
-  .i_m_axi_bid                         (AXI_11_BID),
-  .i_m_axi_bresp                       (AXI_11_BRESP),
-  .i_m_axi_bvalid                      (AXI_11_BVALID),
-  .o_m_axi_bready                      (AXI_11_BREADY),
-  .i_m_axi_arready                     (AXI_11_ARREADY),
+  .i_m_axi_bid                         ('0),
+  .i_m_axi_bresp                       ('0),
+  .i_m_axi_bvalid                      ('0),
+  .o_m_axi_bready                      (),
+  .i_m_axi_arready                     ('0),
   // Slave Interface Read Address Ports
-  .o_m_axi_arid                        (AXI_11_ARID),
-  .o_m_axi_araddr                      (o_m_axi_araddr_11),
-  .o_m_axi_arlen                       (AXI_11_ARLEN),
-  .o_m_axi_arsize                      (AXI_11_ARSIZE),
-  .o_m_axi_arburst                     (AXI_11_ARBURST),
+  .o_m_axi_arid                        (),
+  .o_m_axi_araddr                      (),
+  .o_m_axi_arlen                       (),
+  .o_m_axi_arsize                      (),
+  .o_m_axi_arburst                     (),
   .o_m_axi_arlock                      (),
-  .o_m_axi_arcache                     (AXI_11_ARCACHE),
+  .o_m_axi_arcache                     (),
   .o_m_axi_arprot                      (),
-  .o_m_axi_arvalid                     (AXI_11_ARVALID),
+  .o_m_axi_arvalid                     (),
   // Slave Interface Read Data Ports
-  .i_m_axi_rid                         (AXI_11_RID),
-  .i_m_axi_rresp                       (AXI_11_RRESP),
-  .i_m_axi_rvalid                      (AXI_11_RVALID),
-  .i_m_axi_rdata                       (AXI_11_RDATA),
-  .i_m_axi_rlast                       (AXI_11_RLAST),
-  .o_m_axi_rready                      (AXI_11_RREADY)
+  .i_m_axi_rid                         ('0),
+  .i_m_axi_rresp                       ('0),
+  .i_m_axi_rvalid                      ('0),
+  .i_m_axi_rdata                       ('0),
+  .i_m_axi_rlast                       ('0),
+  .o_m_axi_rready                      ()
 );
+
+  //  mosi signals
+  assign AXI_00_AWID    = axi4_hbm_chs_li[11].awid;
+  assign AXI_00_AWADDR  = axi4_hbm_chs_li[11].awaddr[0][32:0];
+  assign AXI_00_AWLEN   = axi4_hbm_chs_li[11].awlen;
+  assign AXI_00_AWSIZE  = axi4_hbm_chs_li[11].awsize;
+  assign AXI_00_AWBURST = axi4_hbm_chs_li[11].awburst;
+  // assign AXI_00_awlock = axi4_hbm_chs_li[11].awlock;
+  assign AXI_00_AWCACHE = axi4_hbm_chs_li[11].awcache;
+  assign AXI_00_AWPROT  = axi4_hbm_chs_li[11].awprot;
+  assign AXI_00_AWVALID = axi4_hbm_chs_li[11].awvalid;
+  assign AXI_00_WDATA   = axi4_hbm_chs_li[11].wdata;
+  assign AXI_00_WSTRB   = axi4_hbm_chs_li[11].wstrb;
+  assign AXI_00_WLAST   = axi4_hbm_chs_li[11].wlast;
+  assign AXI_00_WVALID  = axi4_hbm_chs_li[11].wvalid;
+  assign AXI_00_BREADY  = axi4_hbm_chs_li[11].bready;
+  assign AXI_00_ARID    = axi4_hbm_chs_li[11].arid;
+  assign AXI_00_ARADDR  = axi4_hbm_chs_li[11].araddr[0][32:0];
+  assign AXI_00_ARLEN   = axi4_hbm_chs_li[11].arlen;
+  assign AXI_00_ARSIZE  = axi4_hbm_chs_li[11].arsize;
+  assign AXI_00_ARBURST = axi4_hbm_chs_li[11].arburst;
+  // assign ( = axi4_hbm_chs_li[11].arburst;
+  assign AXI_00_ARCACHE = axi4_hbm_chs_li[11].arcache;
+  // assign ( = axi4_hbm_chs_li[11].arprot;
+  assign AXI_00_ARVALID = axi4_hbm_chs_li[11].arvalid;
+  assign AXI_00_RREADY  = axi4_hbm_chs_li[11].rready;
+
+  //  miso signals
+  assign axi4_hbm_chs_lo[11].awready = AXI_00_AWREADY;
+  assign axi4_hbm_chs_lo[11].wready  = AXI_00_WREADY;
+  assign axi4_hbm_chs_lo[11].bid     = AXI_00_BID;
+  assign axi4_hbm_chs_lo[11].bresp   = AXI_00_BRESP;
+  assign axi4_hbm_chs_lo[11].bvalid  = AXI_00_BVALID;
+  assign axi4_hbm_chs_lo[11].arready = AXI_00_ARREADY;
+  assign axi4_hbm_chs_lo[11].rid     = AXI_00_RID;
+  assign axi4_hbm_chs_lo[11].rresp   = AXI_00_RRESP;
+  assign axi4_hbm_chs_lo[11].rvalid  = AXI_00_RVALID;
+  assign axi4_hbm_chs_lo[11].rdata   = AXI_00_RDATA;
+  assign axi4_hbm_chs_lo[11].rlast   = AXI_00_RLAST;
+
 
 assign  vio_tg_rst_11 =  1'd0;
 assign  i_force_vio_tg_status_done_11 = 16'h0000;
@@ -6746,8 +6909,8 @@ axi_pmon_v1_0 #(
 ////////////////////////////////////////////////////////////////////////////////
 // Instantiating AXI_TG - 12
 ////////////////////////////////////////////////////////////////////////////////
-assign AXI_12_ARADDR = {vio_tg_glb_start_addr_12[32:28],o_m_axi_araddr_12[27:0]};
-assign AXI_12_AWADDR = {vio_tg_glb_start_addr_12[32:28],o_m_axi_awaddr_12[27:0]};
+// assign AXI_12_ARADDR = {vio_tg_glb_start_addr_12[32:28],o_m_axi_araddr_12[27:0]};
+// assign AXI_12_AWADDR = {vio_tg_glb_start_addr_12[32:28],o_m_axi_awaddr_12[27:0]};
 
 atg_axi#(
   .SIMULATION                          (SIMULATION),
@@ -6845,46 +7008,86 @@ atg_axi#(
   .tg_ila_debug                        (tg_ila_debug_12),
   .tg_qdriv_submode11_app_rd           (1'b0),
   // Slave Interface Write Address Ports
-  .i_m_axi_awready                     (AXI_12_AWREADY),
-  .o_m_axi_awid                        (AXI_12_AWID),
-  .o_m_axi_awaddr                      (o_m_axi_awaddr_12),
-  .o_m_axi_awlen                       (AXI_12_AWLEN),
-  .o_m_axi_awsize                      (AXI_12_AWSIZE),
-  .o_m_axi_awburst                     (AXI_12_AWBURST),
+  .i_m_axi_awready                     ('0),
+  .o_m_axi_awid                        (),
+  .o_m_axi_awaddr                      (),
+  .o_m_axi_awlen                       (),
+  .o_m_axi_awsize                      (),
+  .o_m_axi_awburst                     (),
   .o_m_axi_awlock                      (),
-  .o_m_axi_awcache                     (AXI_12_AWCACHE),
-  .o_m_axi_awprot                      (AXI_12_AWPROT),
-  .o_m_axi_awvalid                     (AXI_12_AWVALID),
+  .o_m_axi_awcache                     (),
+  .o_m_axi_awprot                      (),
+  .o_m_axi_awvalid                     (),
   // Slave Interface Write Data Ports
-  .i_m_axi_wready                      (AXI_12_WREADY),
-  .o_m_axi_wdata                       (AXI_12_WDATA),
-  .o_m_axi_wstrb                       (AXI_12_WSTRB),
-  .o_m_axi_wlast                       (AXI_12_WLAST),
-  .o_m_axi_wvalid                      (AXI_12_WVALID),
+  .i_m_axi_wready                      ('0),
+  .o_m_axi_wdata                       (),
+  .o_m_axi_wstrb                       (),
+  .o_m_axi_wlast                       (),
+  .o_m_axi_wvalid                      (),
   // Slave Interface Write Response Ports
-  .i_m_axi_bid                         (AXI_12_BID),
-  .i_m_axi_bresp                       (AXI_12_BRESP),
-  .i_m_axi_bvalid                      (AXI_12_BVALID),
-  .o_m_axi_bready                      (AXI_12_BREADY),
-  .i_m_axi_arready                     (AXI_12_ARREADY),
+  .i_m_axi_bid                         ('0),
+  .i_m_axi_bresp                       ('0),
+  .i_m_axi_bvalid                      ('0),
+  .o_m_axi_bready                      (),
+  .i_m_axi_arready                     ('0),
   // Slave Interface Read Address Ports
-  .o_m_axi_arid                        (AXI_12_ARID),
-  .o_m_axi_araddr                      (o_m_axi_araddr_12),
-  .o_m_axi_arlen                       (AXI_12_ARLEN),
-  .o_m_axi_arsize                      (AXI_12_ARSIZE),
-  .o_m_axi_arburst                     (AXI_12_ARBURST),
+  .o_m_axi_arid                        (),
+  .o_m_axi_araddr                      (),
+  .o_m_axi_arlen                       (),
+  .o_m_axi_arsize                      (),
+  .o_m_axi_arburst                     (),
   .o_m_axi_arlock                      (),
-  .o_m_axi_arcache                     (AXI_12_ARCACHE),
+  .o_m_axi_arcache                     (),
   .o_m_axi_arprot                      (),
-  .o_m_axi_arvalid                     (AXI_12_ARVALID),
+  .o_m_axi_arvalid                     (),
   // Slave Interface Read Data Ports
-  .i_m_axi_rid                         (AXI_12_RID),
-  .i_m_axi_rresp                       (AXI_12_RRESP),
-  .i_m_axi_rvalid                      (AXI_12_RVALID),
-  .i_m_axi_rdata                       (AXI_12_RDATA),
-  .i_m_axi_rlast                       (AXI_12_RLAST),
-  .o_m_axi_rready                      (AXI_12_RREADY)
+  .i_m_axi_rid                         ('0),
+  .i_m_axi_rresp                       ('0),
+  .i_m_axi_rvalid                      ('0),
+  .i_m_axi_rdata                       ('0),
+  .i_m_axi_rlast                       ('0),
+  .o_m_axi_rready                      ()
 );
+
+  //  mosi signals
+  assign AXI_00_AWID    = axi4_hbm_chs_li[12].awid;
+  assign AXI_00_AWADDR  = axi4_hbm_chs_li[12].awaddr[0][32:0];
+  assign AXI_00_AWLEN   = axi4_hbm_chs_li[12].awlen;
+  assign AXI_00_AWSIZE  = axi4_hbm_chs_li[12].awsize;
+  assign AXI_00_AWBURST = axi4_hbm_chs_li[12].awburst;
+  // assign AXI_00_awlock = axi4_hbm_chs_li[12].awlock;
+  assign AXI_00_AWCACHE = axi4_hbm_chs_li[12].awcache;
+  assign AXI_00_AWPROT  = axi4_hbm_chs_li[12].awprot;
+  assign AXI_00_AWVALID = axi4_hbm_chs_li[12].awvalid;
+  assign AXI_00_WDATA   = axi4_hbm_chs_li[12].wdata;
+  assign AXI_00_WSTRB   = axi4_hbm_chs_li[12].wstrb;
+  assign AXI_00_WLAST   = axi4_hbm_chs_li[12].wlast;
+  assign AXI_00_WVALID  = axi4_hbm_chs_li[12].wvalid;
+  assign AXI_00_BREADY  = axi4_hbm_chs_li[12].bready;
+  assign AXI_00_ARID    = axi4_hbm_chs_li[12].arid;
+  assign AXI_00_ARADDR  = axi4_hbm_chs_li[12].araddr[0][32:0];
+  assign AXI_00_ARLEN   = axi4_hbm_chs_li[12].arlen;
+  assign AXI_00_ARSIZE  = axi4_hbm_chs_li[12].arsize;
+  assign AXI_00_ARBURST = axi4_hbm_chs_li[12].arburst;
+  // assign ( = axi4_hbm_chs_li[12].arburst;
+  assign AXI_00_ARCACHE = axi4_hbm_chs_li[12].arcache;
+  // assign ( = axi4_hbm_chs_li[12].arprot;
+  assign AXI_00_ARVALID = axi4_hbm_chs_li[12].arvalid;
+  assign AXI_00_RREADY  = axi4_hbm_chs_li[12].rready;
+
+  //  miso signals
+  assign axi4_hbm_chs_lo[12].awready = AXI_00_AWREADY;
+  assign axi4_hbm_chs_lo[12].wready  = AXI_00_WREADY;
+  assign axi4_hbm_chs_lo[12].bid     = AXI_00_BID;
+  assign axi4_hbm_chs_lo[12].bresp   = AXI_00_BRESP;
+  assign axi4_hbm_chs_lo[12].bvalid  = AXI_00_BVALID;
+  assign axi4_hbm_chs_lo[12].arready = AXI_00_ARREADY;
+  assign axi4_hbm_chs_lo[12].rid     = AXI_00_RID;
+  assign axi4_hbm_chs_lo[12].rresp   = AXI_00_RRESP;
+  assign axi4_hbm_chs_lo[12].rvalid  = AXI_00_RVALID;
+  assign axi4_hbm_chs_lo[12].rdata   = AXI_00_RDATA;
+  assign axi4_hbm_chs_lo[12].rlast   = AXI_00_RLAST;
+
 
 assign  vio_tg_rst_12 =  1'd0;
 assign  i_force_vio_tg_status_done_12 = 16'h0000;
@@ -6983,8 +7186,8 @@ axi_pmon_v1_0 #(
 ////////////////////////////////////////////////////////////////////////////////
 // Instantiating AXI_TG - 13
 ////////////////////////////////////////////////////////////////////////////////
-assign AXI_13_ARADDR = {vio_tg_glb_start_addr_13[32:28],o_m_axi_araddr_13[27:0]};
-assign AXI_13_AWADDR = {vio_tg_glb_start_addr_13[32:28],o_m_axi_awaddr_13[27:0]};
+// assign AXI_13_ARADDR = {vio_tg_glb_start_addr_13[32:28],o_m_axi_araddr_13[27:0]};
+// assign AXI_13_AWADDR = {vio_tg_glb_start_addr_13[32:28],o_m_axi_awaddr_13[27:0]};
 
 atg_axi#(
   .SIMULATION                          (SIMULATION),
@@ -7082,46 +7285,86 @@ atg_axi#(
   .tg_ila_debug                        (tg_ila_debug_13),
   .tg_qdriv_submode11_app_rd           (1'b0),
   // Slave Interface Write Address Ports
-  .i_m_axi_awready                     (AXI_13_AWREADY),
-  .o_m_axi_awid                        (AXI_13_AWID),
-  .o_m_axi_awaddr                      (o_m_axi_awaddr_13),
-  .o_m_axi_awlen                       (AXI_13_AWLEN),
-  .o_m_axi_awsize                      (AXI_13_AWSIZE),
-  .o_m_axi_awburst                     (AXI_13_AWBURST),
+  .i_m_axi_awready                     ('0),
+  .o_m_axi_awid                        (),
+  .o_m_axi_awaddr                      (),
+  .o_m_axi_awlen                       (),
+  .o_m_axi_awsize                      (),
+  .o_m_axi_awburst                     (),
   .o_m_axi_awlock                      (),
-  .o_m_axi_awcache                     (AXI_13_AWCACHE),
-  .o_m_axi_awprot                      (AXI_13_AWPROT),
-  .o_m_axi_awvalid                     (AXI_13_AWVALID),
+  .o_m_axi_awcache                     (),
+  .o_m_axi_awprot                      (),
+  .o_m_axi_awvalid                     (),
   // Slave Interface Write Data Ports
-  .i_m_axi_wready                      (AXI_13_WREADY),
-  .o_m_axi_wdata                       (AXI_13_WDATA),
-  .o_m_axi_wstrb                       (AXI_13_WSTRB),
-  .o_m_axi_wlast                       (AXI_13_WLAST),
-  .o_m_axi_wvalid                      (AXI_13_WVALID),
+  .i_m_axi_wready                      ('0),
+  .o_m_axi_wdata                       (),
+  .o_m_axi_wstrb                       (),
+  .o_m_axi_wlast                       (),
+  .o_m_axi_wvalid                      (),
   // Slave Interface Write Response Ports
-  .i_m_axi_bid                         (AXI_13_BID),
-  .i_m_axi_bresp                       (AXI_13_BRESP),
-  .i_m_axi_bvalid                      (AXI_13_BVALID),
-  .o_m_axi_bready                      (AXI_13_BREADY),
-  .i_m_axi_arready                     (AXI_13_ARREADY),
+  .i_m_axi_bid                         ('0),
+  .i_m_axi_bresp                       ('0),
+  .i_m_axi_bvalid                      ('0),
+  .o_m_axi_bready                      (),
+  .i_m_axi_arready                     ('0),
   // Slave Interface Read Address Ports
-  .o_m_axi_arid                        (AXI_13_ARID),
-  .o_m_axi_araddr                      (o_m_axi_araddr_13),
-  .o_m_axi_arlen                       (AXI_13_ARLEN),
-  .o_m_axi_arsize                      (AXI_13_ARSIZE),
-  .o_m_axi_arburst                     (AXI_13_ARBURST),
+  .o_m_axi_arid                        (),
+  .o_m_axi_araddr                      (),
+  .o_m_axi_arlen                       (),
+  .o_m_axi_arsize                      (),
+  .o_m_axi_arburst                     (),
   .o_m_axi_arlock                      (),
-  .o_m_axi_arcache                     (AXI_13_ARCACHE),
+  .o_m_axi_arcache                     (),
   .o_m_axi_arprot                      (),
-  .o_m_axi_arvalid                     (AXI_13_ARVALID),
+  .o_m_axi_arvalid                     (),
   // Slave Interface Read Data Ports
-  .i_m_axi_rid                         (AXI_13_RID),
-  .i_m_axi_rresp                       (AXI_13_RRESP),
-  .i_m_axi_rvalid                      (AXI_13_RVALID),
-  .i_m_axi_rdata                       (AXI_13_RDATA),
-  .i_m_axi_rlast                       (AXI_13_RLAST),
-  .o_m_axi_rready                      (AXI_13_RREADY)
+  .i_m_axi_rid                         ('0),
+  .i_m_axi_rresp                       ('0),
+  .i_m_axi_rvalid                      ('0),
+  .i_m_axi_rdata                       ('0),
+  .i_m_axi_rlast                       ('0),
+  .o_m_axi_rready                      ()
 );
+
+  //  mosi signals
+  assign AXI_00_AWID    = axi4_hbm_chs_li[13].awid;
+  assign AXI_00_AWADDR  = axi4_hbm_chs_li[13].awaddr[0][32:0];
+  assign AXI_00_AWLEN   = axi4_hbm_chs_li[13].awlen;
+  assign AXI_00_AWSIZE  = axi4_hbm_chs_li[13].awsize;
+  assign AXI_00_AWBURST = axi4_hbm_chs_li[13].awburst;
+  // assign AXI_00_awlock = axi4_hbm_chs_li[13].awlock;
+  assign AXI_00_AWCACHE = axi4_hbm_chs_li[13].awcache;
+  assign AXI_00_AWPROT  = axi4_hbm_chs_li[13].awprot;
+  assign AXI_00_AWVALID = axi4_hbm_chs_li[13].awvalid;
+  assign AXI_00_WDATA   = axi4_hbm_chs_li[13].wdata;
+  assign AXI_00_WSTRB   = axi4_hbm_chs_li[13].wstrb;
+  assign AXI_00_WLAST   = axi4_hbm_chs_li[13].wlast;
+  assign AXI_00_WVALID  = axi4_hbm_chs_li[13].wvalid;
+  assign AXI_00_BREADY  = axi4_hbm_chs_li[13].bready;
+  assign AXI_00_ARID    = axi4_hbm_chs_li[13].arid;
+  assign AXI_00_ARADDR  = axi4_hbm_chs_li[13].araddr[0][32:0];
+  assign AXI_00_ARLEN   = axi4_hbm_chs_li[13].arlen;
+  assign AXI_00_ARSIZE  = axi4_hbm_chs_li[13].arsize;
+  assign AXI_00_ARBURST = axi4_hbm_chs_li[13].arburst;
+  // assign ( = axi4_hbm_chs_li[13].arburst;
+  assign AXI_00_ARCACHE = axi4_hbm_chs_li[13].arcache;
+  // assign ( = axi4_hbm_chs_li[13].arprot;
+  assign AXI_00_ARVALID = axi4_hbm_chs_li[13].arvalid;
+  assign AXI_00_RREADY  = axi4_hbm_chs_li[13].rready;
+
+  //  miso signals
+  assign axi4_hbm_chs_lo[13].awready = AXI_00_AWREADY;
+  assign axi4_hbm_chs_lo[13].wready  = AXI_00_WREADY;
+  assign axi4_hbm_chs_lo[13].bid     = AXI_00_BID;
+  assign axi4_hbm_chs_lo[13].bresp   = AXI_00_BRESP;
+  assign axi4_hbm_chs_lo[13].bvalid  = AXI_00_BVALID;
+  assign axi4_hbm_chs_lo[13].arready = AXI_00_ARREADY;
+  assign axi4_hbm_chs_lo[13].rid     = AXI_00_RID;
+  assign axi4_hbm_chs_lo[13].rresp   = AXI_00_RRESP;
+  assign axi4_hbm_chs_lo[13].rvalid  = AXI_00_RVALID;
+  assign axi4_hbm_chs_lo[13].rdata   = AXI_00_RDATA;
+  assign axi4_hbm_chs_lo[13].rlast   = AXI_00_RLAST;
+
 
 assign  vio_tg_rst_13 =  1'd0;
 assign  i_force_vio_tg_status_done_13 = 16'h0000;
@@ -7220,8 +7463,8 @@ axi_pmon_v1_0 #(
 ////////////////////////////////////////////////////////////////////////////////
 // Instantiating AXI_TG - 14
 ////////////////////////////////////////////////////////////////////////////////
-assign AXI_14_ARADDR = {vio_tg_glb_start_addr_14[32:28],o_m_axi_araddr_14[27:0]};
-assign AXI_14_AWADDR = {vio_tg_glb_start_addr_14[32:28],o_m_axi_awaddr_14[27:0]};
+// assign AXI_14_ARADDR = {vio_tg_glb_start_addr_14[32:28],o_m_axi_araddr_14[27:0]};
+// assign AXI_14_AWADDR = {vio_tg_glb_start_addr_14[32:28],o_m_axi_awaddr_14[27:0]};
 
 atg_axi#(
   .SIMULATION                          (SIMULATION),
@@ -7319,46 +7562,87 @@ atg_axi#(
   .tg_ila_debug                        (tg_ila_debug_14),
   .tg_qdriv_submode11_app_rd           (1'b0),
   // Slave Interface Write Address Ports
-  .i_m_axi_awready                     (AXI_14_AWREADY),
-  .o_m_axi_awid                        (AXI_14_AWID),
-  .o_m_axi_awaddr                      (o_m_axi_awaddr_14),
-  .o_m_axi_awlen                       (AXI_14_AWLEN),
-  .o_m_axi_awsize                      (AXI_14_AWSIZE),
-  .o_m_axi_awburst                     (AXI_14_AWBURST),
+  .i_m_axi_awready                     ('0),
+  .o_m_axi_awid                        (),
+  .o_m_axi_awaddr                      (),
+  .o_m_axi_awlen                       (),
+  .o_m_axi_awsize                      (),
+  .o_m_axi_awburst                     (),
   .o_m_axi_awlock                      (),
-  .o_m_axi_awcache                     (AXI_14_AWCACHE),
-  .o_m_axi_awprot                      (AXI_14_AWPROT),
-  .o_m_axi_awvalid                     (AXI_14_AWVALID),
+  .o_m_axi_awcache                     (),
+  .o_m_axi_awprot                      (),
+  .o_m_axi_awvalid                     (),
   // Slave Interface Write Data Ports
-  .i_m_axi_wready                      (AXI_14_WREADY),
-  .o_m_axi_wdata                       (AXI_14_WDATA),
-  .o_m_axi_wstrb                       (AXI_14_WSTRB),
-  .o_m_axi_wlast                       (AXI_14_WLAST),
-  .o_m_axi_wvalid                      (AXI_14_WVALID),
+  .i_m_axi_wready                      ('0),
+  .o_m_axi_wdata                       (),
+  .o_m_axi_wstrb                       (),
+  .o_m_axi_wlast                       (),
+  .o_m_axi_wvalid                      (),
   // Slave Interface Write Response Ports
-  .i_m_axi_bid                         (AXI_14_BID),
-  .i_m_axi_bresp                       (AXI_14_BRESP),
-  .i_m_axi_bvalid                      (AXI_14_BVALID),
-  .o_m_axi_bready                      (AXI_14_BREADY),
-  .i_m_axi_arready                     (AXI_14_ARREADY),
+  .i_m_axi_bid                         ('0),
+  .i_m_axi_bresp                       ('0),
+  .i_m_axi_bvalid                      ('0),
+  .o_m_axi_bready                      (),
+  .i_m_axi_arready                     ('0),
   // Slave Interface Read Address Ports
-  .o_m_axi_arid                        (AXI_14_ARID),
-  .o_m_axi_araddr                      (o_m_axi_araddr_14),
-  .o_m_axi_arlen                       (AXI_14_ARLEN),
-  .o_m_axi_arsize                      (AXI_14_ARSIZE),
-  .o_m_axi_arburst                     (AXI_14_ARBURST),
+  .o_m_axi_arid                        (),
+  .o_m_axi_araddr                      (),
+  .o_m_axi_arlen                       (),
+  .o_m_axi_arsize                      (),
+  .o_m_axi_arburst                     (),
   .o_m_axi_arlock                      (),
-  .o_m_axi_arcache                     (AXI_14_ARCACHE),
+  .o_m_axi_arcache                     (),
   .o_m_axi_arprot                      (),
-  .o_m_axi_arvalid                     (AXI_14_ARVALID),
+  .o_m_axi_arvalid                     (),
   // Slave Interface Read Data Ports
-  .i_m_axi_rid                         (AXI_14_RID),
-  .i_m_axi_rresp                       (AXI_14_RRESP),
-  .i_m_axi_rvalid                      (AXI_14_RVALID),
-  .i_m_axi_rdata                       (AXI_14_RDATA),
-  .i_m_axi_rlast                       (AXI_14_RLAST),
-  .o_m_axi_rready                      (AXI_14_RREADY)
+  .i_m_axi_rid                         ('0),
+  .i_m_axi_rresp                       ('0),
+  .i_m_axi_rvalid                      ('0),
+  .i_m_axi_rdata                       ('0),
+  .i_m_axi_rlast                       ('0),
+  .o_m_axi_rready                      ()
 );
+
+  //  mosi signals
+  assign AXI_00_AWID    = axi4_hbm_chs_li[14].awid;
+  assign AXI_00_AWADDR  = axi4_hbm_chs_li[14].awaddr[0][32:0];
+  assign AXI_00_AWLEN   = axi4_hbm_chs_li[14].awlen;
+  assign AXI_00_AWSIZE  = axi4_hbm_chs_li[14].awsize;
+  assign AXI_00_AWBURST = axi4_hbm_chs_li[14].awburst;
+  // assign AXI_00_awlock = axi4_hbm_chs_li[14].awlock;
+  assign AXI_00_AWCACHE = axi4_hbm_chs_li[14].awcache;
+  assign AXI_00_AWPROT  = axi4_hbm_chs_li[14].awprot;
+  assign AXI_00_AWVALID = axi4_hbm_chs_li[14].awvalid;
+  assign AXI_00_WDATA   = axi4_hbm_chs_li[14].wdata;
+  assign AXI_00_WSTRB   = axi4_hbm_chs_li[14].wstrb;
+  assign AXI_00_WLAST   = axi4_hbm_chs_li[14].wlast;
+  assign AXI_00_WVALID  = axi4_hbm_chs_li[14].wvalid;
+  assign AXI_00_BREADY  = axi4_hbm_chs_li[14].bready;
+  assign AXI_00_ARID    = axi4_hbm_chs_li[14].arid;
+  assign AXI_00_ARADDR  = axi4_hbm_chs_li[14].araddr[0][32:0];
+  assign AXI_00_ARLEN   = axi4_hbm_chs_li[14].arlen;
+  assign AXI_00_ARSIZE  = axi4_hbm_chs_li[14].arsize;
+  assign AXI_00_ARBURST = axi4_hbm_chs_li[14].arburst;
+  // assign ( = axi4_hbm_chs_li[14].arburst;
+  assign AXI_00_ARCACHE = axi4_hbm_chs_li[14].arcache;
+  // assign ( = axi4_hbm_chs_li[14].arprot;
+  assign AXI_00_ARVALID = axi4_hbm_chs_li[14].arvalid;
+  assign AXI_00_RREADY  = axi4_hbm_chs_li[14].rready;
+
+  //  miso signals
+  assign axi4_hbm_chs_lo[14].awready = AXI_00_AWREADY;
+  assign axi4_hbm_chs_lo[14].wready  = AXI_00_WREADY;
+  assign axi4_hbm_chs_lo[14].bid     = AXI_00_BID;
+  assign axi4_hbm_chs_lo[14].bresp   = AXI_00_BRESP;
+  assign axi4_hbm_chs_lo[14].bvalid  = AXI_00_BVALID;
+  assign axi4_hbm_chs_lo[14].arready = AXI_00_ARREADY;
+  assign axi4_hbm_chs_lo[14].rid     = AXI_00_RID;
+  assign axi4_hbm_chs_lo[14].rresp   = AXI_00_RRESP;
+  assign axi4_hbm_chs_lo[14].rvalid  = AXI_00_RVALID;
+  assign axi4_hbm_chs_lo[14].rdata   = AXI_00_RDATA;
+  assign axi4_hbm_chs_lo[14].rlast   = AXI_00_RLAST;
+
+
 
 assign  vio_tg_rst_14 =  1'd0;
 assign  i_force_vio_tg_status_done_14 = 16'h0000;
@@ -7457,8 +7741,8 @@ axi_pmon_v1_0 #(
 ////////////////////////////////////////////////////////////////////////////////
 // Instantiating AXI_TG - 15
 ////////////////////////////////////////////////////////////////////////////////
-assign AXI_15_ARADDR = {vio_tg_glb_start_addr_15[32:28],o_m_axi_araddr_15[27:0]};
-assign AXI_15_AWADDR = {vio_tg_glb_start_addr_15[32:28],o_m_axi_awaddr_15[27:0]};
+// assign AXI_15_ARADDR = {vio_tg_glb_start_addr_15[32:28],o_m_axi_araddr_15[27:0]};
+// assign AXI_15_AWADDR = {vio_tg_glb_start_addr_15[32:28],o_m_axi_awaddr_15[27:0]};
 
 atg_axi#(
   .SIMULATION                          (SIMULATION),
@@ -7555,47 +7839,88 @@ atg_axi#(
   .vio_tg_status_watch_dog_hang        (vio_tg_status_watch_dog_hang_15),
   .tg_ila_debug                        (tg_ila_debug_15),
   .tg_qdriv_submode11_app_rd           (1'b0),
-  // Slave Interface Write Address Ports
-  .i_m_axi_awready                     (AXI_15_AWREADY),
-  .o_m_axi_awid                        (AXI_15_AWID),
-  .o_m_axi_awaddr                      (o_m_axi_awaddr_15),
-  .o_m_axi_awlen                       (AXI_15_AWLEN),
-  .o_m_axi_awsize                      (AXI_15_AWSIZE),
-  .o_m_axi_awburst                     (AXI_15_AWBURST),
+   // Slave Interface Write Address Ports
+  .i_m_axi_awready                     ('0),
+  .o_m_axi_awid                        (),
+  .o_m_axi_awaddr                      (),
+  .o_m_axi_awlen                       (),
+  .o_m_axi_awsize                      (),
+  .o_m_axi_awburst                     (),
   .o_m_axi_awlock                      (),
-  .o_m_axi_awcache                     (AXI_15_AWCACHE),
-  .o_m_axi_awprot                      (AXI_15_AWPROT),
-  .o_m_axi_awvalid                     (AXI_15_AWVALID),
+  .o_m_axi_awcache                     (),
+  .o_m_axi_awprot                      (),
+  .o_m_axi_awvalid                     (),
   // Slave Interface Write Data Ports
-  .i_m_axi_wready                      (AXI_15_WREADY),
-  .o_m_axi_wdata                       (AXI_15_WDATA),
-  .o_m_axi_wstrb                       (AXI_15_WSTRB),
-  .o_m_axi_wlast                       (AXI_15_WLAST),
-  .o_m_axi_wvalid                      (AXI_15_WVALID),
+  .i_m_axi_wready                      ('0),
+  .o_m_axi_wdata                       (),
+  .o_m_axi_wstrb                       (),
+  .o_m_axi_wlast                       (),
+  .o_m_axi_wvalid                      (),
   // Slave Interface Write Response Ports
-  .i_m_axi_bid                         (AXI_15_BID),
-  .i_m_axi_bresp                       (AXI_15_BRESP),
-  .i_m_axi_bvalid                      (AXI_15_BVALID),
-  .o_m_axi_bready                      (AXI_15_BREADY),
-  .i_m_axi_arready                     (AXI_15_ARREADY),
+  .i_m_axi_bid                         ('0),
+  .i_m_axi_bresp                       ('0),
+  .i_m_axi_bvalid                      ('0),
+  .o_m_axi_bready                      (),
+  .i_m_axi_arready                     ('0),
   // Slave Interface Read Address Ports
-  .o_m_axi_arid                        (AXI_15_ARID),
-  .o_m_axi_araddr                      (o_m_axi_araddr_15),
-  .o_m_axi_arlen                       (AXI_15_ARLEN),
-  .o_m_axi_arsize                      (AXI_15_ARSIZE),
-  .o_m_axi_arburst                     (AXI_15_ARBURST),
+  .o_m_axi_arid                        (),
+  .o_m_axi_araddr                      (),
+  .o_m_axi_arlen                       (),
+  .o_m_axi_arsize                      (),
+  .o_m_axi_arburst                     (),
   .o_m_axi_arlock                      (),
-  .o_m_axi_arcache                     (AXI_15_ARCACHE),
+  .o_m_axi_arcache                     (),
   .o_m_axi_arprot                      (),
-  .o_m_axi_arvalid                     (AXI_15_ARVALID),
+  .o_m_axi_arvalid                     (),
   // Slave Interface Read Data Ports
-  .i_m_axi_rid                         (AXI_15_RID),
-  .i_m_axi_rresp                       (AXI_15_RRESP),
-  .i_m_axi_rvalid                      (AXI_15_RVALID),
-  .i_m_axi_rdata                       (AXI_15_RDATA),
-  .i_m_axi_rlast                       (AXI_15_RLAST),
-  .o_m_axi_rready                      (AXI_15_RREADY)
+  .i_m_axi_rid                         ('0),
+  .i_m_axi_rresp                       ('0),
+  .i_m_axi_rvalid                      ('0),
+  .i_m_axi_rdata                       ('0),
+  .i_m_axi_rlast                       ('0),
+  .o_m_axi_rready                      ()
 );
+
+  //  mosi signals
+  assign AXI_00_AWID    = axi4_hbm_chs_li[15].awid;
+  assign AXI_00_AWADDR  = axi4_hbm_chs_li[15].awaddr[0][32:0];
+  assign AXI_00_AWLEN   = axi4_hbm_chs_li[15].awlen;
+  assign AXI_00_AWSIZE  = axi4_hbm_chs_li[15].awsize;
+  assign AXI_00_AWBURST = axi4_hbm_chs_li[15].awburst;
+  // assign AXI_00_awlock = axi4_hbm_chs_li[15].awlock;
+  assign AXI_00_AWCACHE = axi4_hbm_chs_li[15].awcache;
+  assign AXI_00_AWPROT  = axi4_hbm_chs_li[15].awprot;
+  assign AXI_00_AWVALID = axi4_hbm_chs_li[15].awvalid;
+  assign AXI_00_WDATA   = axi4_hbm_chs_li[15].wdata;
+  assign AXI_00_WSTRB   = axi4_hbm_chs_li[15].wstrb;
+  assign AXI_00_WLAST   = axi4_hbm_chs_li[15].wlast;
+  assign AXI_00_WVALID  = axi4_hbm_chs_li[15].wvalid;
+  assign AXI_00_BREADY  = axi4_hbm_chs_li[15].bready;
+  assign AXI_00_ARID    = axi4_hbm_chs_li[15].arid;
+  assign AXI_00_ARADDR  = axi4_hbm_chs_li[15].araddr[0][32:0];
+  assign AXI_00_ARLEN   = axi4_hbm_chs_li[15].arlen;
+  assign AXI_00_ARSIZE  = axi4_hbm_chs_li[15].arsize;
+  assign AXI_00_ARBURST = axi4_hbm_chs_li[15].arburst;
+  // assign ( = axi4_hbm_chs_li[15].arburst;
+  assign AXI_00_ARCACHE = axi4_hbm_chs_li[15].arcache;
+  // assign ( = axi4_hbm_chs_li[15].arprot;
+  assign AXI_00_ARVALID = axi4_hbm_chs_li[15].arvalid;
+  assign AXI_00_RREADY  = axi4_hbm_chs_li[15].rready;
+
+  //  miso signals
+  assign axi4_hbm_chs_lo[15].awready = AXI_00_AWREADY;
+  assign axi4_hbm_chs_lo[15].wready  = AXI_00_WREADY;
+  assign axi4_hbm_chs_lo[15].bid     = AXI_00_BID;
+  assign axi4_hbm_chs_lo[15].bresp   = AXI_00_BRESP;
+  assign axi4_hbm_chs_lo[15].bvalid  = AXI_00_BVALID;
+  assign axi4_hbm_chs_lo[15].arready = AXI_00_ARREADY;
+  assign axi4_hbm_chs_lo[15].rid     = AXI_00_RID;
+  assign axi4_hbm_chs_lo[15].rresp   = AXI_00_RRESP;
+  assign axi4_hbm_chs_lo[15].rvalid  = AXI_00_RVALID;
+  assign axi4_hbm_chs_lo[15].rdata   = AXI_00_RDATA;
+  assign axi4_hbm_chs_lo[15].rlast   = AXI_00_RLAST;
+
+
 
 assign  vio_tg_rst_15 =  1'd0;
 assign  i_force_vio_tg_status_done_15 = 16'h0000;
