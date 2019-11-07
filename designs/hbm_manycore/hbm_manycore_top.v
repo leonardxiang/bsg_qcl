@@ -915,10 +915,10 @@ BUFGCE_DIV #(.BUFGCE_DIVIDE(2)) u_AXI_vio_CLK_st0 (
       assign m_axi4_cdc_li[i] = axi4_hbm_chs_lo[i];
     end : axi_dv_cvt
 
-    for (genvar i = num_axi_slot_lp; i < num_hbm_chs_lp; i++) begin : tie_off_hbm_axi4
-      assign axi4_hbm_chs_li[i] = '0; // to hbm_channels
-      // assign axi4_hbm_chs_lo_cast = axi4_hbm_chs_lo
-    end : tie_off_hbm_axi4
+    // for (genvar i = num_axi_slot_lp; i < num_hbm_chs_lp; i++) begin : tie_off_hbm_axi4
+    //   assign axi4_hbm_chs_li[i] = '0; // to hbm_channels
+    //   // assign axi4_hbm_chs_lo_cast = axi4_hbm_chs_lo
+    // end : tie_off_hbm_axi4
 
 
   wire          apb_seq_complete_0_s;
@@ -5939,43 +5939,43 @@ atg_axi#(
 );
 
   //  mosi signals
-  assign AXI_00_AWID    = axi4_hbm_chs_li[8].awid;
-  assign AXI_00_AWADDR  = axi4_hbm_chs_li[8].awaddr[0][32:0];
-  assign AXI_00_AWLEN   = axi4_hbm_chs_li[8].awlen;
-  assign AXI_00_AWSIZE  = axi4_hbm_chs_li[8].awsize;
-  assign AXI_00_AWBURST = axi4_hbm_chs_li[8].awburst;
-  // assign AXI_00_awlock = axi4_hbm_chs_li[8].awlock;
-  assign AXI_00_AWCACHE = axi4_hbm_chs_li[8].awcache;
-  assign AXI_00_AWPROT  = axi4_hbm_chs_li[8].awprot;
-  assign AXI_00_AWVALID = axi4_hbm_chs_li[8].awvalid;
-  assign AXI_00_WDATA   = axi4_hbm_chs_li[8].wdata;
-  assign AXI_00_WSTRB   = axi4_hbm_chs_li[8].wstrb;
-  assign AXI_00_WLAST   = axi4_hbm_chs_li[8].wlast;
-  assign AXI_00_WVALID  = axi4_hbm_chs_li[8].wvalid;
-  assign AXI_00_BREADY  = axi4_hbm_chs_li[8].bready;
-  assign AXI_00_ARID    = axi4_hbm_chs_li[8].arid;
-  assign AXI_00_ARADDR  = axi4_hbm_chs_li[8].araddr[0][32:0];
-  assign AXI_00_ARLEN   = axi4_hbm_chs_li[8].arlen;
-  assign AXI_00_ARSIZE  = axi4_hbm_chs_li[8].arsize;
-  assign AXI_00_ARBURST = axi4_hbm_chs_li[8].arburst;
+  assign AXI_08_AWID    = axi4_hbm_chs_li[8].awid;
+  assign AXI_08_AWADDR  = axi4_hbm_chs_li[8].awaddr[0][32:0];
+  assign AXI_08_AWLEN   = axi4_hbm_chs_li[8].awlen;
+  assign AXI_08_AWSIZE  = axi4_hbm_chs_li[8].awsize;
+  assign AXI_08_AWBURST = axi4_hbm_chs_li[8].awburst;
+  // assign AXI_08_awlock = axi4_hbm_chs_li[8].awlock;
+  assign AXI_08_AWCACHE = axi4_hbm_chs_li[8].awcache;
+  assign AXI_08_AWPROT  = axi4_hbm_chs_li[8].awprot;
+  assign AXI_08_AWVALID = axi4_hbm_chs_li[8].awvalid;
+  assign AXI_08_WDATA   = axi4_hbm_chs_li[8].wdata;
+  assign AXI_08_WSTRB   = axi4_hbm_chs_li[8].wstrb;
+  assign AXI_08_WLAST   = axi4_hbm_chs_li[8].wlast;
+  assign AXI_08_WVALID  = axi4_hbm_chs_li[8].wvalid;
+  assign AXI_08_BREADY  = axi4_hbm_chs_li[8].bready;
+  assign AXI_08_ARID    = axi4_hbm_chs_li[8].arid;
+  assign AXI_08_ARADDR  = axi4_hbm_chs_li[8].araddr[0][32:0];
+  assign AXI_08_ARLEN   = axi4_hbm_chs_li[8].arlen;
+  assign AXI_08_ARSIZE  = axi4_hbm_chs_li[8].arsize;
+  assign AXI_08_ARBURST = axi4_hbm_chs_li[8].arburst;
   // assign ( = axi4_hbm_chs_li[8].arburst;
-  assign AXI_00_ARCACHE = axi4_hbm_chs_li[8].arcache;
+  assign AXI_08_ARCACHE = axi4_hbm_chs_li[8].arcache;
   // assign ( = axi4_hbm_chs_li[8].arprot;
-  assign AXI_00_ARVALID = axi4_hbm_chs_li[8].arvalid;
-  assign AXI_00_RREADY  = axi4_hbm_chs_li[8].rready;
+  assign AXI_08_ARVALID = axi4_hbm_chs_li[8].arvalid;
+  assign AXI_08_RREADY  = axi4_hbm_chs_li[8].rready;
 
   //  miso signals
-  assign axi4_hbm_chs_lo[8].awready = AXI_00_AWREADY;
-  assign axi4_hbm_chs_lo[8].wready  = AXI_00_WREADY;
-  assign axi4_hbm_chs_lo[8].bid     = AXI_00_BID;
-  assign axi4_hbm_chs_lo[8].bresp   = AXI_00_BRESP;
-  assign axi4_hbm_chs_lo[8].bvalid  = AXI_00_BVALID;
-  assign axi4_hbm_chs_lo[8].arready = AXI_00_ARREADY;
-  assign axi4_hbm_chs_lo[8].rid     = AXI_00_RID;
-  assign axi4_hbm_chs_lo[8].rresp   = AXI_00_RRESP;
-  assign axi4_hbm_chs_lo[8].rvalid  = AXI_00_RVALID;
-  assign axi4_hbm_chs_lo[8].rdata   = AXI_00_RDATA;
-  assign axi4_hbm_chs_lo[8].rlast   = AXI_00_RLAST;
+  assign axi4_hbm_chs_lo[8].awready = AXI_08_AWREADY;
+  assign axi4_hbm_chs_lo[8].wready  = AXI_08_WREADY;
+  assign axi4_hbm_chs_lo[8].bid     = AXI_08_BID;
+  assign axi4_hbm_chs_lo[8].bresp   = AXI_08_BRESP;
+  assign axi4_hbm_chs_lo[8].bvalid  = AXI_08_BVALID;
+  assign axi4_hbm_chs_lo[8].arready = AXI_08_ARREADY;
+  assign axi4_hbm_chs_lo[8].rid     = AXI_08_RID;
+  assign axi4_hbm_chs_lo[8].rresp   = AXI_08_RRESP;
+  assign axi4_hbm_chs_lo[8].rvalid  = AXI_08_RVALID;
+  assign axi4_hbm_chs_lo[8].rdata   = AXI_08_RDATA;
+  assign axi4_hbm_chs_lo[8].rlast   = AXI_08_RLAST;
 
 
 
@@ -6217,43 +6217,43 @@ atg_axi#(
 );
 
   //  mosi signals
-  assign AXI_00_AWID    = axi4_hbm_chs_li[9].awid;
-  assign AXI_00_AWADDR  = axi4_hbm_chs_li[9].awaddr[0][32:0];
-  assign AXI_00_AWLEN   = axi4_hbm_chs_li[9].awlen;
-  assign AXI_00_AWSIZE  = axi4_hbm_chs_li[9].awsize;
-  assign AXI_00_AWBURST = axi4_hbm_chs_li[9].awburst;
-  // assign AXI_00_awlock = axi4_hbm_chs_li[9].awlock;
-  assign AXI_00_AWCACHE = axi4_hbm_chs_li[9].awcache;
-  assign AXI_00_AWPROT  = axi4_hbm_chs_li[9].awprot;
-  assign AXI_00_AWVALID = axi4_hbm_chs_li[9].awvalid;
-  assign AXI_00_WDATA   = axi4_hbm_chs_li[9].wdata;
-  assign AXI_00_WSTRB   = axi4_hbm_chs_li[9].wstrb;
-  assign AXI_00_WLAST   = axi4_hbm_chs_li[9].wlast;
-  assign AXI_00_WVALID  = axi4_hbm_chs_li[9].wvalid;
-  assign AXI_00_BREADY  = axi4_hbm_chs_li[9].bready;
-  assign AXI_00_ARID    = axi4_hbm_chs_li[9].arid;
-  assign AXI_00_ARADDR  = axi4_hbm_chs_li[9].araddr[0][32:0];
-  assign AXI_00_ARLEN   = axi4_hbm_chs_li[9].arlen;
-  assign AXI_00_ARSIZE  = axi4_hbm_chs_li[9].arsize;
-  assign AXI_00_ARBURST = axi4_hbm_chs_li[9].arburst;
+  assign AXI_09_AWID    = axi4_hbm_chs_li[9].awid;
+  assign AXI_09_AWADDR  = axi4_hbm_chs_li[9].awaddr[0][32:0];
+  assign AXI_09_AWLEN   = axi4_hbm_chs_li[9].awlen;
+  assign AXI_09_AWSIZE  = axi4_hbm_chs_li[9].awsize;
+  assign AXI_09_AWBURST = axi4_hbm_chs_li[9].awburst;
+  // assign AXI_09_awlock = axi4_hbm_chs_li[9].awlock;
+  assign AXI_09_AWCACHE = axi4_hbm_chs_li[9].awcache;
+  assign AXI_09_AWPROT  = axi4_hbm_chs_li[9].awprot;
+  assign AXI_09_AWVALID = axi4_hbm_chs_li[9].awvalid;
+  assign AXI_09_WDATA   = axi4_hbm_chs_li[9].wdata;
+  assign AXI_09_WSTRB   = axi4_hbm_chs_li[9].wstrb;
+  assign AXI_09_WLAST   = axi4_hbm_chs_li[9].wlast;
+  assign AXI_09_WVALID  = axi4_hbm_chs_li[9].wvalid;
+  assign AXI_09_BREADY  = axi4_hbm_chs_li[9].bready;
+  assign AXI_09_ARID    = axi4_hbm_chs_li[9].arid;
+  assign AXI_09_ARADDR  = axi4_hbm_chs_li[9].araddr[0][32:0];
+  assign AXI_09_ARLEN   = axi4_hbm_chs_li[9].arlen;
+  assign AXI_09_ARSIZE  = axi4_hbm_chs_li[9].arsize;
+  assign AXI_09_ARBURST = axi4_hbm_chs_li[9].arburst;
   // assign ( = axi4_hbm_chs_li[9].arburst;
-  assign AXI_00_ARCACHE = axi4_hbm_chs_li[9].arcache;
+  assign AXI_09_ARCACHE = axi4_hbm_chs_li[9].arcache;
   // assign ( = axi4_hbm_chs_li[9].arprot;
-  assign AXI_00_ARVALID = axi4_hbm_chs_li[9].arvalid;
-  assign AXI_00_RREADY  = axi4_hbm_chs_li[9].rready;
+  assign AXI_09_ARVALID = axi4_hbm_chs_li[9].arvalid;
+  assign AXI_09_RREADY  = axi4_hbm_chs_li[9].rready;
 
   //  miso signals
-  assign axi4_hbm_chs_lo[9].awready = AXI_00_AWREADY;
-  assign axi4_hbm_chs_lo[9].wready  = AXI_00_WREADY;
-  assign axi4_hbm_chs_lo[9].bid     = AXI_00_BID;
-  assign axi4_hbm_chs_lo[9].bresp   = AXI_00_BRESP;
-  assign axi4_hbm_chs_lo[9].bvalid  = AXI_00_BVALID;
-  assign axi4_hbm_chs_lo[9].arready = AXI_00_ARREADY;
-  assign axi4_hbm_chs_lo[9].rid     = AXI_00_RID;
-  assign axi4_hbm_chs_lo[9].rresp   = AXI_00_RRESP;
-  assign axi4_hbm_chs_lo[9].rvalid  = AXI_00_RVALID;
-  assign axi4_hbm_chs_lo[9].rdata   = AXI_00_RDATA;
-  assign axi4_hbm_chs_lo[9].rlast   = AXI_00_RLAST;
+  assign axi4_hbm_chs_lo[9].awready = AXI_09_AWREADY;
+  assign axi4_hbm_chs_lo[9].wready  = AXI_09_WREADY;
+  assign axi4_hbm_chs_lo[9].bid     = AXI_09_BID;
+  assign axi4_hbm_chs_lo[9].bresp   = AXI_09_BRESP;
+  assign axi4_hbm_chs_lo[9].bvalid  = AXI_09_BVALID;
+  assign axi4_hbm_chs_lo[9].arready = AXI_09_ARREADY;
+  assign axi4_hbm_chs_lo[9].rid     = AXI_09_RID;
+  assign axi4_hbm_chs_lo[9].rresp   = AXI_09_RRESP;
+  assign axi4_hbm_chs_lo[9].rvalid  = AXI_09_RVALID;
+  assign axi4_hbm_chs_lo[9].rdata   = AXI_09_RDATA;
+  assign axi4_hbm_chs_lo[9].rlast   = AXI_09_RLAST;
 
 
 
@@ -6495,43 +6495,43 @@ atg_axi#(
 );
 
   //  mosi signals
-  assign AXI_00_AWID    = axi4_hbm_chs_li[10].awid;
-  assign AXI_00_AWADDR  = axi4_hbm_chs_li[10].awaddr[0][32:0];
-  assign AXI_00_AWLEN   = axi4_hbm_chs_li[10].awlen;
-  assign AXI_00_AWSIZE  = axi4_hbm_chs_li[10].awsize;
-  assign AXI_00_AWBURST = axi4_hbm_chs_li[10].awburst;
-  // assign AXI_00_awlock = axi4_hbm_chs_li[10].awlock;
-  assign AXI_00_AWCACHE = axi4_hbm_chs_li[10].awcache;
-  assign AXI_00_AWPROT  = axi4_hbm_chs_li[10].awprot;
-  assign AXI_00_AWVALID = axi4_hbm_chs_li[10].awvalid;
-  assign AXI_00_WDATA   = axi4_hbm_chs_li[10].wdata;
-  assign AXI_00_WSTRB   = axi4_hbm_chs_li[10].wstrb;
-  assign AXI_00_WLAST   = axi4_hbm_chs_li[10].wlast;
-  assign AXI_00_WVALID  = axi4_hbm_chs_li[10].wvalid;
-  assign AXI_00_BREADY  = axi4_hbm_chs_li[10].bready;
-  assign AXI_00_ARID    = axi4_hbm_chs_li[10].arid;
-  assign AXI_00_ARADDR  = axi4_hbm_chs_li[10].araddr[0][32:0];
-  assign AXI_00_ARLEN   = axi4_hbm_chs_li[10].arlen;
-  assign AXI_00_ARSIZE  = axi4_hbm_chs_li[10].arsize;
-  assign AXI_00_ARBURST = axi4_hbm_chs_li[10].arburst;
+  assign AXI_10_AWID    = axi4_hbm_chs_li[10].awid;
+  assign AXI_10_AWADDR  = axi4_hbm_chs_li[10].awaddr[0][32:0];
+  assign AXI_10_AWLEN   = axi4_hbm_chs_li[10].awlen;
+  assign AXI_10_AWSIZE  = axi4_hbm_chs_li[10].awsize;
+  assign AXI_10_AWBURST = axi4_hbm_chs_li[10].awburst;
+  // assign AXI_10_awlock = axi4_hbm_chs_li[10].awlock;
+  assign AXI_10_AWCACHE = axi4_hbm_chs_li[10].awcache;
+  assign AXI_10_AWPROT  = axi4_hbm_chs_li[10].awprot;
+  assign AXI_10_AWVALID = axi4_hbm_chs_li[10].awvalid;
+  assign AXI_10_WDATA   = axi4_hbm_chs_li[10].wdata;
+  assign AXI_10_WSTRB   = axi4_hbm_chs_li[10].wstrb;
+  assign AXI_10_WLAST   = axi4_hbm_chs_li[10].wlast;
+  assign AXI_10_WVALID  = axi4_hbm_chs_li[10].wvalid;
+  assign AXI_10_BREADY  = axi4_hbm_chs_li[10].bready;
+  assign AXI_10_ARID    = axi4_hbm_chs_li[10].arid;
+  assign AXI_10_ARADDR  = axi4_hbm_chs_li[10].araddr[0][32:0];
+  assign AXI_10_ARLEN   = axi4_hbm_chs_li[10].arlen;
+  assign AXI_10_ARSIZE  = axi4_hbm_chs_li[10].arsize;
+  assign AXI_10_ARBURST = axi4_hbm_chs_li[10].arburst;
   // assign ( = axi4_hbm_chs_li[10].arburst;
-  assign AXI_00_ARCACHE = axi4_hbm_chs_li[10].arcache;
+  assign AXI_10_ARCACHE = axi4_hbm_chs_li[10].arcache;
   // assign ( = axi4_hbm_chs_li[10].arprot;
-  assign AXI_00_ARVALID = axi4_hbm_chs_li[10].arvalid;
-  assign AXI_00_RREADY  = axi4_hbm_chs_li[10].rready;
+  assign AXI_10_ARVALID = axi4_hbm_chs_li[10].arvalid;
+  assign AXI_10_RREADY  = axi4_hbm_chs_li[10].rready;
 
   //  miso signals
-  assign axi4_hbm_chs_lo[10].awready = AXI_00_AWREADY;
-  assign axi4_hbm_chs_lo[10].wready  = AXI_00_WREADY;
-  assign axi4_hbm_chs_lo[10].bid     = AXI_00_BID;
-  assign axi4_hbm_chs_lo[10].bresp   = AXI_00_BRESP;
-  assign axi4_hbm_chs_lo[10].bvalid  = AXI_00_BVALID;
-  assign axi4_hbm_chs_lo[10].arready = AXI_00_ARREADY;
-  assign axi4_hbm_chs_lo[10].rid     = AXI_00_RID;
-  assign axi4_hbm_chs_lo[10].rresp   = AXI_00_RRESP;
-  assign axi4_hbm_chs_lo[10].rvalid  = AXI_00_RVALID;
-  assign axi4_hbm_chs_lo[10].rdata   = AXI_00_RDATA;
-  assign axi4_hbm_chs_lo[10].rlast   = AXI_00_RLAST;
+  assign axi4_hbm_chs_lo[10].awready = AXI_10_AWREADY;
+  assign axi4_hbm_chs_lo[10].wready  = AXI_10_WREADY;
+  assign axi4_hbm_chs_lo[10].bid     = AXI_10_BID;
+  assign axi4_hbm_chs_lo[10].bresp   = AXI_10_BRESP;
+  assign axi4_hbm_chs_lo[10].bvalid  = AXI_10_BVALID;
+  assign axi4_hbm_chs_lo[10].arready = AXI_10_ARREADY;
+  assign axi4_hbm_chs_lo[10].rid     = AXI_10_RID;
+  assign axi4_hbm_chs_lo[10].rresp   = AXI_10_RRESP;
+  assign axi4_hbm_chs_lo[10].rvalid  = AXI_10_RVALID;
+  assign axi4_hbm_chs_lo[10].rdata   = AXI_10_RDATA;
+  assign axi4_hbm_chs_lo[10].rlast   = AXI_10_RLAST;
 
 
 
@@ -6773,43 +6773,43 @@ atg_axi#(
 );
 
   //  mosi signals
-  assign AXI_00_AWID    = axi4_hbm_chs_li[11].awid;
-  assign AXI_00_AWADDR  = axi4_hbm_chs_li[11].awaddr[0][32:0];
-  assign AXI_00_AWLEN   = axi4_hbm_chs_li[11].awlen;
-  assign AXI_00_AWSIZE  = axi4_hbm_chs_li[11].awsize;
-  assign AXI_00_AWBURST = axi4_hbm_chs_li[11].awburst;
-  // assign AXI_00_awlock = axi4_hbm_chs_li[11].awlock;
-  assign AXI_00_AWCACHE = axi4_hbm_chs_li[11].awcache;
-  assign AXI_00_AWPROT  = axi4_hbm_chs_li[11].awprot;
-  assign AXI_00_AWVALID = axi4_hbm_chs_li[11].awvalid;
-  assign AXI_00_WDATA   = axi4_hbm_chs_li[11].wdata;
-  assign AXI_00_WSTRB   = axi4_hbm_chs_li[11].wstrb;
-  assign AXI_00_WLAST   = axi4_hbm_chs_li[11].wlast;
-  assign AXI_00_WVALID  = axi4_hbm_chs_li[11].wvalid;
-  assign AXI_00_BREADY  = axi4_hbm_chs_li[11].bready;
-  assign AXI_00_ARID    = axi4_hbm_chs_li[11].arid;
-  assign AXI_00_ARADDR  = axi4_hbm_chs_li[11].araddr[0][32:0];
-  assign AXI_00_ARLEN   = axi4_hbm_chs_li[11].arlen;
-  assign AXI_00_ARSIZE  = axi4_hbm_chs_li[11].arsize;
-  assign AXI_00_ARBURST = axi4_hbm_chs_li[11].arburst;
+  assign AXI_11_AWID    = axi4_hbm_chs_li[11].awid;
+  assign AXI_11_AWADDR  = axi4_hbm_chs_li[11].awaddr[0][32:0];
+  assign AXI_11_AWLEN   = axi4_hbm_chs_li[11].awlen;
+  assign AXI_11_AWSIZE  = axi4_hbm_chs_li[11].awsize;
+  assign AXI_11_AWBURST = axi4_hbm_chs_li[11].awburst;
+  // assign AXI_11_awlock = axi4_hbm_chs_li[11].awlock;
+  assign AXI_11_AWCACHE = axi4_hbm_chs_li[11].awcache;
+  assign AXI_11_AWPROT  = axi4_hbm_chs_li[11].awprot;
+  assign AXI_11_AWVALID = axi4_hbm_chs_li[11].awvalid;
+  assign AXI_11_WDATA   = axi4_hbm_chs_li[11].wdata;
+  assign AXI_11_WSTRB   = axi4_hbm_chs_li[11].wstrb;
+  assign AXI_11_WLAST   = axi4_hbm_chs_li[11].wlast;
+  assign AXI_11_WVALID  = axi4_hbm_chs_li[11].wvalid;
+  assign AXI_11_BREADY  = axi4_hbm_chs_li[11].bready;
+  assign AXI_11_ARID    = axi4_hbm_chs_li[11].arid;
+  assign AXI_11_ARADDR  = axi4_hbm_chs_li[11].araddr[0][32:0];
+  assign AXI_11_ARLEN   = axi4_hbm_chs_li[11].arlen;
+  assign AXI_11_ARSIZE  = axi4_hbm_chs_li[11].arsize;
+  assign AXI_11_ARBURST = axi4_hbm_chs_li[11].arburst;
   // assign ( = axi4_hbm_chs_li[11].arburst;
-  assign AXI_00_ARCACHE = axi4_hbm_chs_li[11].arcache;
+  assign AXI_11_ARCACHE = axi4_hbm_chs_li[11].arcache;
   // assign ( = axi4_hbm_chs_li[11].arprot;
-  assign AXI_00_ARVALID = axi4_hbm_chs_li[11].arvalid;
-  assign AXI_00_RREADY  = axi4_hbm_chs_li[11].rready;
+  assign AXI_11_ARVALID = axi4_hbm_chs_li[11].arvalid;
+  assign AXI_11_RREADY  = axi4_hbm_chs_li[11].rready;
 
   //  miso signals
-  assign axi4_hbm_chs_lo[11].awready = AXI_00_AWREADY;
-  assign axi4_hbm_chs_lo[11].wready  = AXI_00_WREADY;
-  assign axi4_hbm_chs_lo[11].bid     = AXI_00_BID;
-  assign axi4_hbm_chs_lo[11].bresp   = AXI_00_BRESP;
-  assign axi4_hbm_chs_lo[11].bvalid  = AXI_00_BVALID;
-  assign axi4_hbm_chs_lo[11].arready = AXI_00_ARREADY;
-  assign axi4_hbm_chs_lo[11].rid     = AXI_00_RID;
-  assign axi4_hbm_chs_lo[11].rresp   = AXI_00_RRESP;
-  assign axi4_hbm_chs_lo[11].rvalid  = AXI_00_RVALID;
-  assign axi4_hbm_chs_lo[11].rdata   = AXI_00_RDATA;
-  assign axi4_hbm_chs_lo[11].rlast   = AXI_00_RLAST;
+  assign axi4_hbm_chs_lo[11].awready = AXI_11_AWREADY;
+  assign axi4_hbm_chs_lo[11].wready  = AXI_11_WREADY;
+  assign axi4_hbm_chs_lo[11].bid     = AXI_11_BID;
+  assign axi4_hbm_chs_lo[11].bresp   = AXI_11_BRESP;
+  assign axi4_hbm_chs_lo[11].bvalid  = AXI_11_BVALID;
+  assign axi4_hbm_chs_lo[11].arready = AXI_11_ARREADY;
+  assign axi4_hbm_chs_lo[11].rid     = AXI_11_RID;
+  assign axi4_hbm_chs_lo[11].rresp   = AXI_11_RRESP;
+  assign axi4_hbm_chs_lo[11].rvalid  = AXI_11_RVALID;
+  assign axi4_hbm_chs_lo[11].rdata   = AXI_11_RDATA;
+  assign axi4_hbm_chs_lo[11].rlast   = AXI_11_RLAST;
 
 
 assign  vio_tg_rst_11 =  1'd0;
@@ -7050,43 +7050,43 @@ atg_axi#(
 );
 
   //  mosi signals
-  assign AXI_00_AWID    = axi4_hbm_chs_li[12].awid;
-  assign AXI_00_AWADDR  = axi4_hbm_chs_li[12].awaddr[0][32:0];
-  assign AXI_00_AWLEN   = axi4_hbm_chs_li[12].awlen;
-  assign AXI_00_AWSIZE  = axi4_hbm_chs_li[12].awsize;
-  assign AXI_00_AWBURST = axi4_hbm_chs_li[12].awburst;
-  // assign AXI_00_awlock = axi4_hbm_chs_li[12].awlock;
-  assign AXI_00_AWCACHE = axi4_hbm_chs_li[12].awcache;
-  assign AXI_00_AWPROT  = axi4_hbm_chs_li[12].awprot;
-  assign AXI_00_AWVALID = axi4_hbm_chs_li[12].awvalid;
-  assign AXI_00_WDATA   = axi4_hbm_chs_li[12].wdata;
-  assign AXI_00_WSTRB   = axi4_hbm_chs_li[12].wstrb;
-  assign AXI_00_WLAST   = axi4_hbm_chs_li[12].wlast;
-  assign AXI_00_WVALID  = axi4_hbm_chs_li[12].wvalid;
-  assign AXI_00_BREADY  = axi4_hbm_chs_li[12].bready;
-  assign AXI_00_ARID    = axi4_hbm_chs_li[12].arid;
-  assign AXI_00_ARADDR  = axi4_hbm_chs_li[12].araddr[0][32:0];
-  assign AXI_00_ARLEN   = axi4_hbm_chs_li[12].arlen;
-  assign AXI_00_ARSIZE  = axi4_hbm_chs_li[12].arsize;
-  assign AXI_00_ARBURST = axi4_hbm_chs_li[12].arburst;
+  assign AXI_12_AWID    = axi4_hbm_chs_li[12].awid;
+  assign AXI_12_AWADDR  = axi4_hbm_chs_li[12].awaddr[0][32:0];
+  assign AXI_12_AWLEN   = axi4_hbm_chs_li[12].awlen;
+  assign AXI_12_AWSIZE  = axi4_hbm_chs_li[12].awsize;
+  assign AXI_12_AWBURST = axi4_hbm_chs_li[12].awburst;
+  // assign AXI_12_awlock = axi4_hbm_chs_li[12].awlock;
+  assign AXI_12_AWCACHE = axi4_hbm_chs_li[12].awcache;
+  assign AXI_12_AWPROT  = axi4_hbm_chs_li[12].awprot;
+  assign AXI_12_AWVALID = axi4_hbm_chs_li[12].awvalid;
+  assign AXI_12_WDATA   = axi4_hbm_chs_li[12].wdata;
+  assign AXI_12_WSTRB   = axi4_hbm_chs_li[12].wstrb;
+  assign AXI_12_WLAST   = axi4_hbm_chs_li[12].wlast;
+  assign AXI_12_WVALID  = axi4_hbm_chs_li[12].wvalid;
+  assign AXI_12_BREADY  = axi4_hbm_chs_li[12].bready;
+  assign AXI_12_ARID    = axi4_hbm_chs_li[12].arid;
+  assign AXI_12_ARADDR  = axi4_hbm_chs_li[12].araddr[0][32:0];
+  assign AXI_12_ARLEN   = axi4_hbm_chs_li[12].arlen;
+  assign AXI_12_ARSIZE  = axi4_hbm_chs_li[12].arsize;
+  assign AXI_12_ARBURST = axi4_hbm_chs_li[12].arburst;
   // assign ( = axi4_hbm_chs_li[12].arburst;
-  assign AXI_00_ARCACHE = axi4_hbm_chs_li[12].arcache;
+  assign AXI_12_ARCACHE = axi4_hbm_chs_li[12].arcache;
   // assign ( = axi4_hbm_chs_li[12].arprot;
-  assign AXI_00_ARVALID = axi4_hbm_chs_li[12].arvalid;
-  assign AXI_00_RREADY  = axi4_hbm_chs_li[12].rready;
+  assign AXI_12_ARVALID = axi4_hbm_chs_li[12].arvalid;
+  assign AXI_12_RREADY  = axi4_hbm_chs_li[12].rready;
 
   //  miso signals
-  assign axi4_hbm_chs_lo[12].awready = AXI_00_AWREADY;
-  assign axi4_hbm_chs_lo[12].wready  = AXI_00_WREADY;
-  assign axi4_hbm_chs_lo[12].bid     = AXI_00_BID;
-  assign axi4_hbm_chs_lo[12].bresp   = AXI_00_BRESP;
-  assign axi4_hbm_chs_lo[12].bvalid  = AXI_00_BVALID;
-  assign axi4_hbm_chs_lo[12].arready = AXI_00_ARREADY;
-  assign axi4_hbm_chs_lo[12].rid     = AXI_00_RID;
-  assign axi4_hbm_chs_lo[12].rresp   = AXI_00_RRESP;
-  assign axi4_hbm_chs_lo[12].rvalid  = AXI_00_RVALID;
-  assign axi4_hbm_chs_lo[12].rdata   = AXI_00_RDATA;
-  assign axi4_hbm_chs_lo[12].rlast   = AXI_00_RLAST;
+  assign axi4_hbm_chs_lo[12].awready = AXI_12_AWREADY;
+  assign axi4_hbm_chs_lo[12].wready  = AXI_12_WREADY;
+  assign axi4_hbm_chs_lo[12].bid     = AXI_12_BID;
+  assign axi4_hbm_chs_lo[12].bresp   = AXI_12_BRESP;
+  assign axi4_hbm_chs_lo[12].bvalid  = AXI_12_BVALID;
+  assign axi4_hbm_chs_lo[12].arready = AXI_12_ARREADY;
+  assign axi4_hbm_chs_lo[12].rid     = AXI_12_RID;
+  assign axi4_hbm_chs_lo[12].rresp   = AXI_12_RRESP;
+  assign axi4_hbm_chs_lo[12].rvalid  = AXI_12_RVALID;
+  assign axi4_hbm_chs_lo[12].rdata   = AXI_12_RDATA;
+  assign axi4_hbm_chs_lo[12].rlast   = AXI_12_RLAST;
 
 
 assign  vio_tg_rst_12 =  1'd0;
@@ -7327,43 +7327,43 @@ atg_axi#(
 );
 
   //  mosi signals
-  assign AXI_00_AWID    = axi4_hbm_chs_li[13].awid;
-  assign AXI_00_AWADDR  = axi4_hbm_chs_li[13].awaddr[0][32:0];
-  assign AXI_00_AWLEN   = axi4_hbm_chs_li[13].awlen;
-  assign AXI_00_AWSIZE  = axi4_hbm_chs_li[13].awsize;
-  assign AXI_00_AWBURST = axi4_hbm_chs_li[13].awburst;
-  // assign AXI_00_awlock = axi4_hbm_chs_li[13].awlock;
-  assign AXI_00_AWCACHE = axi4_hbm_chs_li[13].awcache;
-  assign AXI_00_AWPROT  = axi4_hbm_chs_li[13].awprot;
-  assign AXI_00_AWVALID = axi4_hbm_chs_li[13].awvalid;
-  assign AXI_00_WDATA   = axi4_hbm_chs_li[13].wdata;
-  assign AXI_00_WSTRB   = axi4_hbm_chs_li[13].wstrb;
-  assign AXI_00_WLAST   = axi4_hbm_chs_li[13].wlast;
-  assign AXI_00_WVALID  = axi4_hbm_chs_li[13].wvalid;
-  assign AXI_00_BREADY  = axi4_hbm_chs_li[13].bready;
-  assign AXI_00_ARID    = axi4_hbm_chs_li[13].arid;
-  assign AXI_00_ARADDR  = axi4_hbm_chs_li[13].araddr[0][32:0];
-  assign AXI_00_ARLEN   = axi4_hbm_chs_li[13].arlen;
-  assign AXI_00_ARSIZE  = axi4_hbm_chs_li[13].arsize;
-  assign AXI_00_ARBURST = axi4_hbm_chs_li[13].arburst;
+  assign AXI_13_AWID    = axi4_hbm_chs_li[13].awid;
+  assign AXI_13_AWADDR  = axi4_hbm_chs_li[13].awaddr[0][32:0];
+  assign AXI_13_AWLEN   = axi4_hbm_chs_li[13].awlen;
+  assign AXI_13_AWSIZE  = axi4_hbm_chs_li[13].awsize;
+  assign AXI_13_AWBURST = axi4_hbm_chs_li[13].awburst;
+  // assign AXI_13_awlock = axi4_hbm_chs_li[13].awlock;
+  assign AXI_13_AWCACHE = axi4_hbm_chs_li[13].awcache;
+  assign AXI_13_AWPROT  = axi4_hbm_chs_li[13].awprot;
+  assign AXI_13_AWVALID = axi4_hbm_chs_li[13].awvalid;
+  assign AXI_13_WDATA   = axi4_hbm_chs_li[13].wdata;
+  assign AXI_13_WSTRB   = axi4_hbm_chs_li[13].wstrb;
+  assign AXI_13_WLAST   = axi4_hbm_chs_li[13].wlast;
+  assign AXI_13_WVALID  = axi4_hbm_chs_li[13].wvalid;
+  assign AXI_13_BREADY  = axi4_hbm_chs_li[13].bready;
+  assign AXI_13_ARID    = axi4_hbm_chs_li[13].arid;
+  assign AXI_13_ARADDR  = axi4_hbm_chs_li[13].araddr[0][32:0];
+  assign AXI_13_ARLEN   = axi4_hbm_chs_li[13].arlen;
+  assign AXI_13_ARSIZE  = axi4_hbm_chs_li[13].arsize;
+  assign AXI_13_ARBURST = axi4_hbm_chs_li[13].arburst;
   // assign ( = axi4_hbm_chs_li[13].arburst;
-  assign AXI_00_ARCACHE = axi4_hbm_chs_li[13].arcache;
+  assign AXI_13_ARCACHE = axi4_hbm_chs_li[13].arcache;
   // assign ( = axi4_hbm_chs_li[13].arprot;
-  assign AXI_00_ARVALID = axi4_hbm_chs_li[13].arvalid;
-  assign AXI_00_RREADY  = axi4_hbm_chs_li[13].rready;
+  assign AXI_13_ARVALID = axi4_hbm_chs_li[13].arvalid;
+  assign AXI_13_RREADY  = axi4_hbm_chs_li[13].rready;
 
   //  miso signals
-  assign axi4_hbm_chs_lo[13].awready = AXI_00_AWREADY;
-  assign axi4_hbm_chs_lo[13].wready  = AXI_00_WREADY;
-  assign axi4_hbm_chs_lo[13].bid     = AXI_00_BID;
-  assign axi4_hbm_chs_lo[13].bresp   = AXI_00_BRESP;
-  assign axi4_hbm_chs_lo[13].bvalid  = AXI_00_BVALID;
-  assign axi4_hbm_chs_lo[13].arready = AXI_00_ARREADY;
-  assign axi4_hbm_chs_lo[13].rid     = AXI_00_RID;
-  assign axi4_hbm_chs_lo[13].rresp   = AXI_00_RRESP;
-  assign axi4_hbm_chs_lo[13].rvalid  = AXI_00_RVALID;
-  assign axi4_hbm_chs_lo[13].rdata   = AXI_00_RDATA;
-  assign axi4_hbm_chs_lo[13].rlast   = AXI_00_RLAST;
+  assign axi4_hbm_chs_lo[13].awready = AXI_13_AWREADY;
+  assign axi4_hbm_chs_lo[13].wready  = AXI_13_WREADY;
+  assign axi4_hbm_chs_lo[13].bid     = AXI_13_BID;
+  assign axi4_hbm_chs_lo[13].bresp   = AXI_13_BRESP;
+  assign axi4_hbm_chs_lo[13].bvalid  = AXI_13_BVALID;
+  assign axi4_hbm_chs_lo[13].arready = AXI_13_ARREADY;
+  assign axi4_hbm_chs_lo[13].rid     = AXI_13_RID;
+  assign axi4_hbm_chs_lo[13].rresp   = AXI_13_RRESP;
+  assign axi4_hbm_chs_lo[13].rvalid  = AXI_13_RVALID;
+  assign axi4_hbm_chs_lo[13].rdata   = AXI_13_RDATA;
+  assign axi4_hbm_chs_lo[13].rlast   = AXI_13_RLAST;
 
 
 assign  vio_tg_rst_13 =  1'd0;
@@ -7604,43 +7604,43 @@ atg_axi#(
 );
 
   //  mosi signals
-  assign AXI_00_AWID    = axi4_hbm_chs_li[14].awid;
-  assign AXI_00_AWADDR  = axi4_hbm_chs_li[14].awaddr[0][32:0];
-  assign AXI_00_AWLEN   = axi4_hbm_chs_li[14].awlen;
-  assign AXI_00_AWSIZE  = axi4_hbm_chs_li[14].awsize;
-  assign AXI_00_AWBURST = axi4_hbm_chs_li[14].awburst;
-  // assign AXI_00_awlock = axi4_hbm_chs_li[14].awlock;
-  assign AXI_00_AWCACHE = axi4_hbm_chs_li[14].awcache;
-  assign AXI_00_AWPROT  = axi4_hbm_chs_li[14].awprot;
-  assign AXI_00_AWVALID = axi4_hbm_chs_li[14].awvalid;
-  assign AXI_00_WDATA   = axi4_hbm_chs_li[14].wdata;
-  assign AXI_00_WSTRB   = axi4_hbm_chs_li[14].wstrb;
-  assign AXI_00_WLAST   = axi4_hbm_chs_li[14].wlast;
-  assign AXI_00_WVALID  = axi4_hbm_chs_li[14].wvalid;
-  assign AXI_00_BREADY  = axi4_hbm_chs_li[14].bready;
-  assign AXI_00_ARID    = axi4_hbm_chs_li[14].arid;
-  assign AXI_00_ARADDR  = axi4_hbm_chs_li[14].araddr[0][32:0];
-  assign AXI_00_ARLEN   = axi4_hbm_chs_li[14].arlen;
-  assign AXI_00_ARSIZE  = axi4_hbm_chs_li[14].arsize;
-  assign AXI_00_ARBURST = axi4_hbm_chs_li[14].arburst;
+  assign AXI_14_AWID    = axi4_hbm_chs_li[14].awid;
+  assign AXI_14_AWADDR  = axi4_hbm_chs_li[14].awaddr[0][32:0];
+  assign AXI_14_AWLEN   = axi4_hbm_chs_li[14].awlen;
+  assign AXI_14_AWSIZE  = axi4_hbm_chs_li[14].awsize;
+  assign AXI_14_AWBURST = axi4_hbm_chs_li[14].awburst;
+  // assign AXI_14_awlock = axi4_hbm_chs_li[14].awlock;
+  assign AXI_14_AWCACHE = axi4_hbm_chs_li[14].awcache;
+  assign AXI_14_AWPROT  = axi4_hbm_chs_li[14].awprot;
+  assign AXI_14_AWVALID = axi4_hbm_chs_li[14].awvalid;
+  assign AXI_14_WDATA   = axi4_hbm_chs_li[14].wdata;
+  assign AXI_14_WSTRB   = axi4_hbm_chs_li[14].wstrb;
+  assign AXI_14_WLAST   = axi4_hbm_chs_li[14].wlast;
+  assign AXI_14_WVALID  = axi4_hbm_chs_li[14].wvalid;
+  assign AXI_14_BREADY  = axi4_hbm_chs_li[14].bready;
+  assign AXI_14_ARID    = axi4_hbm_chs_li[14].arid;
+  assign AXI_14_ARADDR  = axi4_hbm_chs_li[14].araddr[0][32:0];
+  assign AXI_14_ARLEN   = axi4_hbm_chs_li[14].arlen;
+  assign AXI_14_ARSIZE  = axi4_hbm_chs_li[14].arsize;
+  assign AXI_14_ARBURST = axi4_hbm_chs_li[14].arburst;
   // assign ( = axi4_hbm_chs_li[14].arburst;
-  assign AXI_00_ARCACHE = axi4_hbm_chs_li[14].arcache;
+  assign AXI_14_ARCACHE = axi4_hbm_chs_li[14].arcache;
   // assign ( = axi4_hbm_chs_li[14].arprot;
-  assign AXI_00_ARVALID = axi4_hbm_chs_li[14].arvalid;
-  assign AXI_00_RREADY  = axi4_hbm_chs_li[14].rready;
+  assign AXI_14_ARVALID = axi4_hbm_chs_li[14].arvalid;
+  assign AXI_14_RREADY  = axi4_hbm_chs_li[14].rready;
 
   //  miso signals
-  assign axi4_hbm_chs_lo[14].awready = AXI_00_AWREADY;
-  assign axi4_hbm_chs_lo[14].wready  = AXI_00_WREADY;
-  assign axi4_hbm_chs_lo[14].bid     = AXI_00_BID;
-  assign axi4_hbm_chs_lo[14].bresp   = AXI_00_BRESP;
-  assign axi4_hbm_chs_lo[14].bvalid  = AXI_00_BVALID;
-  assign axi4_hbm_chs_lo[14].arready = AXI_00_ARREADY;
-  assign axi4_hbm_chs_lo[14].rid     = AXI_00_RID;
-  assign axi4_hbm_chs_lo[14].rresp   = AXI_00_RRESP;
-  assign axi4_hbm_chs_lo[14].rvalid  = AXI_00_RVALID;
-  assign axi4_hbm_chs_lo[14].rdata   = AXI_00_RDATA;
-  assign axi4_hbm_chs_lo[14].rlast   = AXI_00_RLAST;
+  assign axi4_hbm_chs_lo[14].awready = AXI_14_AWREADY;
+  assign axi4_hbm_chs_lo[14].wready  = AXI_14_WREADY;
+  assign axi4_hbm_chs_lo[14].bid     = AXI_14_BID;
+  assign axi4_hbm_chs_lo[14].bresp   = AXI_14_BRESP;
+  assign axi4_hbm_chs_lo[14].bvalid  = AXI_14_BVALID;
+  assign axi4_hbm_chs_lo[14].arready = AXI_14_ARREADY;
+  assign axi4_hbm_chs_lo[14].rid     = AXI_14_RID;
+  assign axi4_hbm_chs_lo[14].rresp   = AXI_14_RRESP;
+  assign axi4_hbm_chs_lo[14].rvalid  = AXI_14_RVALID;
+  assign axi4_hbm_chs_lo[14].rdata   = AXI_14_RDATA;
+  assign axi4_hbm_chs_lo[14].rlast   = AXI_14_RLAST;
 
 
 
@@ -7882,43 +7882,43 @@ atg_axi#(
 );
 
   //  mosi signals
-  assign AXI_00_AWID    = axi4_hbm_chs_li[15].awid;
-  assign AXI_00_AWADDR  = axi4_hbm_chs_li[15].awaddr[0][32:0];
-  assign AXI_00_AWLEN   = axi4_hbm_chs_li[15].awlen;
-  assign AXI_00_AWSIZE  = axi4_hbm_chs_li[15].awsize;
-  assign AXI_00_AWBURST = axi4_hbm_chs_li[15].awburst;
-  // assign AXI_00_awlock = axi4_hbm_chs_li[15].awlock;
-  assign AXI_00_AWCACHE = axi4_hbm_chs_li[15].awcache;
-  assign AXI_00_AWPROT  = axi4_hbm_chs_li[15].awprot;
-  assign AXI_00_AWVALID = axi4_hbm_chs_li[15].awvalid;
-  assign AXI_00_WDATA   = axi4_hbm_chs_li[15].wdata;
-  assign AXI_00_WSTRB   = axi4_hbm_chs_li[15].wstrb;
-  assign AXI_00_WLAST   = axi4_hbm_chs_li[15].wlast;
-  assign AXI_00_WVALID  = axi4_hbm_chs_li[15].wvalid;
-  assign AXI_00_BREADY  = axi4_hbm_chs_li[15].bready;
-  assign AXI_00_ARID    = axi4_hbm_chs_li[15].arid;
-  assign AXI_00_ARADDR  = axi4_hbm_chs_li[15].araddr[0][32:0];
-  assign AXI_00_ARLEN   = axi4_hbm_chs_li[15].arlen;
-  assign AXI_00_ARSIZE  = axi4_hbm_chs_li[15].arsize;
-  assign AXI_00_ARBURST = axi4_hbm_chs_li[15].arburst;
+  assign AXI_15_AWID    = axi4_hbm_chs_li[15].awid;
+  assign AXI_15_AWADDR  = axi4_hbm_chs_li[15].awaddr[0][32:0];
+  assign AXI_15_AWLEN   = axi4_hbm_chs_li[15].awlen;
+  assign AXI_15_AWSIZE  = axi4_hbm_chs_li[15].awsize;
+  assign AXI_15_AWBURST = axi4_hbm_chs_li[15].awburst;
+  // assign AXI_15_awlock = axi4_hbm_chs_li[15].awlock;
+  assign AXI_15_AWCACHE = axi4_hbm_chs_li[15].awcache;
+  assign AXI_15_AWPROT  = axi4_hbm_chs_li[15].awprot;
+  assign AXI_15_AWVALID = axi4_hbm_chs_li[15].awvalid;
+  assign AXI_15_WDATA   = axi4_hbm_chs_li[15].wdata;
+  assign AXI_15_WSTRB   = axi4_hbm_chs_li[15].wstrb;
+  assign AXI_15_WLAST   = axi4_hbm_chs_li[15].wlast;
+  assign AXI_15_WVALID  = axi4_hbm_chs_li[15].wvalid;
+  assign AXI_15_BREADY  = axi4_hbm_chs_li[15].bready;
+  assign AXI_15_ARID    = axi4_hbm_chs_li[15].arid;
+  assign AXI_15_ARADDR  = axi4_hbm_chs_li[15].araddr[0][32:0];
+  assign AXI_15_ARLEN   = axi4_hbm_chs_li[15].arlen;
+  assign AXI_15_ARSIZE  = axi4_hbm_chs_li[15].arsize;
+  assign AXI_15_ARBURST = axi4_hbm_chs_li[15].arburst;
   // assign ( = axi4_hbm_chs_li[15].arburst;
-  assign AXI_00_ARCACHE = axi4_hbm_chs_li[15].arcache;
+  assign AXI_15_ARCACHE = axi4_hbm_chs_li[15].arcache;
   // assign ( = axi4_hbm_chs_li[15].arprot;
-  assign AXI_00_ARVALID = axi4_hbm_chs_li[15].arvalid;
-  assign AXI_00_RREADY  = axi4_hbm_chs_li[15].rready;
+  assign AXI_15_ARVALID = axi4_hbm_chs_li[15].arvalid;
+  assign AXI_15_RREADY  = axi4_hbm_chs_li[15].rready;
 
   //  miso signals
-  assign axi4_hbm_chs_lo[15].awready = AXI_00_AWREADY;
-  assign axi4_hbm_chs_lo[15].wready  = AXI_00_WREADY;
-  assign axi4_hbm_chs_lo[15].bid     = AXI_00_BID;
-  assign axi4_hbm_chs_lo[15].bresp   = AXI_00_BRESP;
-  assign axi4_hbm_chs_lo[15].bvalid  = AXI_00_BVALID;
-  assign axi4_hbm_chs_lo[15].arready = AXI_00_ARREADY;
-  assign axi4_hbm_chs_lo[15].rid     = AXI_00_RID;
-  assign axi4_hbm_chs_lo[15].rresp   = AXI_00_RRESP;
-  assign axi4_hbm_chs_lo[15].rvalid  = AXI_00_RVALID;
-  assign axi4_hbm_chs_lo[15].rdata   = AXI_00_RDATA;
-  assign axi4_hbm_chs_lo[15].rlast   = AXI_00_RLAST;
+  assign axi4_hbm_chs_lo[15].awready = AXI_15_AWREADY;
+  assign axi4_hbm_chs_lo[15].wready  = AXI_15_WREADY;
+  assign axi4_hbm_chs_lo[15].bid     = AXI_15_BID;
+  assign axi4_hbm_chs_lo[15].bresp   = AXI_15_BRESP;
+  assign axi4_hbm_chs_lo[15].bvalid  = AXI_15_BVALID;
+  assign axi4_hbm_chs_lo[15].arready = AXI_15_ARREADY;
+  assign axi4_hbm_chs_lo[15].rid     = AXI_15_RID;
+  assign axi4_hbm_chs_lo[15].rresp   = AXI_15_RRESP;
+  assign axi4_hbm_chs_lo[15].rvalid  = AXI_15_RVALID;
+  assign axi4_hbm_chs_lo[15].rdata   = AXI_15_RDATA;
+  assign axi4_hbm_chs_lo[15].rlast   = AXI_15_RLAST;
 
 
 
