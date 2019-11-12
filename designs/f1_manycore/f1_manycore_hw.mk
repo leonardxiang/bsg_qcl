@@ -7,6 +7,7 @@ FPGA_PART = xcvu37p-fsvh2892-3-e-es1
 CL_DIR = $(BSG_F1_DIR)
 HARDWARE_PATH = $(BSG_F1_DIR)/hardware
 include $(HARDWARE_PATH)/hardware.mk
+VSOURCES += $(HARDWARE_PATH)/cl_manycore_pkg.v
 
 
 # Replace F1 source include folder path with vheads of this repo
