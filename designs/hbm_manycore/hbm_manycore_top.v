@@ -913,8 +913,8 @@ BUFGCE_DIV #(.BUFGCE_DIVIDE(2)) u_AXI_vio_CLK_st0 (
     for (genvar i = 0; i < num_axi_slot_lp; i++) begin : axi_dv_cvt
       always_comb begin : hbm_addr_map
         axi4_hbm_chs_li[i] = m_axi4_cdc_lo[i];
-        axi4_hbm_chs_li[i].awaddr[0][32:0] = m_axi4_cdc_lo[i].awaddr[0][31:0] | 33'(1<<28); // we are using 4H stack, tell from example
-        axi4_hbm_chs_li[i].araddr[0][32:0] = m_axi4_cdc_lo[i].araddr[0][31:0] | 33'(1<<28);
+        axi4_hbm_chs_li[i].awaddr[0][32:0] = m_axi4_cdc_lo[i].awaddr[0][31:0] | 33'(i<<28); // we are using 4H stack, tell from example
+        axi4_hbm_chs_li[i].araddr[0][32:0] = m_axi4_cdc_lo[i].araddr[0][31:0] | 33'(i<<28);
         m_axi4_cdc_li[i] = axi4_hbm_chs_lo[i];
       end : hbm_addr_map
     end : axi_dv_cvt
