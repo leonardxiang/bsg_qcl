@@ -207,18 +207,66 @@ generate_target {instantiation_template} [get_files ${PRJ_IP_DIR}/clk_wiz_1/clk_
 set_property generate_synth_checkpoint false [get_files  ${PRJ_IP_DIR}/clk_wiz_1/clk_wiz_1.xci]
 generate_target all [get_files  ${PRJ_IP_DIR}/clk_wiz_1/clk_wiz_1.xci]
 
+
 # -------------------------------------
 # HBM
 # -------------------------------------
 create_ip -name hbm -vendor xilinx.com -library ip -version 1.0 -module_name hbm_0
 set_property -dict [list \
 CONFIG.USER_AXI_CLK_FREQ {250} \
-CONFIG.HBM_MMCM_FBOUT_MULT0 {70}
+CONFIG.HBM_MMCM_FBOUT_MULT0 {70} \
+CONFIG.USER_MC0_REORDER_EN {false} \
+CONFIG.USER_MC0_REORDER_QUEUE_EN {false} \
+CONFIG.USER_MC0_MAINTAIN_COHERENCY {false} \
+CONFIG.USER_MC1_REORDER_EN {false} \
+CONFIG.USER_MC1_REORDER_QUEUE_EN {false} \
+CONFIG.USER_MC1_MAINTAIN_COHERENCY {false} \
+CONFIG.USER_MC2_REORDER_EN {false} \
+CONFIG.USER_MC2_REORDER_QUEUE_EN {false} \
+CONFIG.USER_MC2_MAINTAIN_COHERENCY {false} \
+CONFIG.USER_MC3_REORDER_EN {false} \
+CONFIG.USER_MC3_REORDER_QUEUE_EN {false} \
+CONFIG.USER_MC3_MAINTAIN_COHERENCY {false} \
+CONFIG.USER_MC4_REORDER_EN {false} \
+CONFIG.USER_MC4_REORDER_QUEUE_EN {false} \
+CONFIG.USER_MC4_MAINTAIN_COHERENCY {false} \
+CONFIG.USER_MC5_REORDER_EN {false} \
+CONFIG.USER_MC5_REORDER_QUEUE_EN {false} \
+CONFIG.USER_MC5_MAINTAIN_COHERENCY {false} \
+CONFIG.USER_MC6_REORDER_EN {false} \
+CONFIG.USER_MC6_REORDER_QUEUE_EN {false} \
+CONFIG.USER_MC6_MAINTAIN_COHERENCY {false} \
+CONFIG.USER_MC7_REORDER_EN {false} \
+CONFIG.USER_MC7_REORDER_QUEUE_EN {false} \
+CONFIG.USER_MC7_MAINTAIN_COHERENCY {false} \
+CONFIG.USER_MC8_REORDER_EN {false} \
+CONFIG.USER_MC8_REORDER_QUEUE_EN {false} \
+CONFIG.USER_MC8_MAINTAIN_COHERENCY {false} \
+CONFIG.USER_MC9_REORDER_EN {false} \
+CONFIG.USER_MC9_REORDER_QUEUE_EN {false} \
+CONFIG.USER_MC9_MAINTAIN_COHERENCY {false} \
+CONFIG.USER_MC10_REORDER_EN {false} \
+CONFIG.USER_MC10_REORDER_QUEUE_EN {false} \
+CONFIG.USER_MC10_MAINTAIN_COHERENCY {false} \
+CONFIG.USER_MC11_REORDER_EN {false} \
+CONFIG.USER_MC11_REORDER_QUEUE_EN {false} \
+CONFIG.USER_MC11_MAINTAIN_COHERENCY {false} \
+CONFIG.USER_MC12_REORDER_EN {false} \
+CONFIG.USER_MC12_REORDER_QUEUE_EN {false} \
+CONFIG.USER_MC12_MAINTAIN_COHERENCY {false} \
+CONFIG.USER_MC13_REORDER_EN {false} \
+CONFIG.USER_MC13_REORDER_QUEUE_EN {false} \
+CONFIG.USER_MC13_MAINTAIN_COHERENCY {false} \
+CONFIG.USER_MC14_REORDER_EN {false} \
+CONFIG.USER_MC14_REORDER_QUEUE_EN {false} \
+CONFIG.USER_MC14_MAINTAIN_COHERENCY {false} \
+CONFIG.USER_MC15_REORDER_EN {false} \
+CONFIG.USER_MC15_REORDER_QUEUE_EN {false} \
+CONFIG.USER_MC15_MAINTAIN_COHERENCY {false}
 ] [get_ips hbm_0]
 generate_target {instantiation_template} [get_files ${PRJ_IP_DIR}/hbm_0/hbm_0.xci]
 set_property generate_synth_checkpoint false [get_files  ${PRJ_IP_DIR}/hbm_0/hbm_0.xci]
 generate_target all [get_files  ${PRJ_IP_DIR}/hbm_0/hbm_0.xci]
-
 
 # # -------------------------------------
 # # axi data width converter
