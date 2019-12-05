@@ -2,15 +2,31 @@
 
 FPGA_PART = xcvu37p-fsvh2892-3-e-es1
 
+include $(BSG_QCL_DIR)/environment.mk
 # get configuration from bsg_f1 repo
 # include $(BSG_F1_DIR)/environment.mk
+# this replace the environment.mk to reduce the dependence
 CL_DIR = $(BSG_F1_DIR)
 HARDWARE_PATH = $(BSG_F1_DIR)/hardware
+HARDWARE_PATH    := $(CL_DIR)/hardware
+REGRESSION_PATH  := $(CL_DIR)/regression
+TESTBENCH_PATH   := $(CL_DIR)/testbenches
+LIBRARIES_PATH   := $(CL_DIR)/libraries
+BSG_MACHINE_PATH := $(HARDWARE_PATH)
+
+$(info $(shell echo -e "$(ORANGE)BSG MAKE INFO: F1 repo dir is defined as:$(NC)"))
+
 include $(HARDWARE_PATH)/hardware.mk
+VSOURCES += $(BSG_MANYCORE_DIR)/v/bsg_manycore_link_sif_async_buffer.v
 
 # Replace any xilinx(unsynthesizable or F1 specific)
-VSOURCES := $(filter-out $(BASEJUMP_STL_DIR)/bsg_mem/bsg_mem_1rw_sync_mask_write_bit.v,$(VHEADERS) $(VSOURCES))
+VSOURCES := $(filter-out $(BASEJUMP_STL_DIR)/bsg_mem/bsg_mem_1rw_sync_mask_write_bit.v,$(VSOURCES))
 VSOURCES += $(BASEJUMP_STL_DIR)/hard/ultrascale_plus/bsg_mem/bsg_mem_1rw_sync_mask_write_bit.v
+
+VSOURCES := $(filter-out $(BSG_MANYCORE_DIR)/v/vanilla_bean/bsg_cache_to_axi_hashed.v,$(VSOURCES))
+VSOURCES := $(filter-out $(BASEJUMP_STL_DIR)/bsg_cache/bsg_cache_to_dram_ctrl.v,$(VSOURCES))
+VSOURCES := $(filter-out $(BASEJUMP_STL_DIR)/bsg_cache/bsg_cache_to_dram_ctrl_rx.v,$(VSOURCES))
+VSOURCES := $(filter-out $(BASEJUMP_STL_DIR)/bsg_cache/bsg_cache_to_dram_ctrl_rx.v,$(VSOURCES))
 
 # Project defines
 VHEADERS := $(BSG_QCL_DIR)/hdl/bsg_bladerunner_defines.vh $(VHEADERS)

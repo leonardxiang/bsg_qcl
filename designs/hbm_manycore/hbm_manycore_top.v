@@ -97,14 +97,14 @@ module hbm_manycore_top
   wire hbm_ref_clk_int;
   clk_wiz_0 mem_global_pll (
     // Clock out ports
-    .clk_out1 (APB_0_PCLK_IBUF ),
-    .clk_out2 (hbm_axil_clk_int),
-    .clk_out3 (hbm_ref_clk_int ),
+    .clk_out1 (APB_0_PCLK_IBUF ),  // 100
+    .clk_out2 (hbm_axil_clk_int),  // 100
+    .clk_out3 (hbm_ref_clk_int ),  // 100
     // Status and control signals
     .reset    (1'b0            ),
     .locked   (locked_pll[0]   ),
     // Clock in ports
-    .clk_in1_p(mem_clk_i_p     ),
+    .clk_in1_p(mem_clk_i_p     ),  // 100
     .clk_in1_n(mem_clk_i_n     )
   );
 
@@ -127,14 +127,6 @@ module hbm_manycore_top
     // Clock in ports
     .clk_in1 (hbm_ref_clk_int)
   );
-
-  qcl_breath_en #(.val_p('d50000000)) led_breath_rst (
-    .clk_i  (hbm_axil_clk_int),
-    .reset_i(1'b0            ),
-    .en_i   (1'b1            ),
-    .o      (leds_o[4]        )
-  );
-
 
 ////////////////////////////////////////////////////////////////////////////////
 // Localparams
@@ -306,7 +298,7 @@ BUFGCE_DIV #(.BUFGCE_DIVIDE(2)) u_AXI_vio_CLK_st0 (
   wire AXI_ARESET_N_0 = ~ext_reset_dbnc;
 
   wire axi_trans_err;
-  assign leds_o[5] = ~(&locked_pll);
+
 
 (* dont_touch = "true" *) reg           axi_rst0_st0_n;
 (* ASYNC_REG = "TRUE" *) reg           axi_rst1_st0_r1_n, axi_rst1_st0_r2_n;
@@ -559,13 +551,6 @@ BUFGCE_DIV #(.BUFGCE_DIVIDE(2)) u_AXI_vio_CLK_st0 (
     end
   end
 
-  // LEDs for pcie observation
-  assign leds_o[0] = sys_rst_n_buf_lo;
-  assign leds_o[1] = rstn_axi4_pcie_li;
-  assign leds_o[2] = user_link_up_lo;
-  assign leds_o[3] = user_clk_heartbeat[26];
-
-
   // 1st AXI interface, axil ocl interface
   // ---------------------------------------------
 
@@ -712,8 +697,8 @@ BUFGCE_DIV #(.BUFGCE_DIVIDE(2)) u_AXI_vio_CLK_st0 (
     .out_bus(axil_rstn_buf   )
   );
 
-  bsg_axil_mosi_bus_s s_axil_mc_li;
-  bsg_axil_miso_bus_s s_axil_mc_lo;
+  bsg_axil_mosi_bus_s m_axil_ocl_lo;
+  bsg_axil_miso_bus_s m_axil_ocl_li;
 
   axi_register_slice_light AXIL_OCL_REG_SLC (
     .aclk         (clk_axi4_pcie_li      ),
@@ -736,31 +721,98 @@ BUFGCE_DIV #(.BUFGCE_DIVIDE(2)) u_AXI_vio_CLK_st0 (
     .s_axi_rresp  (s_axil_ocl_lo.rresp  ),
     .s_axi_rvalid (s_axil_ocl_lo.rvalid ),
     .s_axi_rready (s_axil_ocl_li.rready ),
-    .m_axi_awaddr (s_axil_mc_li.awaddr  ),
+    .m_axi_awaddr (m_axil_ocl_lo.awaddr  ),
     .m_axi_awprot (                     ),
-    .m_axi_awvalid(s_axil_mc_li.awvalid ),
-    .m_axi_awready(s_axil_mc_lo.awready ),
-    .m_axi_wdata  (s_axil_mc_li.wdata   ),
-    .m_axi_wstrb  (s_axil_mc_li.wstrb   ),
-    .m_axi_wvalid (s_axil_mc_li.wvalid  ),
-    .m_axi_wready (s_axil_mc_lo.wready  ),
-    .m_axi_bresp  (s_axil_mc_lo.bresp   ),
-    .m_axi_bvalid (s_axil_mc_lo.bvalid  ),
-    .m_axi_bready (s_axil_mc_li.bready  ),
-    .m_axi_araddr (s_axil_mc_li.araddr  ),
-    .m_axi_arvalid(s_axil_mc_li.arvalid ),
-    .m_axi_arready(s_axil_mc_lo.arready ),
-    .m_axi_rdata  (s_axil_mc_lo.rdata   ),
-    .m_axi_rresp  (s_axil_mc_lo.rresp   ),
-    .m_axi_rvalid (s_axil_mc_lo.rvalid  ),
-    .m_axi_rready (s_axil_mc_li.rready  )
+    .m_axi_awvalid(m_axil_ocl_lo.awvalid ),
+    .m_axi_awready(m_axil_ocl_li.awready ),
+    .m_axi_wdata  (m_axil_ocl_lo.wdata   ),
+    .m_axi_wstrb  (m_axil_ocl_lo.wstrb   ),
+    .m_axi_wvalid (m_axil_ocl_lo.wvalid  ),
+    .m_axi_wready (m_axil_ocl_li.wready  ),
+    .m_axi_bresp  (m_axil_ocl_li.bresp   ),
+    .m_axi_bvalid (m_axil_ocl_li.bvalid  ),
+    .m_axi_bready (m_axil_ocl_lo.bready  ),
+    .m_axi_araddr (m_axil_ocl_lo.araddr  ),
+    .m_axi_arvalid(m_axil_ocl_lo.arvalid ),
+    .m_axi_arready(m_axil_ocl_li.arready ),
+    .m_axi_rdata  (m_axil_ocl_li.rdata   ),
+    .m_axi_rresp  (m_axil_ocl_li.rresp   ),
+    .m_axi_rvalid (m_axil_ocl_li.rvalid  ),
+    .m_axi_rready (m_axil_ocl_lo.rready  )
   );
 
+
+  // reserve the axil address space for soft reset
+  //
+  localparam num_axil_slot_lp = 2;
+  localparam soft_rst_base_addr_lp = 64'h10000;
+  localparam mc_mmio_base_addr_lp = 64'h00000;
+  localparam axil_base_addr_lp = {soft_rst_base_addr_lp, mc_mmio_base_addr_lp};
+
+  bsg_axil_mosi_bus_s s_mc_axil_li, s_rst_axil_li;
+  bsg_axil_miso_bus_s s_mc_axil_lo, s_rst_axil_lo;
+
+  axil_demux #(
+    .num_axil_p            (num_axil_slot_lp                        ),
+    .axil_base_addr_p      (128'h00000000_00010000_00000000_00000000),
+    .axil_base_addr_width_p(16                                      ),
+    .device_family         (DEVICE_FAMILY                          )
+  ) axil_dm (
+    .clk_i       (clk_axi4_pcie_li             ),
+    .reset_i     (~rstn_axi4_pcie_li           ),
+    .s_axil_ser_i(m_axil_ocl_lo                ),
+    .s_axil_ser_o(m_axil_ocl_li                ),
+    .m_axil_par_o({s_rst_axil_li, s_mc_axil_li}),
+    .m_axil_par_i({s_rst_axil_lo, s_mc_axil_lo})
+  );
+
+ // assign s_mc_axil_li = s_axil_ocl_li;
+ // assign s_axil_ocl_lo = s_mc_axil_lo;
+
+  logic reset_soft_lo;
+  axil_to_mem #(
+    .mem_addr_width_p      (4                         ),
+    .axil_base_addr_p      (32'(soft_rst_base_addr_lp)),
+    .axil_base_addr_width_p(16                        )
+  ) rst_probe (
+    .clk_i       (clk_axi4_pcie_li  ),
+    .reset_i     (~rstn_axi4_pcie_li),
+    .s_axil_bus_i(s_rst_axil_li     ),
+    .s_axil_bus_o(s_rst_axil_lo     ),
+    .addr_o      (                  ),
+    .wen_o       (                  ),
+    .data_o      (                  ),
+    .ren_o       (                  ),
+    .data_i      (                  ),
+    .done        (reset_soft_lo     )
+  );
+
+
   // ---------------------------------------------
-  // axil traffic monitor LEDs
+  // monitor LEDs
   // ---------------------------------------------
-  wire axil_wr_issued = s_axil_mc_li.wvalid & s_axil_mc_lo.wready;
-  wire axil_rd_issued = s_axil_mc_lo.rvalid & s_axil_mc_li.rready;
+
+  // LEDs for pcie observation
+  assign leds_o[0] = sys_rst_n_buf_lo;
+//  assign leds_o[1] = rstn_axi4_pcie_li;
+  qcl_breath_en #(.val_p('d1)) led_breath_rst (
+    .clk_i  (clk_axi4_pcie_li                ),
+    .reset_i(1'b0                            ),
+    .en_i   (rstn_axi4_pcie_li| reset_soft_lo),
+    .o      (leds_o[1]                       )
+  );
+  assign leds_o[2] = user_link_up_lo;
+  assign leds_o[3] = user_clk_heartbeat[26];
+  qcl_breath_en #(.val_p('d50000000)) led_breath_clk (
+    .clk_i  (hbm_axil_clk_int),
+    .reset_i(1'b0            ),
+    .en_i   (1'b1            ),
+    .o      (leds_o[4]       )
+  );
+  assign leds_o[5] = ~(&locked_pll);
+  // axil traffic
+  wire axil_wr_issued = m_axil_ocl_lo.wvalid & m_axil_ocl_li.wready;
+  wire axil_rd_issued = m_axil_ocl_li.rvalid & m_axil_ocl_lo.rready;
 
   qcl_breath_en #(.val_p('d4)) led_breath_axil_wr (
     .clk_i  (clk_axi4_pcie_li),
@@ -781,24 +833,34 @@ BUFGCE_DIV #(.BUFGCE_DIVIDE(2)) u_AXI_vio_CLK_st0 (
 
   localparam num_axi_slot_lp = (mem_cfg_p == e_vcache_blocking_axi4_xbar_dram ||
                                 mem_cfg_p == e_vcache_blocking_axi4_xbar_model ||
-                                mem_cfg_p == e_vcache_blocking_axi4_hbm) ?
+                                mem_cfg_p == e_vcache_blocking_axi4_hbm ||
+                                mem_cfg_p == e_vcache_non_blocking_axi4_hbm) ?
                                 num_tiles_x_p : 1;
 
   bsg_axi4_mosi_bus_s [num_axi_slot_lp-1:0] mc_axi4_cache_lo;
   bsg_axi4_miso_bus_s [num_axi_slot_lp-1:0] mc_axi4_cache_li;
 
   // hb_manycore
-  bsg_bladerunner_wrapper #(.num_axi_slot_p(num_axi_slot_lp)) hb_mc_wrapper (
-    .clk_i       (clk_axi4_pcie_li),
-    .reset_i     (mc_reset_i      ),
-    .clk2_i      (clk_axi4_pcie_li),
-    .reset2_i    (mc_reset_i      ),
+  mc_runner_top #(
+    .num_axi4_p      (num_axi_slot_lp ),
+    .mc_to_io_cdc_p  (0               ),
+    .mc_to_mem_cdc_p (0               ),
+    .axi_id_width_p  (axi_id_width_p  ),
+    .axi_addr_width_p(axi_addr_width_p),
+    .axi_data_width_p(axi_data_width_p)
+  ) hb_mc_wrapper (
+    .clk_core_i  (clk_axi4_pcie_li                   ),
+    .reset_core_i(mc_reset_i                         ),
+    .clk_io_i    (clk_axi4_pcie_li                   ),
+    .reset_io_i  (mc_reset_i                         ),
+    .clk_mem_i   ({num_axi_slot_lp{clk_axi4_pcie_li}}),
+    .reset_mem_i ({num_axi_slot_lp{mc_reset_i}}      ),
     // AXI-Lite
-    .s_axil_bus_i(s_axil_mc_li    ),
-    .s_axil_bus_o(s_axil_mc_lo    ),
+    .s_axil_bus_i(s_mc_axil_li                       ),
+    .s_axil_bus_o(s_mc_axil_lo                       ),
     // AXI4 Master
-    .m_axi4_bus_o(mc_axi4_cache_lo),
-    .m_axi4_bus_i(mc_axi4_cache_li)
+    .m_axi4_bus_o(mc_axi4_cache_lo                   ),
+    .m_axi4_bus_i(mc_axi4_cache_li                   )
   );
 
   bsg_axi4_mosi_bus_s [num_axi_slot_lp-1:0] s_axi4_cdc_li, m_axi4_cdc_lo;
@@ -822,10 +884,10 @@ BUFGCE_DIV #(.BUFGCE_DIVIDE(2)) u_AXI_vio_CLK_st0 (
   for (genvar i = 0; i < num_axi_slot_lp; i++) begin : mem_cdc
 
     axi4_clock_converter #(
-      .id_width_p        (axi_id_width_p  ),
-      .addr_width_p      (axi_addr_width_p),
-      .data_width_p      (axi_data_width_p),
       .device_family     (DEVICE_FAMILY   ),
+      .axi4_id_width_p   (axi_id_width_p  ),
+      .axi4_addr_width_p (axi_addr_width_p),
+      .axi4_data_width_p (axi_data_width_p),
       .s_axi_aclk_ratio_p(1               ),
       .m_axi_aclk_ratio_p(2               ),
       .is_aclk_async_p   (1               )
@@ -908,7 +970,8 @@ BUFGCE_DIV #(.BUFGCE_DIVIDE(2)) u_AXI_vio_CLK_st0 (
   // ===================================
   // hbm memory system
   // ===================================
-  else if (mem_cfg_p == e_vcache_blocking_axi4_hbm) begin : lv3_hbm
+  else if (mem_cfg_p == e_vcache_blocking_axi4_hbm ||
+           mem_cfg_p == e_vcache_non_blocking_axi4_hbm) begin : lv3_hbm
 
     for (genvar i = 0; i < num_axi_slot_lp; i++) begin : axi_dv_cvt
       always_comb begin : hbm_addr_map
@@ -3592,142 +3655,7 @@ assign tg_start_st0_6 = apb_seq_complete_6_st0_r1 && ~(apb_seq_complete_6_st0_r2
 // assign AXI_00_ARADDR = {vio_tg_glb_start_addr_0[32:28],o_m_axi_araddr_0[27:0]};
 // assign AXI_00_AWADDR = {vio_tg_glb_start_addr_0[32:28],o_m_axi_awaddr_0[27:0]};
 
-atg_axi#(
-  .SIMULATION                          (SIMULATION),
-  .MEM_TYPE                            ("DDR4"),
-  .MEM_ARCH                            ("ULTRASCALE"),
-  //.APP_DATA_WIDTH                      (APP_DATA_WIDTH),
-  .APP_ADDR_WIDTH                      (APP_ADDR_WIDTH),
-  .C_AXI_ID_WIDTH                      (6),
-  .C_AXI_ADDR_WIDTH                    (APP_ADDR_WIDTH),
-  //.C_AXI_DATA_WIDTH                    (APP_DATA_WIDTH),
-  .TG_PATTERN_MODE_PRBS_ADDR_WIDTH     (28),
-  .ECC                                 ("OFF"),
-  //.NUM_DQ_PINS                         (32),
-  `ifdef OPT_DATA_W
-    .APP_DATA_WIDTH(64),
-    .C_AXI_DATA_WIDTH(64),
-      `ifdef NCKPCLK_2
-        .NUM_DQ_PINS(16),
-        .nCK_PER_CLK(2),
-      `else
-        .nCK_PER_CLK(4),
-        .NUM_DQ_PINS(8),
-      `endif
-    `else
-      `ifdef NCKPCLK_2
-        .NUM_DQ_PINS(64),
-        .nCK_PER_CLK(2),
-      `else
-        .nCK_PER_CLK(4),
-        .NUM_DQ_PINS(32),
-      `endif
-    .APP_DATA_WIDTH(APP_DATA_WIDTH),
-    .C_AXI_DATA_WIDTH(APP_DATA_WIDTH),
-  `endif
-  .DEFAULT_MODE                        ("2018_1")
-) u_atg_axi_0 (
-  .i_TG_PATTERN_MODE_PRBS_ADDR_SEED    (28'b0),
-  .i_clk                               (AXI_ACLK0_st0_buf),
-  .i_rst                               (~axi_rst0_st0_n),
-  .i_init_calib_complete               (apb_seq_complete_0_st0_r2),
-  .compare_error                       (axi_00_data_msmatch_err),
-  .vio_tg_rst                          (vio_tg_rst_0),
-  .vio_tg_start                        (vio_tg_start_0),
-  .vio_tg_err_chk_en                   (vio_tg_err_chk_en_0),
-  .vio_tg_err_clear                    (vio_tg_err_clear_0),
-  .vio_tg_instr_addr_mode              (vio_tg_instr_addr_mode_0),
-  .vio_tg_instr_data_mode              (vio_tg_instr_data_mode_0),
-  .vio_tg_instr_rw_mode                (vio_tg_instr_rw_mode_0),
-  .vio_tg_instr_rw_submode             (vio_tg_instr_rw_submode_0),
-  .vio_tg_instr_num_of_iter            (vio_tg_instr_num_of_iter_0),
-  .vio_tg_instr_nxt_instr              (vio_tg_instr_nxt_instr_0),
-  .vio_tg_restart                      (vio_tg_restart_0),
-  .vio_tg_pause                        (vio_tg_pause_0),
-  .vio_tg_err_clear_all                (vio_tg_err_clear_all_0),
-  .vio_tg_err_continue                 (vio_tg_err_continue_0),
-  .vio_tg_instr_program_en             (vio_tg_instr_program_en_0),
-  .vio_tg_direct_instr_en              (vio_tg_direct_instr_en_0),
-  .vio_tg_instr_num                    (vio_tg_instr_num_0),
-  .vio_tg_instr_victim_mode            (vio_tg_instr_victim_mode_0),
-  .vio_tg_instr_victim_aggr_delay      (vio_tg_instr_victim_aggr_delay_0),
-  .vio_tg_instr_victim_select          (vio_tg_instr_victim_select_0),
-  .vio_tg_instr_m_nops_btw_n_burst_m   (vio_tg_instr_m_nops_btw_n_burst_m_0),
-  .vio_tg_instr_m_nops_btw_n_burst_n   (vio_tg_instr_m_nops_btw_n_burst_n_0),
-  .vio_tg_seed_program_en              (vio_tg_seed_program_en_0),
-  .vio_tg_seed_num                     (vio_tg_seed_num_0),
-  .vio_tg_seed                         (vio_tg_seed_0),
-  .vio_tg_glb_victim_bit               (vio_tg_glb_victim_bit_0),
-  .vio_tg_glb_start_addr               (vio_tg_glb_start_addr_0),
-  .vio_tg_glb_qdriv_rw_submode         (2'b00),
-  .o_wrt_rqt_over_flow                 (),
-  .vio_tg_status_state                 (vio_tg_status_state_0),
-  .vio_tg_status_err_bit_valid         (vio_tg_status_err_bit_valid_0),
-  .vio_tg_status_err_bit               (vio_tg_status_err_bit_0),
-  .vio_tg_status_err_cnt               (vio_tg_status_err_cnt_0),
-  .vio_tg_status_err_addr              (vio_tg_status_err_addr_0),
-  .vio_tg_status_exp_bit_valid         (vio_tg_status_exp_bit_valid_0),
-  .vio_tg_status_exp_bit               (vio_tg_status_exp_bit_0),
-  .vio_tg_status_read_bit_valid        (vio_tg_status_read_bit_valid_0),
-  .vio_tg_status_read_bit              (vio_tg_status_read_bit_0),
-  .vio_tg_status_first_err_bit_valid   (vio_tg_status_first_err_bit_valid_0),
-  .vio_tg_status_first_err_bit         (vio_tg_status_first_err_bit_0),
-  .vio_tg_status_first_err_addr        (vio_tg_status_first_err_addr_0),
-  .vio_tg_status_first_exp_bit_valid   (vio_tg_status_first_exp_bit_valid_0),
-  .vio_tg_status_first_exp_bit         (vio_tg_status_first_exp_bit_0),
-  .vio_tg_status_first_read_bit_valid  (vio_tg_status_first_read_bit_valid_0),
-  .vio_tg_status_first_read_bit        (vio_tg_status_first_read_bit_0),
-  .vio_tg_status_err_bit_sticky_valid  (vio_tg_status_err_bit_sticky_valid_0),
-  .vio_tg_status_err_bit_sticky        (vio_tg_status_err_bit_sticky_0),
-  .vio_tg_status_err_cnt_sticky        (vio_tg_status_err_cnt_sticky_0),
-  .vio_tg_status_err_type_valid        (vio_tg_status_err_type_valid_0),
-  .vio_tg_status_err_type              (vio_tg_status_err_type_0),
-  .vio_tg_status_wr_done               (vio_tg_status_wr_done_0),
-  .vio_tg_status_done                  (boot_mode_done_0),
-  .vio_tg_status_watch_dog_hang        (vio_tg_status_watch_dog_hang_0),
-  .tg_ila_debug                        (tg_ila_debug_0),
-  .tg_qdriv_submode11_app_rd           (1'b0),
-  // Slave Interface Write Address Ports
-  .i_m_axi_awready                     ('0),
-  .o_m_axi_awid                        (),
-  .o_m_axi_awaddr                      (),
-  .o_m_axi_awlen                       (),
-  .o_m_axi_awsize                      (),
-  .o_m_axi_awburst                     (),
-  .o_m_axi_awlock                      (),
-  .o_m_axi_awcache                     (),
-  .o_m_axi_awprot                      (),
-  .o_m_axi_awvalid                     (),
-  // Slave Interface Write Data Ports
-  .i_m_axi_wready                      ('0),
-  .o_m_axi_wdata                       (),
-  .o_m_axi_wstrb                       (),
-  .o_m_axi_wlast                       (),
-  .o_m_axi_wvalid                      (),
-  // Slave Interface Write Response Ports
-  .i_m_axi_bid                         ('0),
-  .i_m_axi_bresp                       ('0),
-  .i_m_axi_bvalid                      ('0),
-  .o_m_axi_bready                      (),
-  .i_m_axi_arready                     ('0),
-  // Slave Interface Read Address Ports
-  .o_m_axi_arid                        (),
-  .o_m_axi_araddr                      (),
-  .o_m_axi_arlen                       (),
-  .o_m_axi_arsize                      (),
-  .o_m_axi_arburst                     (),
-  .o_m_axi_arlock                      (),
-  .o_m_axi_arcache                     (),
-  .o_m_axi_arprot                      (),
-  .o_m_axi_arvalid                     (),
-  // Slave Interface Read Data Ports
-  .i_m_axi_rid                         ('0),
-  .i_m_axi_rresp                       ('0),
-  .i_m_axi_rvalid                      ('0),
-  .i_m_axi_rdata                       ('0),
-  .i_m_axi_rlast                       ('0),
-  .o_m_axi_rready                      ()
-);
+
 
   //  mosi signals
   assign AXI_00_AWID    = axi4_hbm_chs_li[0].awid;
@@ -3870,142 +3798,7 @@ axi_pmon_v1_0 #(
 // assign AXI_01_ARADDR = {vio_tg_glb_start_addr_1[32:28],o_m_axi_araddr_1[27:0]};
 // assign AXI_01_AWADDR = {vio_tg_glb_start_addr_1[32:28],o_m_axi_awaddr_1[27:0]};
 
-atg_axi#(
-  .SIMULATION                          (SIMULATION),
-  .MEM_TYPE                            ("DDR4"),
-  .MEM_ARCH                            ("ULTRASCALE"),
-  //.APP_DATA_WIDTH                      (APP_DATA_WIDTH),
-  .APP_ADDR_WIDTH                      (APP_ADDR_WIDTH),
-  .C_AXI_ID_WIDTH                      (6),
-  .C_AXI_ADDR_WIDTH                    (APP_ADDR_WIDTH),
-  //.C_AXI_DATA_WIDTH                    (APP_DATA_WIDTH),
-  .TG_PATTERN_MODE_PRBS_ADDR_WIDTH     (28),
-  .ECC                                 ("OFF"),
-  //.NUM_DQ_PINS                         (32),
-  `ifdef OPT_DATA_W
-    .APP_DATA_WIDTH(64),
-    .C_AXI_DATA_WIDTH(64),
-      `ifdef NCKPCLK_2
-        .NUM_DQ_PINS(16),
-        .nCK_PER_CLK(2),
-      `else
-        .nCK_PER_CLK(4),
-        .NUM_DQ_PINS(8),
-      `endif
-    `else
-      `ifdef NCKPCLK_2
-        .NUM_DQ_PINS(64),
-        .nCK_PER_CLK(2),
-      `else
-        .nCK_PER_CLK(4),
-        .NUM_DQ_PINS(32),
-      `endif
-    .APP_DATA_WIDTH(APP_DATA_WIDTH),
-    .C_AXI_DATA_WIDTH(APP_DATA_WIDTH),
-  `endif
-  .DEFAULT_MODE                        ("2018_1")
-) u_atg_axi_1 (
-  .i_TG_PATTERN_MODE_PRBS_ADDR_SEED    (28'b0),
-  .i_clk                               (AXI_ACLK0_st0_buf),
-  .i_rst                               (~axi_rst0_st0_n),
-  .i_init_calib_complete               (apb_seq_complete_0_st0_r2),
-  .compare_error                       (axi_01_data_msmatch_err),
-  .vio_tg_rst                          (vio_tg_rst_1),
-  .vio_tg_start                        (vio_tg_start_1),
-  .vio_tg_err_chk_en                   (vio_tg_err_chk_en_1),
-  .vio_tg_err_clear                    (vio_tg_err_clear_1),
-  .vio_tg_instr_addr_mode              (vio_tg_instr_addr_mode_1),
-  .vio_tg_instr_data_mode              (vio_tg_instr_data_mode_1),
-  .vio_tg_instr_rw_mode                (vio_tg_instr_rw_mode_1),
-  .vio_tg_instr_rw_submode             (vio_tg_instr_rw_submode_1),
-  .vio_tg_instr_num_of_iter            (vio_tg_instr_num_of_iter_1),
-  .vio_tg_instr_nxt_instr              (vio_tg_instr_nxt_instr_1),
-  .vio_tg_restart                      (vio_tg_restart_1),
-  .vio_tg_pause                        (vio_tg_pause_1),
-  .vio_tg_err_clear_all                (vio_tg_err_clear_all_1),
-  .vio_tg_err_continue                 (vio_tg_err_continue_1),
-  .vio_tg_instr_program_en             (vio_tg_instr_program_en_1),
-  .vio_tg_direct_instr_en              (vio_tg_direct_instr_en_1),
-  .vio_tg_instr_num                    (vio_tg_instr_num_1),
-  .vio_tg_instr_victim_mode            (vio_tg_instr_victim_mode_1),
-  .vio_tg_instr_victim_aggr_delay      (vio_tg_instr_victim_aggr_delay_1),
-  .vio_tg_instr_victim_select          (vio_tg_instr_victim_select_1),
-  .vio_tg_instr_m_nops_btw_n_burst_m   (vio_tg_instr_m_nops_btw_n_burst_m_1),
-  .vio_tg_instr_m_nops_btw_n_burst_n   (vio_tg_instr_m_nops_btw_n_burst_n_1),
-  .vio_tg_seed_program_en              (vio_tg_seed_program_en_1),
-  .vio_tg_seed_num                     (vio_tg_seed_num_1),
-  .vio_tg_seed                         (vio_tg_seed_1),
-  .vio_tg_glb_victim_bit               (vio_tg_glb_victim_bit_1),
-  .vio_tg_glb_start_addr               (vio_tg_glb_start_addr_1),
-  .vio_tg_glb_qdriv_rw_submode         (2'b00),
-  .o_wrt_rqt_over_flow                 (),
-  .vio_tg_status_state                 (vio_tg_status_state_1),
-  .vio_tg_status_err_bit_valid         (vio_tg_status_err_bit_valid_1),
-  .vio_tg_status_err_bit               (vio_tg_status_err_bit_1),
-  .vio_tg_status_err_cnt               (vio_tg_status_err_cnt_1),
-  .vio_tg_status_err_addr              (vio_tg_status_err_addr_1),
-  .vio_tg_status_exp_bit_valid         (vio_tg_status_exp_bit_valid_1),
-  .vio_tg_status_exp_bit               (vio_tg_status_exp_bit_1),
-  .vio_tg_status_read_bit_valid        (vio_tg_status_read_bit_valid_1),
-  .vio_tg_status_read_bit              (vio_tg_status_read_bit_1),
-  .vio_tg_status_first_err_bit_valid   (vio_tg_status_first_err_bit_valid_1),
-  .vio_tg_status_first_err_bit         (vio_tg_status_first_err_bit_1),
-  .vio_tg_status_first_err_addr        (vio_tg_status_first_err_addr_1),
-  .vio_tg_status_first_exp_bit_valid   (vio_tg_status_first_exp_bit_valid_1),
-  .vio_tg_status_first_exp_bit         (vio_tg_status_first_exp_bit_1),
-  .vio_tg_status_first_read_bit_valid  (vio_tg_status_first_read_bit_valid_1),
-  .vio_tg_status_first_read_bit        (vio_tg_status_first_read_bit_1),
-  .vio_tg_status_err_bit_sticky_valid  (vio_tg_status_err_bit_sticky_valid_1),
-  .vio_tg_status_err_bit_sticky        (vio_tg_status_err_bit_sticky_1),
-  .vio_tg_status_err_cnt_sticky        (vio_tg_status_err_cnt_sticky_1),
-  .vio_tg_status_err_type_valid        (vio_tg_status_err_type_valid_1),
-  .vio_tg_status_err_type              (vio_tg_status_err_type_1),
-  .vio_tg_status_wr_done               (vio_tg_status_wr_done_1),
-  .vio_tg_status_done                  (boot_mode_done_1),
-  .vio_tg_status_watch_dog_hang        (vio_tg_status_watch_dog_hang_1),
-  .tg_ila_debug                        (tg_ila_debug_1),
-  .tg_qdriv_submode11_app_rd           (1'b0),
-  // Slave Interface Write Address Ports
-  .i_m_axi_awready                     ('0),
-  .o_m_axi_awid                        (),
-  .o_m_axi_awaddr                      (),
-  .o_m_axi_awlen                       (),
-  .o_m_axi_awsize                      (),
-  .o_m_axi_awburst                     (),
-  .o_m_axi_awlock                      (),
-  .o_m_axi_awcache                     (),
-  .o_m_axi_awprot                      (),
-  .o_m_axi_awvalid                     (),
-  // Slave Interface Write Data Ports
-  .i_m_axi_wready                      ('0),
-  .o_m_axi_wdata                       (),
-  .o_m_axi_wstrb                       (),
-  .o_m_axi_wlast                       (),
-  .o_m_axi_wvalid                      (),
-  // Slave Interface Write Response Ports
-  .i_m_axi_bid                         ('0),
-  .i_m_axi_bresp                       ('0),
-  .i_m_axi_bvalid                      ('0),
-  .o_m_axi_bready                      (),
-  .i_m_axi_arready                     ('0),
-  // Slave Interface Read Address Ports
-  .o_m_axi_arid                        (),
-  .o_m_axi_araddr                      (),
-  .o_m_axi_arlen                       (),
-  .o_m_axi_arsize                      (),
-  .o_m_axi_arburst                     (),
-  .o_m_axi_arlock                      (),
-  .o_m_axi_arcache                     (),
-  .o_m_axi_arprot                      (),
-  .o_m_axi_arvalid                     (),
-  // Slave Interface Read Data Ports
-  .i_m_axi_rid                         ('0),
-  .i_m_axi_rresp                       ('0),
-  .i_m_axi_rvalid                      ('0),
-  .i_m_axi_rdata                       ('0),
-  .i_m_axi_rlast                       ('0),
-  .o_m_axi_rready                      ()
-);
+
 
   //  mosi signals
   assign AXI_01_AWID    = axi4_hbm_chs_li[1].awid;
@@ -4147,142 +3940,7 @@ axi_pmon_v1_0 #(
 // assign AXI_02_ARADDR = {vio_tg_glb_start_addr_2[32:28],o_m_axi_araddr_2[27:0]};
 // assign AXI_02_AWADDR = {vio_tg_glb_start_addr_2[32:28],o_m_axi_awaddr_2[27:0]};
 
-atg_axi#(
-  .SIMULATION                          (SIMULATION),
-  .MEM_TYPE                            ("DDR4"),
-  .MEM_ARCH                            ("ULTRASCALE"),
-  //.APP_DATA_WIDTH                      (APP_DATA_WIDTH),
-  .APP_ADDR_WIDTH                      (APP_ADDR_WIDTH),
-  .C_AXI_ID_WIDTH                      (6),
-  .C_AXI_ADDR_WIDTH                    (APP_ADDR_WIDTH),
-  //.C_AXI_DATA_WIDTH                    (APP_DATA_WIDTH),
-  .TG_PATTERN_MODE_PRBS_ADDR_WIDTH     (28),
-  .ECC                                 ("OFF"),
-  //.NUM_DQ_PINS                         (32),
-  `ifdef OPT_DATA_W
-    .APP_DATA_WIDTH(64),
-    .C_AXI_DATA_WIDTH(64),
-      `ifdef NCKPCLK_2
-        .NUM_DQ_PINS(16),
-        .nCK_PER_CLK(2),
-      `else
-        .nCK_PER_CLK(4),
-        .NUM_DQ_PINS(8),
-      `endif
-    `else
-      `ifdef NCKPCLK_2
-        .NUM_DQ_PINS(64),
-        .nCK_PER_CLK(2),
-      `else
-        .nCK_PER_CLK(4),
-        .NUM_DQ_PINS(32),
-      `endif
-    .APP_DATA_WIDTH(APP_DATA_WIDTH),
-    .C_AXI_DATA_WIDTH(APP_DATA_WIDTH),
-  `endif
-  .DEFAULT_MODE                        ("2018_1")
-) u_atg_axi_2 (
-  .i_TG_PATTERN_MODE_PRBS_ADDR_SEED    (28'b0),
-  .i_clk                               (AXI_ACLK1_st0_buf),
-  .i_rst                               (~axi_rst1_st0_n),
-  .i_init_calib_complete               (apb_seq_complete_1_st0_r2),
-  .compare_error                       (axi_02_data_msmatch_err),
-  .vio_tg_rst                          (vio_tg_rst_2),
-  .vio_tg_start                        (vio_tg_start_2),
-  .vio_tg_err_chk_en                   (vio_tg_err_chk_en_2),
-  .vio_tg_err_clear                    (vio_tg_err_clear_2),
-  .vio_tg_instr_addr_mode              (vio_tg_instr_addr_mode_2),
-  .vio_tg_instr_data_mode              (vio_tg_instr_data_mode_2),
-  .vio_tg_instr_rw_mode                (vio_tg_instr_rw_mode_2),
-  .vio_tg_instr_rw_submode             (vio_tg_instr_rw_submode_2),
-  .vio_tg_instr_num_of_iter            (vio_tg_instr_num_of_iter_2),
-  .vio_tg_instr_nxt_instr              (vio_tg_instr_nxt_instr_2),
-  .vio_tg_restart                      (vio_tg_restart_2),
-  .vio_tg_pause                        (vio_tg_pause_2),
-  .vio_tg_err_clear_all                (vio_tg_err_clear_all_2),
-  .vio_tg_err_continue                 (vio_tg_err_continue_2),
-  .vio_tg_instr_program_en             (vio_tg_instr_program_en_2),
-  .vio_tg_direct_instr_en              (vio_tg_direct_instr_en_2),
-  .vio_tg_instr_num                    (vio_tg_instr_num_2),
-  .vio_tg_instr_victim_mode            (vio_tg_instr_victim_mode_2),
-  .vio_tg_instr_victim_aggr_delay      (vio_tg_instr_victim_aggr_delay_2),
-  .vio_tg_instr_victim_select          (vio_tg_instr_victim_select_2),
-  .vio_tg_instr_m_nops_btw_n_burst_m   (vio_tg_instr_m_nops_btw_n_burst_m_2),
-  .vio_tg_instr_m_nops_btw_n_burst_n   (vio_tg_instr_m_nops_btw_n_burst_n_2),
-  .vio_tg_seed_program_en              (vio_tg_seed_program_en_2),
-  .vio_tg_seed_num                     (vio_tg_seed_num_2),
-  .vio_tg_seed                         (vio_tg_seed_2),
-  .vio_tg_glb_victim_bit               (vio_tg_glb_victim_bit_2),
-  .vio_tg_glb_start_addr               (vio_tg_glb_start_addr_2),
-  .vio_tg_glb_qdriv_rw_submode         (2'b00),
-  .o_wrt_rqt_over_flow                 (),
-  .vio_tg_status_state                 (vio_tg_status_state_2),
-  .vio_tg_status_err_bit_valid         (vio_tg_status_err_bit_valid_2),
-  .vio_tg_status_err_bit               (vio_tg_status_err_bit_2),
-  .vio_tg_status_err_cnt               (vio_tg_status_err_cnt_2),
-  .vio_tg_status_err_addr              (vio_tg_status_err_addr_2),
-  .vio_tg_status_exp_bit_valid         (vio_tg_status_exp_bit_valid_2),
-  .vio_tg_status_exp_bit               (vio_tg_status_exp_bit_2),
-  .vio_tg_status_read_bit_valid        (vio_tg_status_read_bit_valid_2),
-  .vio_tg_status_read_bit              (vio_tg_status_read_bit_2),
-  .vio_tg_status_first_err_bit_valid   (vio_tg_status_first_err_bit_valid_2),
-  .vio_tg_status_first_err_bit         (vio_tg_status_first_err_bit_2),
-  .vio_tg_status_first_err_addr        (vio_tg_status_first_err_addr_2),
-  .vio_tg_status_first_exp_bit_valid   (vio_tg_status_first_exp_bit_valid_2),
-  .vio_tg_status_first_exp_bit         (vio_tg_status_first_exp_bit_2),
-  .vio_tg_status_first_read_bit_valid  (vio_tg_status_first_read_bit_valid_2),
-  .vio_tg_status_first_read_bit        (vio_tg_status_first_read_bit_2),
-  .vio_tg_status_err_bit_sticky_valid  (vio_tg_status_err_bit_sticky_valid_2),
-  .vio_tg_status_err_bit_sticky        (vio_tg_status_err_bit_sticky_2),
-  .vio_tg_status_err_cnt_sticky        (vio_tg_status_err_cnt_sticky_2),
-  .vio_tg_status_err_type_valid        (vio_tg_status_err_type_valid_2),
-  .vio_tg_status_err_type              (vio_tg_status_err_type_2),
-  .vio_tg_status_wr_done               (vio_tg_status_wr_done_2),
-  .vio_tg_status_done                  (boot_mode_done_2),
-  .vio_tg_status_watch_dog_hang        (vio_tg_status_watch_dog_hang_2),
-  .tg_ila_debug                        (tg_ila_debug_2),
-  .tg_qdriv_submode11_app_rd           (1'b0),
-  // Slave Interface Write Address Ports
-  .i_m_axi_awready                     ('0),
-  .o_m_axi_awid                        (),
-  .o_m_axi_awaddr                      (),
-  .o_m_axi_awlen                       (),
-  .o_m_axi_awsize                      (),
-  .o_m_axi_awburst                     (),
-  .o_m_axi_awlock                      (),
-  .o_m_axi_awcache                     (),
-  .o_m_axi_awprot                      (),
-  .o_m_axi_awvalid                     (),
-  // Slave Interface Write Data Ports
-  .i_m_axi_wready                      ('0),
-  .o_m_axi_wdata                       (),
-  .o_m_axi_wstrb                       (),
-  .o_m_axi_wlast                       (),
-  .o_m_axi_wvalid                      (),
-  // Slave Interface Write Response Ports
-  .i_m_axi_bid                         ('0),
-  .i_m_axi_bresp                       ('0),
-  .i_m_axi_bvalid                      ('0),
-  .o_m_axi_bready                      (),
-  .i_m_axi_arready                     ('0),
-  // Slave Interface Read Address Ports
-  .o_m_axi_arid                        (),
-  .o_m_axi_araddr                      (),
-  .o_m_axi_arlen                       (),
-  .o_m_axi_arsize                      (),
-  .o_m_axi_arburst                     (),
-  .o_m_axi_arlock                      (),
-  .o_m_axi_arcache                     (),
-  .o_m_axi_arprot                      (),
-  .o_m_axi_arvalid                     (),
-  // Slave Interface Read Data Ports
-  .i_m_axi_rid                         ('0),
-  .i_m_axi_rresp                       ('0),
-  .i_m_axi_rvalid                      ('0),
-  .i_m_axi_rdata                       ('0),
-  .i_m_axi_rlast                       ('0),
-  .o_m_axi_rready                      ()
-);
+
 
   //  mosi signals
   assign AXI_02_AWID    = axi4_hbm_chs_li[2].awid;
@@ -4424,142 +4082,7 @@ axi_pmon_v1_0 #(
 // assign AXI_03_ARADDR = {vio_tg_glb_start_addr_3[32:28],o_m_axi_araddr_3[27:0]};
 // assign AXI_03_AWADDR = {vio_tg_glb_start_addr_3[32:28],o_m_axi_awaddr_3[27:0]};
 
-atg_axi#(
-  .SIMULATION                          (SIMULATION),
-  .MEM_TYPE                            ("DDR4"),
-  .MEM_ARCH                            ("ULTRASCALE"),
-  //.APP_DATA_WIDTH                      (APP_DATA_WIDTH),
-  .APP_ADDR_WIDTH                      (APP_ADDR_WIDTH),
-  .C_AXI_ID_WIDTH                      (6),
-  .C_AXI_ADDR_WIDTH                    (APP_ADDR_WIDTH),
-  //.C_AXI_DATA_WIDTH                    (APP_DATA_WIDTH),
-  .TG_PATTERN_MODE_PRBS_ADDR_WIDTH     (28),
-  .ECC                                 ("OFF"),
-  //.NUM_DQ_PINS                         (32),
-  `ifdef OPT_DATA_W
-    .APP_DATA_WIDTH(64),
-    .C_AXI_DATA_WIDTH(64),
-      `ifdef NCKPCLK_2
-        .NUM_DQ_PINS(16),
-        .nCK_PER_CLK(2),
-      `else
-        .nCK_PER_CLK(4),
-        .NUM_DQ_PINS(8),
-      `endif
-    `else
-      `ifdef NCKPCLK_2
-        .NUM_DQ_PINS(64),
-        .nCK_PER_CLK(2),
-      `else
-        .nCK_PER_CLK(4),
-        .NUM_DQ_PINS(32),
-      `endif
-    .APP_DATA_WIDTH(APP_DATA_WIDTH),
-    .C_AXI_DATA_WIDTH(APP_DATA_WIDTH),
-  `endif
-  .DEFAULT_MODE                        ("2018_1")
-) u_atg_axi_3 (
-  .i_TG_PATTERN_MODE_PRBS_ADDR_SEED    (28'b0),
-  .i_clk                               (AXI_ACLK1_st0_buf),
-  .i_rst                               (~axi_rst1_st0_n),
-  .i_init_calib_complete               (apb_seq_complete_1_st0_r2),
-  .compare_error                       (axi_03_data_msmatch_err),
-  .vio_tg_rst                          (vio_tg_rst_3),
-  .vio_tg_start                        (vio_tg_start_3),
-  .vio_tg_err_chk_en                   (vio_tg_err_chk_en_3),
-  .vio_tg_err_clear                    (vio_tg_err_clear_3),
-  .vio_tg_instr_addr_mode              (vio_tg_instr_addr_mode_3),
-  .vio_tg_instr_data_mode              (vio_tg_instr_data_mode_3),
-  .vio_tg_instr_rw_mode                (vio_tg_instr_rw_mode_3),
-  .vio_tg_instr_rw_submode             (vio_tg_instr_rw_submode_3),
-  .vio_tg_instr_num_of_iter            (vio_tg_instr_num_of_iter_3),
-  .vio_tg_instr_nxt_instr              (vio_tg_instr_nxt_instr_3),
-  .vio_tg_restart                      (vio_tg_restart_3),
-  .vio_tg_pause                        (vio_tg_pause_3),
-  .vio_tg_err_clear_all                (vio_tg_err_clear_all_3),
-  .vio_tg_err_continue                 (vio_tg_err_continue_3),
-  .vio_tg_instr_program_en             (vio_tg_instr_program_en_3),
-  .vio_tg_direct_instr_en              (vio_tg_direct_instr_en_3),
-  .vio_tg_instr_num                    (vio_tg_instr_num_3),
-  .vio_tg_instr_victim_mode            (vio_tg_instr_victim_mode_3),
-  .vio_tg_instr_victim_aggr_delay      (vio_tg_instr_victim_aggr_delay_3),
-  .vio_tg_instr_victim_select          (vio_tg_instr_victim_select_3),
-  .vio_tg_instr_m_nops_btw_n_burst_m   (vio_tg_instr_m_nops_btw_n_burst_m_3),
-  .vio_tg_instr_m_nops_btw_n_burst_n   (vio_tg_instr_m_nops_btw_n_burst_n_3),
-  .vio_tg_seed_program_en              (vio_tg_seed_program_en_3),
-  .vio_tg_seed_num                     (vio_tg_seed_num_3),
-  .vio_tg_seed                         (vio_tg_seed_3),
-  .vio_tg_glb_victim_bit               (vio_tg_glb_victim_bit_3),
-  .vio_tg_glb_start_addr               (vio_tg_glb_start_addr_3),
-  .vio_tg_glb_qdriv_rw_submode         (2'b00),
-  .o_wrt_rqt_over_flow                 (),
-  .vio_tg_status_state                 (vio_tg_status_state_3),
-  .vio_tg_status_err_bit_valid         (vio_tg_status_err_bit_valid_3),
-  .vio_tg_status_err_bit               (vio_tg_status_err_bit_3),
-  .vio_tg_status_err_cnt               (vio_tg_status_err_cnt_3),
-  .vio_tg_status_err_addr              (vio_tg_status_err_addr_3),
-  .vio_tg_status_exp_bit_valid         (vio_tg_status_exp_bit_valid_3),
-  .vio_tg_status_exp_bit               (vio_tg_status_exp_bit_3),
-  .vio_tg_status_read_bit_valid        (vio_tg_status_read_bit_valid_3),
-  .vio_tg_status_read_bit              (vio_tg_status_read_bit_3),
-  .vio_tg_status_first_err_bit_valid   (vio_tg_status_first_err_bit_valid_3),
-  .vio_tg_status_first_err_bit         (vio_tg_status_first_err_bit_3),
-  .vio_tg_status_first_err_addr        (vio_tg_status_first_err_addr_3),
-  .vio_tg_status_first_exp_bit_valid   (vio_tg_status_first_exp_bit_valid_3),
-  .vio_tg_status_first_exp_bit         (vio_tg_status_first_exp_bit_3),
-  .vio_tg_status_first_read_bit_valid  (vio_tg_status_first_read_bit_valid_3),
-  .vio_tg_status_first_read_bit        (vio_tg_status_first_read_bit_3),
-  .vio_tg_status_err_bit_sticky_valid  (vio_tg_status_err_bit_sticky_valid_3),
-  .vio_tg_status_err_bit_sticky        (vio_tg_status_err_bit_sticky_3),
-  .vio_tg_status_err_cnt_sticky        (vio_tg_status_err_cnt_sticky_3),
-  .vio_tg_status_err_type_valid        (vio_tg_status_err_type_valid_3),
-  .vio_tg_status_err_type              (vio_tg_status_err_type_3),
-  .vio_tg_status_wr_done               (vio_tg_status_wr_done_3),
-  .vio_tg_status_done                  (boot_mode_done_3),
-  .vio_tg_status_watch_dog_hang        (vio_tg_status_watch_dog_hang_3),
-  .tg_ila_debug                        (tg_ila_debug_3),
-  .tg_qdriv_submode11_app_rd           (1'b0),
-  // Slave Interface Write Address Ports
-  .i_m_axi_awready                     ('0),
-  .o_m_axi_awid                        (),
-  .o_m_axi_awaddr                      (),
-  .o_m_axi_awlen                       (),
-  .o_m_axi_awsize                      (),
-  .o_m_axi_awburst                     (),
-  .o_m_axi_awlock                      (),
-  .o_m_axi_awcache                     (),
-  .o_m_axi_awprot                      (),
-  .o_m_axi_awvalid                     (),
-  // Slave Interface Write Data Ports
-  .i_m_axi_wready                      ('0),
-  .o_m_axi_wdata                       (),
-  .o_m_axi_wstrb                       (),
-  .o_m_axi_wlast                       (),
-  .o_m_axi_wvalid                      (),
-  // Slave Interface Write Response Ports
-  .i_m_axi_bid                         ('0),
-  .i_m_axi_bresp                       ('0),
-  .i_m_axi_bvalid                      ('0),
-  .o_m_axi_bready                      (),
-  .i_m_axi_arready                     ('0),
-  // Slave Interface Read Address Ports
-  .o_m_axi_arid                        (),
-  .o_m_axi_araddr                      (),
-  .o_m_axi_arlen                       (),
-  .o_m_axi_arsize                      (),
-  .o_m_axi_arburst                     (),
-  .o_m_axi_arlock                      (),
-  .o_m_axi_arcache                     (),
-  .o_m_axi_arprot                      (),
-  .o_m_axi_arvalid                     (),
-  // Slave Interface Read Data Ports
-  .i_m_axi_rid                         ('0),
-  .i_m_axi_rresp                       ('0),
-  .i_m_axi_rvalid                      ('0),
-  .i_m_axi_rdata                       ('0),
-  .i_m_axi_rlast                       ('0),
-  .o_m_axi_rready                      ()
-);
+
 
   //  mosi signals
   assign AXI_03_AWID    = axi4_hbm_chs_li[3].awid;
@@ -4701,142 +4224,7 @@ axi_pmon_v1_0 #(
 // assign AXI_04_ARADDR = {vio_tg_glb_start_addr_4[32:28],o_m_axi_araddr_4[27:0]};
 // assign AXI_04_AWADDR = {vio_tg_glb_start_addr_4[32:28],o_m_axi_awaddr_4[27:0]};
 
-atg_axi#(
-  .SIMULATION                          (SIMULATION),
-  .MEM_TYPE                            ("DDR4"),
-  .MEM_ARCH                            ("ULTRASCALE"),
-  //.APP_DATA_WIDTH                      (APP_DATA_WIDTH),
-  .APP_ADDR_WIDTH                      (APP_ADDR_WIDTH),
-  .C_AXI_ID_WIDTH                      (6),
-  .C_AXI_ADDR_WIDTH                    (APP_ADDR_WIDTH),
-  //.C_AXI_DATA_WIDTH                    (APP_DATA_WIDTH),
-  .TG_PATTERN_MODE_PRBS_ADDR_WIDTH     (28),
-  .ECC                                 ("OFF"),
-  //.NUM_DQ_PINS                         (32),
-  `ifdef OPT_DATA_W
-    .APP_DATA_WIDTH(64),
-    .C_AXI_DATA_WIDTH(64),
-      `ifdef NCKPCLK_2
-        .NUM_DQ_PINS(16),
-        .nCK_PER_CLK(2),
-      `else
-        .nCK_PER_CLK(4),
-        .NUM_DQ_PINS(8),
-      `endif
-    `else
-      `ifdef NCKPCLK_2
-        .NUM_DQ_PINS(64),
-        .nCK_PER_CLK(2),
-      `else
-        .nCK_PER_CLK(4),
-        .NUM_DQ_PINS(32),
-      `endif
-    .APP_DATA_WIDTH(APP_DATA_WIDTH),
-    .C_AXI_DATA_WIDTH(APP_DATA_WIDTH),
-  `endif
-  .DEFAULT_MODE                        ("2018_1")
-) u_atg_axi_4 (
-  .i_TG_PATTERN_MODE_PRBS_ADDR_SEED    (28'b0),
-  .i_clk                               (AXI_ACLK2_st0_buf),
-  .i_rst                               (~axi_rst2_st0_n),
-  .i_init_calib_complete               (apb_seq_complete_2_st0_r2),
-  .compare_error                       (axi_04_data_msmatch_err),
-  .vio_tg_rst                          (vio_tg_rst_4),
-  .vio_tg_start                        (vio_tg_start_4),
-  .vio_tg_err_chk_en                   (vio_tg_err_chk_en_4),
-  .vio_tg_err_clear                    (vio_tg_err_clear_4),
-  .vio_tg_instr_addr_mode              (vio_tg_instr_addr_mode_4),
-  .vio_tg_instr_data_mode              (vio_tg_instr_data_mode_4),
-  .vio_tg_instr_rw_mode                (vio_tg_instr_rw_mode_4),
-  .vio_tg_instr_rw_submode             (vio_tg_instr_rw_submode_4),
-  .vio_tg_instr_num_of_iter            (vio_tg_instr_num_of_iter_4),
-  .vio_tg_instr_nxt_instr              (vio_tg_instr_nxt_instr_4),
-  .vio_tg_restart                      (vio_tg_restart_4),
-  .vio_tg_pause                        (vio_tg_pause_4),
-  .vio_tg_err_clear_all                (vio_tg_err_clear_all_4),
-  .vio_tg_err_continue                 (vio_tg_err_continue_4),
-  .vio_tg_instr_program_en             (vio_tg_instr_program_en_4),
-  .vio_tg_direct_instr_en              (vio_tg_direct_instr_en_4),
-  .vio_tg_instr_num                    (vio_tg_instr_num_4),
-  .vio_tg_instr_victim_mode            (vio_tg_instr_victim_mode_4),
-  .vio_tg_instr_victim_aggr_delay      (vio_tg_instr_victim_aggr_delay_4),
-  .vio_tg_instr_victim_select          (vio_tg_instr_victim_select_4),
-  .vio_tg_instr_m_nops_btw_n_burst_m   (vio_tg_instr_m_nops_btw_n_burst_m_4),
-  .vio_tg_instr_m_nops_btw_n_burst_n   (vio_tg_instr_m_nops_btw_n_burst_n_4),
-  .vio_tg_seed_program_en              (vio_tg_seed_program_en_4),
-  .vio_tg_seed_num                     (vio_tg_seed_num_4),
-  .vio_tg_seed                         (vio_tg_seed_4),
-  .vio_tg_glb_victim_bit               (vio_tg_glb_victim_bit_4),
-  .vio_tg_glb_start_addr               (vio_tg_glb_start_addr_4),
-  .vio_tg_glb_qdriv_rw_submode         (2'b00),
-  .o_wrt_rqt_over_flow                 (),
-  .vio_tg_status_state                 (vio_tg_status_state_4),
-  .vio_tg_status_err_bit_valid         (vio_tg_status_err_bit_valid_4),
-  .vio_tg_status_err_bit               (vio_tg_status_err_bit_4),
-  .vio_tg_status_err_cnt               (vio_tg_status_err_cnt_4),
-  .vio_tg_status_err_addr              (vio_tg_status_err_addr_4),
-  .vio_tg_status_exp_bit_valid         (vio_tg_status_exp_bit_valid_4),
-  .vio_tg_status_exp_bit               (vio_tg_status_exp_bit_4),
-  .vio_tg_status_read_bit_valid        (vio_tg_status_read_bit_valid_4),
-  .vio_tg_status_read_bit              (vio_tg_status_read_bit_4),
-  .vio_tg_status_first_err_bit_valid   (vio_tg_status_first_err_bit_valid_4),
-  .vio_tg_status_first_err_bit         (vio_tg_status_first_err_bit_4),
-  .vio_tg_status_first_err_addr        (vio_tg_status_first_err_addr_4),
-  .vio_tg_status_first_exp_bit_valid   (vio_tg_status_first_exp_bit_valid_4),
-  .vio_tg_status_first_exp_bit         (vio_tg_status_first_exp_bit_4),
-  .vio_tg_status_first_read_bit_valid  (vio_tg_status_first_read_bit_valid_4),
-  .vio_tg_status_first_read_bit        (vio_tg_status_first_read_bit_4),
-  .vio_tg_status_err_bit_sticky_valid  (vio_tg_status_err_bit_sticky_valid_4),
-  .vio_tg_status_err_bit_sticky        (vio_tg_status_err_bit_sticky_4),
-  .vio_tg_status_err_cnt_sticky        (vio_tg_status_err_cnt_sticky_4),
-  .vio_tg_status_err_type_valid        (vio_tg_status_err_type_valid_4),
-  .vio_tg_status_err_type              (vio_tg_status_err_type_4),
-  .vio_tg_status_wr_done               (vio_tg_status_wr_done_4),
-  .vio_tg_status_done                  (boot_mode_done_4),
-  .vio_tg_status_watch_dog_hang        (vio_tg_status_watch_dog_hang_4),
-  .tg_ila_debug                        (tg_ila_debug_4),
-  .tg_qdriv_submode11_app_rd           (1'b0),
- // Slave Interface Write Address Ports
-  .i_m_axi_awready                     ('0),
-  .o_m_axi_awid                        (),
-  .o_m_axi_awaddr                      (),
-  .o_m_axi_awlen                       (),
-  .o_m_axi_awsize                      (),
-  .o_m_axi_awburst                     (),
-  .o_m_axi_awlock                      (),
-  .o_m_axi_awcache                     (),
-  .o_m_axi_awprot                      (),
-  .o_m_axi_awvalid                     (),
-  // Slave Interface Write Data Ports
-  .i_m_axi_wready                      ('0),
-  .o_m_axi_wdata                       (),
-  .o_m_axi_wstrb                       (),
-  .o_m_axi_wlast                       (),
-  .o_m_axi_wvalid                      (),
-  // Slave Interface Write Response Ports
-  .i_m_axi_bid                         ('0),
-  .i_m_axi_bresp                       ('0),
-  .i_m_axi_bvalid                      ('0),
-  .o_m_axi_bready                      (),
-  .i_m_axi_arready                     ('0),
-  // Slave Interface Read Address Ports
-  .o_m_axi_arid                        (),
-  .o_m_axi_araddr                      (),
-  .o_m_axi_arlen                       (),
-  .o_m_axi_arsize                      (),
-  .o_m_axi_arburst                     (),
-  .o_m_axi_arlock                      (),
-  .o_m_axi_arcache                     (),
-  .o_m_axi_arprot                      (),
-  .o_m_axi_arvalid                     (),
-  // Slave Interface Read Data Ports
-  .i_m_axi_rid                         ('0),
-  .i_m_axi_rresp                       ('0),
-  .i_m_axi_rvalid                      ('0),
-  .i_m_axi_rdata                       ('0),
-  .i_m_axi_rlast                       ('0),
-  .o_m_axi_rready                      ()
-);
+
 
   //  mosi signals
   assign AXI_04_AWID    = axi4_hbm_chs_li[4].awid;
@@ -4977,142 +4365,7 @@ axi_pmon_v1_0 #(
 // assign AXI_05_ARADDR = {vio_tg_glb_start_addr_5[32:28],o_m_axi_araddr_5[27:0]};
 // assign AXI_05_AWADDR = {vio_tg_glb_start_addr_5[32:28],o_m_axi_awaddr_5[27:0]};
 
-atg_axi#(
-  .SIMULATION                          (SIMULATION),
-  .MEM_TYPE                            ("DDR4"),
-  .MEM_ARCH                            ("ULTRASCALE"),
-  //.APP_DATA_WIDTH                      (APP_DATA_WIDTH),
-  .APP_ADDR_WIDTH                      (APP_ADDR_WIDTH),
-  .C_AXI_ID_WIDTH                      (6),
-  .C_AXI_ADDR_WIDTH                    (APP_ADDR_WIDTH),
-  //.C_AXI_DATA_WIDTH                    (APP_DATA_WIDTH),
-  .TG_PATTERN_MODE_PRBS_ADDR_WIDTH     (28),
-  .ECC                                 ("OFF"),
-  //.NUM_DQ_PINS                         (32),
-  `ifdef OPT_DATA_W
-    .APP_DATA_WIDTH(64),
-    .C_AXI_DATA_WIDTH(64),
-      `ifdef NCKPCLK_2
-        .NUM_DQ_PINS(16),
-        .nCK_PER_CLK(2),
-      `else
-        .nCK_PER_CLK(4),
-        .NUM_DQ_PINS(8),
-      `endif
-    `else
-      `ifdef NCKPCLK_2
-        .NUM_DQ_PINS(64),
-        .nCK_PER_CLK(2),
-      `else
-        .nCK_PER_CLK(4),
-        .NUM_DQ_PINS(32),
-      `endif
-    .APP_DATA_WIDTH(APP_DATA_WIDTH),
-    .C_AXI_DATA_WIDTH(APP_DATA_WIDTH),
-  `endif
-  .DEFAULT_MODE                        ("2018_1")
-) u_atg_axi_5 (
-  .i_TG_PATTERN_MODE_PRBS_ADDR_SEED    (28'b0),
-  .i_clk                               (AXI_ACLK2_st0_buf),
-  .i_rst                               (~axi_rst2_st0_n),
-  .i_init_calib_complete               (apb_seq_complete_2_st0_r2),
-  .compare_error                       (axi_05_data_msmatch_err),
-  .vio_tg_rst                          (vio_tg_rst_5),
-  .vio_tg_start                        (vio_tg_start_5),
-  .vio_tg_err_chk_en                   (vio_tg_err_chk_en_5),
-  .vio_tg_err_clear                    (vio_tg_err_clear_5),
-  .vio_tg_instr_addr_mode              (vio_tg_instr_addr_mode_5),
-  .vio_tg_instr_data_mode              (vio_tg_instr_data_mode_5),
-  .vio_tg_instr_rw_mode                (vio_tg_instr_rw_mode_5),
-  .vio_tg_instr_rw_submode             (vio_tg_instr_rw_submode_5),
-  .vio_tg_instr_num_of_iter            (vio_tg_instr_num_of_iter_5),
-  .vio_tg_instr_nxt_instr              (vio_tg_instr_nxt_instr_5),
-  .vio_tg_restart                      (vio_tg_restart_5),
-  .vio_tg_pause                        (vio_tg_pause_5),
-  .vio_tg_err_clear_all                (vio_tg_err_clear_all_5),
-  .vio_tg_err_continue                 (vio_tg_err_continue_5),
-  .vio_tg_instr_program_en             (vio_tg_instr_program_en_5),
-  .vio_tg_direct_instr_en              (vio_tg_direct_instr_en_5),
-  .vio_tg_instr_num                    (vio_tg_instr_num_5),
-  .vio_tg_instr_victim_mode            (vio_tg_instr_victim_mode_5),
-  .vio_tg_instr_victim_aggr_delay      (vio_tg_instr_victim_aggr_delay_5),
-  .vio_tg_instr_victim_select          (vio_tg_instr_victim_select_5),
-  .vio_tg_instr_m_nops_btw_n_burst_m   (vio_tg_instr_m_nops_btw_n_burst_m_5),
-  .vio_tg_instr_m_nops_btw_n_burst_n   (vio_tg_instr_m_nops_btw_n_burst_n_5),
-  .vio_tg_seed_program_en              (vio_tg_seed_program_en_5),
-  .vio_tg_seed_num                     (vio_tg_seed_num_5),
-  .vio_tg_seed                         (vio_tg_seed_5),
-  .vio_tg_glb_victim_bit               (vio_tg_glb_victim_bit_5),
-  .vio_tg_glb_start_addr               (vio_tg_glb_start_addr_5),
-  .vio_tg_glb_qdriv_rw_submode         (2'b00),
-  .o_wrt_rqt_over_flow                 (),
-  .vio_tg_status_state                 (vio_tg_status_state_5),
-  .vio_tg_status_err_bit_valid         (vio_tg_status_err_bit_valid_5),
-  .vio_tg_status_err_bit               (vio_tg_status_err_bit_5),
-  .vio_tg_status_err_cnt               (vio_tg_status_err_cnt_5),
-  .vio_tg_status_err_addr              (vio_tg_status_err_addr_5),
-  .vio_tg_status_exp_bit_valid         (vio_tg_status_exp_bit_valid_5),
-  .vio_tg_status_exp_bit               (vio_tg_status_exp_bit_5),
-  .vio_tg_status_read_bit_valid        (vio_tg_status_read_bit_valid_5),
-  .vio_tg_status_read_bit              (vio_tg_status_read_bit_5),
-  .vio_tg_status_first_err_bit_valid   (vio_tg_status_first_err_bit_valid_5),
-  .vio_tg_status_first_err_bit         (vio_tg_status_first_err_bit_5),
-  .vio_tg_status_first_err_addr        (vio_tg_status_first_err_addr_5),
-  .vio_tg_status_first_exp_bit_valid   (vio_tg_status_first_exp_bit_valid_5),
-  .vio_tg_status_first_exp_bit         (vio_tg_status_first_exp_bit_5),
-  .vio_tg_status_first_read_bit_valid  (vio_tg_status_first_read_bit_valid_5),
-  .vio_tg_status_first_read_bit        (vio_tg_status_first_read_bit_5),
-  .vio_tg_status_err_bit_sticky_valid  (vio_tg_status_err_bit_sticky_valid_5),
-  .vio_tg_status_err_bit_sticky        (vio_tg_status_err_bit_sticky_5),
-  .vio_tg_status_err_cnt_sticky        (vio_tg_status_err_cnt_sticky_5),
-  .vio_tg_status_err_type_valid        (vio_tg_status_err_type_valid_5),
-  .vio_tg_status_err_type              (vio_tg_status_err_type_5),
-  .vio_tg_status_wr_done               (vio_tg_status_wr_done_5),
-  .vio_tg_status_done                  (boot_mode_done_5),
-  .vio_tg_status_watch_dog_hang        (vio_tg_status_watch_dog_hang_5),
-  .tg_ila_debug                        (tg_ila_debug_5),
-  .tg_qdriv_submode11_app_rd           (1'b0),
- // Slave Interface Write Address Ports
-  .i_m_axi_awready                     ('0),
-  .o_m_axi_awid                        (),
-  .o_m_axi_awaddr                      (),
-  .o_m_axi_awlen                       (),
-  .o_m_axi_awsize                      (),
-  .o_m_axi_awburst                     (),
-  .o_m_axi_awlock                      (),
-  .o_m_axi_awcache                     (),
-  .o_m_axi_awprot                      (),
-  .o_m_axi_awvalid                     (),
-  // Slave Interface Write Data Ports
-  .i_m_axi_wready                      ('0),
-  .o_m_axi_wdata                       (),
-  .o_m_axi_wstrb                       (),
-  .o_m_axi_wlast                       (),
-  .o_m_axi_wvalid                      (),
-  // Slave Interface Write Response Ports
-  .i_m_axi_bid                         ('0),
-  .i_m_axi_bresp                       ('0),
-  .i_m_axi_bvalid                      ('0),
-  .o_m_axi_bready                      (),
-  .i_m_axi_arready                     ('0),
-  // Slave Interface Read Address Ports
-  .o_m_axi_arid                        (),
-  .o_m_axi_araddr                      (),
-  .o_m_axi_arlen                       (),
-  .o_m_axi_arsize                      (),
-  .o_m_axi_arburst                     (),
-  .o_m_axi_arlock                      (),
-  .o_m_axi_arcache                     (),
-  .o_m_axi_arprot                      (),
-  .o_m_axi_arvalid                     (),
-  // Slave Interface Read Data Ports
-  .i_m_axi_rid                         ('0),
-  .i_m_axi_rresp                       ('0),
-  .i_m_axi_rvalid                      ('0),
-  .i_m_axi_rdata                       ('0),
-  .i_m_axi_rlast                       ('0),
-  .o_m_axi_rready                      ()
-);
+
 
   //  mosi signals
   assign AXI_05_AWID    = axi4_hbm_chs_li[5].awid;
@@ -5253,142 +4506,7 @@ axi_pmon_v1_0 #(
 // assign AXI_06_ARADDR = {vio_tg_glb_start_addr_6[32:28],o_m_axi_araddr_6[27:0]};
 // assign AXI_06_AWADDR = {vio_tg_glb_start_addr_6[32:28],o_m_axi_awaddr_6[27:0]};
 
-atg_axi#(
-  .SIMULATION                          (SIMULATION),
-  .MEM_TYPE                            ("DDR4"),
-  .MEM_ARCH                            ("ULTRASCALE"),
-  //.APP_DATA_WIDTH                      (APP_DATA_WIDTH),
-  .APP_ADDR_WIDTH                      (APP_ADDR_WIDTH),
-  .C_AXI_ID_WIDTH                      (6),
-  .C_AXI_ADDR_WIDTH                    (APP_ADDR_WIDTH),
-  //.C_AXI_DATA_WIDTH                    (APP_DATA_WIDTH),
-  .TG_PATTERN_MODE_PRBS_ADDR_WIDTH     (28),
-  .ECC                                 ("OFF"),
-  //.NUM_DQ_PINS                         (32),
-  `ifdef OPT_DATA_W
-    .APP_DATA_WIDTH(64),
-    .C_AXI_DATA_WIDTH(64),
-      `ifdef NCKPCLK_2
-        .NUM_DQ_PINS(16),
-        .nCK_PER_CLK(2),
-      `else
-        .nCK_PER_CLK(4),
-        .NUM_DQ_PINS(8),
-      `endif
-    `else
-      `ifdef NCKPCLK_2
-        .NUM_DQ_PINS(64),
-        .nCK_PER_CLK(2),
-      `else
-        .nCK_PER_CLK(4),
-        .NUM_DQ_PINS(32),
-      `endif
-    .APP_DATA_WIDTH(APP_DATA_WIDTH),
-    .C_AXI_DATA_WIDTH(APP_DATA_WIDTH),
-  `endif
-  .DEFAULT_MODE                        ("2018_1")
-) u_atg_axi_6 (
-  .i_TG_PATTERN_MODE_PRBS_ADDR_SEED    (28'b0),
-  .i_clk                               (AXI_ACLK3_st0_buf),
-  .i_rst                               (~axi_rst3_st0_n),
-  .i_init_calib_complete               (apb_seq_complete_3_st0_r2),
-  .compare_error                       (axi_06_data_msmatch_err),
-  .vio_tg_rst                          (vio_tg_rst_6),
-  .vio_tg_start                        (vio_tg_start_6),
-  .vio_tg_err_chk_en                   (vio_tg_err_chk_en_6),
-  .vio_tg_err_clear                    (vio_tg_err_clear_6),
-  .vio_tg_instr_addr_mode              (vio_tg_instr_addr_mode_6),
-  .vio_tg_instr_data_mode              (vio_tg_instr_data_mode_6),
-  .vio_tg_instr_rw_mode                (vio_tg_instr_rw_mode_6),
-  .vio_tg_instr_rw_submode             (vio_tg_instr_rw_submode_6),
-  .vio_tg_instr_num_of_iter            (vio_tg_instr_num_of_iter_6),
-  .vio_tg_instr_nxt_instr              (vio_tg_instr_nxt_instr_6),
-  .vio_tg_restart                      (vio_tg_restart_6),
-  .vio_tg_pause                        (vio_tg_pause_6),
-  .vio_tg_err_clear_all                (vio_tg_err_clear_all_6),
-  .vio_tg_err_continue                 (vio_tg_err_continue_6),
-  .vio_tg_instr_program_en             (vio_tg_instr_program_en_6),
-  .vio_tg_direct_instr_en              (vio_tg_direct_instr_en_6),
-  .vio_tg_instr_num                    (vio_tg_instr_num_6),
-  .vio_tg_instr_victim_mode            (vio_tg_instr_victim_mode_6),
-  .vio_tg_instr_victim_aggr_delay      (vio_tg_instr_victim_aggr_delay_6),
-  .vio_tg_instr_victim_select          (vio_tg_instr_victim_select_6),
-  .vio_tg_instr_m_nops_btw_n_burst_m   (vio_tg_instr_m_nops_btw_n_burst_m_6),
-  .vio_tg_instr_m_nops_btw_n_burst_n   (vio_tg_instr_m_nops_btw_n_burst_n_6),
-  .vio_tg_seed_program_en              (vio_tg_seed_program_en_6),
-  .vio_tg_seed_num                     (vio_tg_seed_num_6),
-  .vio_tg_seed                         (vio_tg_seed_6),
-  .vio_tg_glb_victim_bit               (vio_tg_glb_victim_bit_6),
-  .vio_tg_glb_start_addr               (vio_tg_glb_start_addr_6),
-  .vio_tg_glb_qdriv_rw_submode         (2'b00),
-  .o_wrt_rqt_over_flow                 (),
-  .vio_tg_status_state                 (vio_tg_status_state_6),
-  .vio_tg_status_err_bit_valid         (vio_tg_status_err_bit_valid_6),
-  .vio_tg_status_err_bit               (vio_tg_status_err_bit_6),
-  .vio_tg_status_err_cnt               (vio_tg_status_err_cnt_6),
-  .vio_tg_status_err_addr              (vio_tg_status_err_addr_6),
-  .vio_tg_status_exp_bit_valid         (vio_tg_status_exp_bit_valid_6),
-  .vio_tg_status_exp_bit               (vio_tg_status_exp_bit_6),
-  .vio_tg_status_read_bit_valid        (vio_tg_status_read_bit_valid_6),
-  .vio_tg_status_read_bit              (vio_tg_status_read_bit_6),
-  .vio_tg_status_first_err_bit_valid   (vio_tg_status_first_err_bit_valid_6),
-  .vio_tg_status_first_err_bit         (vio_tg_status_first_err_bit_6),
-  .vio_tg_status_first_err_addr        (vio_tg_status_first_err_addr_6),
-  .vio_tg_status_first_exp_bit_valid   (vio_tg_status_first_exp_bit_valid_6),
-  .vio_tg_status_first_exp_bit         (vio_tg_status_first_exp_bit_6),
-  .vio_tg_status_first_read_bit_valid  (vio_tg_status_first_read_bit_valid_6),
-  .vio_tg_status_first_read_bit        (vio_tg_status_first_read_bit_6),
-  .vio_tg_status_err_bit_sticky_valid  (vio_tg_status_err_bit_sticky_valid_6),
-  .vio_tg_status_err_bit_sticky        (vio_tg_status_err_bit_sticky_6),
-  .vio_tg_status_err_cnt_sticky        (vio_tg_status_err_cnt_sticky_6),
-  .vio_tg_status_err_type_valid        (vio_tg_status_err_type_valid_6),
-  .vio_tg_status_err_type              (vio_tg_status_err_type_6),
-  .vio_tg_status_wr_done               (vio_tg_status_wr_done_6),
-  .vio_tg_status_done                  (boot_mode_done_6),
-  .vio_tg_status_watch_dog_hang        (vio_tg_status_watch_dog_hang_6),
-  .tg_ila_debug                        (tg_ila_debug_6),
-  .tg_qdriv_submode11_app_rd           (1'b0),
- // Slave Interface Write Address Ports
-  .i_m_axi_awready                     ('0),
-  .o_m_axi_awid                        (),
-  .o_m_axi_awaddr                      (),
-  .o_m_axi_awlen                       (),
-  .o_m_axi_awsize                      (),
-  .o_m_axi_awburst                     (),
-  .o_m_axi_awlock                      (),
-  .o_m_axi_awcache                     (),
-  .o_m_axi_awprot                      (),
-  .o_m_axi_awvalid                     (),
-  // Slave Interface Write Data Ports
-  .i_m_axi_wready                      ('0),
-  .o_m_axi_wdata                       (),
-  .o_m_axi_wstrb                       (),
-  .o_m_axi_wlast                       (),
-  .o_m_axi_wvalid                      (),
-  // Slave Interface Write Response Ports
-  .i_m_axi_bid                         ('0),
-  .i_m_axi_bresp                       ('0),
-  .i_m_axi_bvalid                      ('0),
-  .o_m_axi_bready                      (),
-  .i_m_axi_arready                     ('0),
-  // Slave Interface Read Address Ports
-  .o_m_axi_arid                        (),
-  .o_m_axi_araddr                      (),
-  .o_m_axi_arlen                       (),
-  .o_m_axi_arsize                      (),
-  .o_m_axi_arburst                     (),
-  .o_m_axi_arlock                      (),
-  .o_m_axi_arcache                     (),
-  .o_m_axi_arprot                      (),
-  .o_m_axi_arvalid                     (),
-  // Slave Interface Read Data Ports
-  .i_m_axi_rid                         ('0),
-  .i_m_axi_rresp                       ('0),
-  .i_m_axi_rvalid                      ('0),
-  .i_m_axi_rdata                       ('0),
-  .i_m_axi_rlast                       ('0),
-  .o_m_axi_rready                      ()
-);
+
 
   //  mosi signals
   assign AXI_06_AWID    = axi4_hbm_chs_li[6].awid;
@@ -5529,142 +4647,7 @@ axi_pmon_v1_0 #(
 // assign AXI_07_ARADDR = {vio_tg_glb_start_addr_7[32:28],o_m_axi_araddr_7[27:0]};
 // assign AXI_07_AWADDR = {vio_tg_glb_start_addr_7[32:28],o_m_axi_awaddr_7[27:0]};
 
-atg_axi#(
-  .SIMULATION                          (SIMULATION),
-  .MEM_TYPE                            ("DDR4"),
-  .MEM_ARCH                            ("ULTRASCALE"),
-  //.APP_DATA_WIDTH                      (APP_DATA_WIDTH),
-  .APP_ADDR_WIDTH                      (APP_ADDR_WIDTH),
-  .C_AXI_ID_WIDTH                      (6),
-  .C_AXI_ADDR_WIDTH                    (APP_ADDR_WIDTH),
-  //.C_AXI_DATA_WIDTH                    (APP_DATA_WIDTH),
-  .TG_PATTERN_MODE_PRBS_ADDR_WIDTH     (28),
-  .ECC                                 ("OFF"),
-  //.NUM_DQ_PINS                         (32),
-  `ifdef OPT_DATA_W
-    .APP_DATA_WIDTH(64),
-    .C_AXI_DATA_WIDTH(64),
-      `ifdef NCKPCLK_2
-        .NUM_DQ_PINS(16),
-        .nCK_PER_CLK(2),
-      `else
-        .nCK_PER_CLK(4),
-        .NUM_DQ_PINS(8),
-      `endif
-    `else
-      `ifdef NCKPCLK_2
-        .NUM_DQ_PINS(64),
-        .nCK_PER_CLK(2),
-      `else
-        .nCK_PER_CLK(4),
-        .NUM_DQ_PINS(32),
-      `endif
-    .APP_DATA_WIDTH(APP_DATA_WIDTH),
-    .C_AXI_DATA_WIDTH(APP_DATA_WIDTH),
-  `endif
-  .DEFAULT_MODE                        ("2018_1")
-) u_atg_axi_7 (
-  .i_TG_PATTERN_MODE_PRBS_ADDR_SEED    (28'b0),
-  .i_clk                               (AXI_ACLK3_st0_buf),
-  .i_rst                               (~axi_rst3_st0_n),
-  .i_init_calib_complete               (apb_seq_complete_3_st0_r2),
-  .compare_error                       (axi_07_data_msmatch_err),
-  .vio_tg_rst                          (vio_tg_rst_7),
-  .vio_tg_start                        (vio_tg_start_7),
-  .vio_tg_err_chk_en                   (vio_tg_err_chk_en_7),
-  .vio_tg_err_clear                    (vio_tg_err_clear_7),
-  .vio_tg_instr_addr_mode              (vio_tg_instr_addr_mode_7),
-  .vio_tg_instr_data_mode              (vio_tg_instr_data_mode_7),
-  .vio_tg_instr_rw_mode                (vio_tg_instr_rw_mode_7),
-  .vio_tg_instr_rw_submode             (vio_tg_instr_rw_submode_7),
-  .vio_tg_instr_num_of_iter            (vio_tg_instr_num_of_iter_7),
-  .vio_tg_instr_nxt_instr              (vio_tg_instr_nxt_instr_7),
-  .vio_tg_restart                      (vio_tg_restart_7),
-  .vio_tg_pause                        (vio_tg_pause_7),
-  .vio_tg_err_clear_all                (vio_tg_err_clear_all_7),
-  .vio_tg_err_continue                 (vio_tg_err_continue_7),
-  .vio_tg_instr_program_en             (vio_tg_instr_program_en_7),
-  .vio_tg_direct_instr_en              (vio_tg_direct_instr_en_7),
-  .vio_tg_instr_num                    (vio_tg_instr_num_7),
-  .vio_tg_instr_victim_mode            (vio_tg_instr_victim_mode_7),
-  .vio_tg_instr_victim_aggr_delay      (vio_tg_instr_victim_aggr_delay_7),
-  .vio_tg_instr_victim_select          (vio_tg_instr_victim_select_7),
-  .vio_tg_instr_m_nops_btw_n_burst_m   (vio_tg_instr_m_nops_btw_n_burst_m_7),
-  .vio_tg_instr_m_nops_btw_n_burst_n   (vio_tg_instr_m_nops_btw_n_burst_n_7),
-  .vio_tg_seed_program_en              (vio_tg_seed_program_en_7),
-  .vio_tg_seed_num                     (vio_tg_seed_num_7),
-  .vio_tg_seed                         (vio_tg_seed_7),
-  .vio_tg_glb_victim_bit               (vio_tg_glb_victim_bit_7),
-  .vio_tg_glb_start_addr               (vio_tg_glb_start_addr_7),
-  .vio_tg_glb_qdriv_rw_submode         (2'b00),
-  .o_wrt_rqt_over_flow                 (),
-  .vio_tg_status_state                 (vio_tg_status_state_7),
-  .vio_tg_status_err_bit_valid         (vio_tg_status_err_bit_valid_7),
-  .vio_tg_status_err_bit               (vio_tg_status_err_bit_7),
-  .vio_tg_status_err_cnt               (vio_tg_status_err_cnt_7),
-  .vio_tg_status_err_addr              (vio_tg_status_err_addr_7),
-  .vio_tg_status_exp_bit_valid         (vio_tg_status_exp_bit_valid_7),
-  .vio_tg_status_exp_bit               (vio_tg_status_exp_bit_7),
-  .vio_tg_status_read_bit_valid        (vio_tg_status_read_bit_valid_7),
-  .vio_tg_status_read_bit              (vio_tg_status_read_bit_7),
-  .vio_tg_status_first_err_bit_valid   (vio_tg_status_first_err_bit_valid_7),
-  .vio_tg_status_first_err_bit         (vio_tg_status_first_err_bit_7),
-  .vio_tg_status_first_err_addr        (vio_tg_status_first_err_addr_7),
-  .vio_tg_status_first_exp_bit_valid   (vio_tg_status_first_exp_bit_valid_7),
-  .vio_tg_status_first_exp_bit         (vio_tg_status_first_exp_bit_7),
-  .vio_tg_status_first_read_bit_valid  (vio_tg_status_first_read_bit_valid_7),
-  .vio_tg_status_first_read_bit        (vio_tg_status_first_read_bit_7),
-  .vio_tg_status_err_bit_sticky_valid  (vio_tg_status_err_bit_sticky_valid_7),
-  .vio_tg_status_err_bit_sticky        (vio_tg_status_err_bit_sticky_7),
-  .vio_tg_status_err_cnt_sticky        (vio_tg_status_err_cnt_sticky_7),
-  .vio_tg_status_err_type_valid        (vio_tg_status_err_type_valid_7),
-  .vio_tg_status_err_type              (vio_tg_status_err_type_7),
-  .vio_tg_status_wr_done               (vio_tg_status_wr_done_7),
-  .vio_tg_status_done                  (boot_mode_done_7),
-  .vio_tg_status_watch_dog_hang        (vio_tg_status_watch_dog_hang_7),
-  .tg_ila_debug                        (tg_ila_debug_7),
-  .tg_qdriv_submode11_app_rd           (1'b0),
- // Slave Interface Write Address Ports
-  .i_m_axi_awready                     ('0),
-  .o_m_axi_awid                        (),
-  .o_m_axi_awaddr                      (),
-  .o_m_axi_awlen                       (),
-  .o_m_axi_awsize                      (),
-  .o_m_axi_awburst                     (),
-  .o_m_axi_awlock                      (),
-  .o_m_axi_awcache                     (),
-  .o_m_axi_awprot                      (),
-  .o_m_axi_awvalid                     (),
-  // Slave Interface Write Data Ports
-  .i_m_axi_wready                      ('0),
-  .o_m_axi_wdata                       (),
-  .o_m_axi_wstrb                       (),
-  .o_m_axi_wlast                       (),
-  .o_m_axi_wvalid                      (),
-  // Slave Interface Write Response Ports
-  .i_m_axi_bid                         ('0),
-  .i_m_axi_bresp                       ('0),
-  .i_m_axi_bvalid                      ('0),
-  .o_m_axi_bready                      (),
-  .i_m_axi_arready                     ('0),
-  // Slave Interface Read Address Ports
-  .o_m_axi_arid                        (),
-  .o_m_axi_araddr                      (),
-  .o_m_axi_arlen                       (),
-  .o_m_axi_arsize                      (),
-  .o_m_axi_arburst                     (),
-  .o_m_axi_arlock                      (),
-  .o_m_axi_arcache                     (),
-  .o_m_axi_arprot                      (),
-  .o_m_axi_arvalid                     (),
-  // Slave Interface Read Data Ports
-  .i_m_axi_rid                         ('0),
-  .i_m_axi_rresp                       ('0),
-  .i_m_axi_rvalid                      ('0),
-  .i_m_axi_rdata                       ('0),
-  .i_m_axi_rlast                       ('0),
-  .o_m_axi_rready                      ()
-);
+
 
   //  mosi signals
   assign AXI_07_AWID    = axi4_hbm_chs_li[7].awid;
@@ -5805,142 +4788,7 @@ axi_pmon_v1_0 #(
 // assign AXI_08_ARADDR = {vio_tg_glb_start_addr_8[32:28],o_m_axi_araddr_8[27:0]};
 // assign AXI_08_AWADDR = {vio_tg_glb_start_addr_8[32:28],o_m_axi_awaddr_8[27:0]};
 
-atg_axi#(
-  .SIMULATION                          (SIMULATION),
-  .MEM_TYPE                            ("DDR4"),
-  .MEM_ARCH                            ("ULTRASCALE"),
-  //.APP_DATA_WIDTH                      (APP_DATA_WIDTH),
-  .APP_ADDR_WIDTH                      (APP_ADDR_WIDTH),
-  .C_AXI_ID_WIDTH                      (6),
-  .C_AXI_ADDR_WIDTH                    (APP_ADDR_WIDTH),
-  //.C_AXI_DATA_WIDTH                    (APP_DATA_WIDTH),
-  .TG_PATTERN_MODE_PRBS_ADDR_WIDTH     (28),
-  .ECC                                 ("OFF"),
-  //.NUM_DQ_PINS                         (32),
-  `ifdef OPT_DATA_W
-    .APP_DATA_WIDTH(64),
-    .C_AXI_DATA_WIDTH(64),
-      `ifdef NCKPCLK_2
-        .NUM_DQ_PINS(16),
-        .nCK_PER_CLK(2),
-      `else
-        .nCK_PER_CLK(4),
-        .NUM_DQ_PINS(8),
-      `endif
-    `else
-      `ifdef NCKPCLK_2
-        .NUM_DQ_PINS(64),
-        .nCK_PER_CLK(2),
-      `else
-        .nCK_PER_CLK(4),
-        .NUM_DQ_PINS(32),
-      `endif
-    .APP_DATA_WIDTH(APP_DATA_WIDTH),
-    .C_AXI_DATA_WIDTH(APP_DATA_WIDTH),
-  `endif
-  .DEFAULT_MODE                        ("2018_1")
-) u_atg_axi_8 (
-  .i_TG_PATTERN_MODE_PRBS_ADDR_SEED    (28'b0),
-  .i_clk                               (AXI_ACLK4_st0_buf),
-  .i_rst                               (~axi_rst4_st0_n),
-  .i_init_calib_complete               (apb_seq_complete_4_st0_r2),
-  .compare_error                       (axi_08_data_msmatch_err),
-  .vio_tg_rst                          (vio_tg_rst_8),
-  .vio_tg_start                        (vio_tg_start_8),
-  .vio_tg_err_chk_en                   (vio_tg_err_chk_en_8),
-  .vio_tg_err_clear                    (vio_tg_err_clear_8),
-  .vio_tg_instr_addr_mode              (vio_tg_instr_addr_mode_8),
-  .vio_tg_instr_data_mode              (vio_tg_instr_data_mode_8),
-  .vio_tg_instr_rw_mode                (vio_tg_instr_rw_mode_8),
-  .vio_tg_instr_rw_submode             (vio_tg_instr_rw_submode_8),
-  .vio_tg_instr_num_of_iter            (vio_tg_instr_num_of_iter_8),
-  .vio_tg_instr_nxt_instr              (vio_tg_instr_nxt_instr_8),
-  .vio_tg_restart                      (vio_tg_restart_8),
-  .vio_tg_pause                        (vio_tg_pause_8),
-  .vio_tg_err_clear_all                (vio_tg_err_clear_all_8),
-  .vio_tg_err_continue                 (vio_tg_err_continue_8),
-  .vio_tg_instr_program_en             (vio_tg_instr_program_en_8),
-  .vio_tg_direct_instr_en              (vio_tg_direct_instr_en_8),
-  .vio_tg_instr_num                    (vio_tg_instr_num_8),
-  .vio_tg_instr_victim_mode            (vio_tg_instr_victim_mode_8),
-  .vio_tg_instr_victim_aggr_delay      (vio_tg_instr_victim_aggr_delay_8),
-  .vio_tg_instr_victim_select          (vio_tg_instr_victim_select_8),
-  .vio_tg_instr_m_nops_btw_n_burst_m   (vio_tg_instr_m_nops_btw_n_burst_m_8),
-  .vio_tg_instr_m_nops_btw_n_burst_n   (vio_tg_instr_m_nops_btw_n_burst_n_8),
-  .vio_tg_seed_program_en              (vio_tg_seed_program_en_8),
-  .vio_tg_seed_num                     (vio_tg_seed_num_8),
-  .vio_tg_seed                         (vio_tg_seed_8),
-  .vio_tg_glb_victim_bit               (vio_tg_glb_victim_bit_8),
-  .vio_tg_glb_start_addr               (vio_tg_glb_start_addr_8),
-  .vio_tg_glb_qdriv_rw_submode         (2'b00),
-  .o_wrt_rqt_over_flow                 (),
-  .vio_tg_status_state                 (vio_tg_status_state_8),
-  .vio_tg_status_err_bit_valid         (vio_tg_status_err_bit_valid_8),
-  .vio_tg_status_err_bit               (vio_tg_status_err_bit_8),
-  .vio_tg_status_err_cnt               (vio_tg_status_err_cnt_8),
-  .vio_tg_status_err_addr              (vio_tg_status_err_addr_8),
-  .vio_tg_status_exp_bit_valid         (vio_tg_status_exp_bit_valid_8),
-  .vio_tg_status_exp_bit               (vio_tg_status_exp_bit_8),
-  .vio_tg_status_read_bit_valid        (vio_tg_status_read_bit_valid_8),
-  .vio_tg_status_read_bit              (vio_tg_status_read_bit_8),
-  .vio_tg_status_first_err_bit_valid   (vio_tg_status_first_err_bit_valid_8),
-  .vio_tg_status_first_err_bit         (vio_tg_status_first_err_bit_8),
-  .vio_tg_status_first_err_addr        (vio_tg_status_first_err_addr_8),
-  .vio_tg_status_first_exp_bit_valid   (vio_tg_status_first_exp_bit_valid_8),
-  .vio_tg_status_first_exp_bit         (vio_tg_status_first_exp_bit_8),
-  .vio_tg_status_first_read_bit_valid  (vio_tg_status_first_read_bit_valid_8),
-  .vio_tg_status_first_read_bit        (vio_tg_status_first_read_bit_8),
-  .vio_tg_status_err_bit_sticky_valid  (vio_tg_status_err_bit_sticky_valid_8),
-  .vio_tg_status_err_bit_sticky        (vio_tg_status_err_bit_sticky_8),
-  .vio_tg_status_err_cnt_sticky        (vio_tg_status_err_cnt_sticky_8),
-  .vio_tg_status_err_type_valid        (vio_tg_status_err_type_valid_8),
-  .vio_tg_status_err_type              (vio_tg_status_err_type_8),
-  .vio_tg_status_wr_done               (vio_tg_status_wr_done_8),
-  .vio_tg_status_done                  (boot_mode_done_8),
-  .vio_tg_status_watch_dog_hang        (vio_tg_status_watch_dog_hang_8),
-  .tg_ila_debug                        (tg_ila_debug_8),
-  .tg_qdriv_submode11_app_rd           (1'b0),
-  // Slave Interface Write Address Ports
-  .i_m_axi_awready                     ('0),
-  .o_m_axi_awid                        (),
-  .o_m_axi_awaddr                      (),
-  .o_m_axi_awlen                       (),
-  .o_m_axi_awsize                      (),
-  .o_m_axi_awburst                     (),
-  .o_m_axi_awlock                      (),
-  .o_m_axi_awcache                     (),
-  .o_m_axi_awprot                      (),
-  .o_m_axi_awvalid                     (),
-  // Slave Interface Write Data Ports
-  .i_m_axi_wready                      ('0),
-  .o_m_axi_wdata                       (),
-  .o_m_axi_wstrb                       (),
-  .o_m_axi_wlast                       (),
-  .o_m_axi_wvalid                      (),
-  // Slave Interface Write Response Ports
-  .i_m_axi_bid                         ('0),
-  .i_m_axi_bresp                       ('0),
-  .i_m_axi_bvalid                      ('0),
-  .o_m_axi_bready                      (),
-  .i_m_axi_arready                     ('0),
-  // Slave Interface Read Address Ports
-  .o_m_axi_arid                        (),
-  .o_m_axi_araddr                      (),
-  .o_m_axi_arlen                       (),
-  .o_m_axi_arsize                      (),
-  .o_m_axi_arburst                     (),
-  .o_m_axi_arlock                      (),
-  .o_m_axi_arcache                     (),
-  .o_m_axi_arprot                      (),
-  .o_m_axi_arvalid                     (),
-  // Slave Interface Read Data Ports
-  .i_m_axi_rid                         ('0),
-  .i_m_axi_rresp                       ('0),
-  .i_m_axi_rvalid                      ('0),
-  .i_m_axi_rdata                       ('0),
-  .i_m_axi_rlast                       ('0),
-  .o_m_axi_rready                      ()
-);
+
 
   //  mosi signals
   assign AXI_08_AWID    = axi4_hbm_chs_li[8].awid;
@@ -6083,142 +4931,7 @@ axi_pmon_v1_0 #(
 // assign AXI_09_ARADDR = {vio_tg_glb_start_addr_9[32:28],o_m_axi_araddr_9[27:0]};
 // assign AXI_09_AWADDR = {vio_tg_glb_start_addr_9[32:28],o_m_axi_awaddr_9[27:0]};
 
-atg_axi#(
-  .SIMULATION                          (SIMULATION),
-  .MEM_TYPE                            ("DDR4"),
-  .MEM_ARCH                            ("ULTRASCALE"),
-  //.APP_DATA_WIDTH                      (APP_DATA_WIDTH),
-  .APP_ADDR_WIDTH                      (APP_ADDR_WIDTH),
-  .C_AXI_ID_WIDTH                      (6),
-  .C_AXI_ADDR_WIDTH                    (APP_ADDR_WIDTH),
-  //.C_AXI_DATA_WIDTH                    (APP_DATA_WIDTH),
-  .TG_PATTERN_MODE_PRBS_ADDR_WIDTH     (28),
-  .ECC                                 ("OFF"),
-  //.NUM_DQ_PINS                         (32),
-  `ifdef OPT_DATA_W
-    .APP_DATA_WIDTH(64),
-    .C_AXI_DATA_WIDTH(64),
-      `ifdef NCKPCLK_2
-        .NUM_DQ_PINS(16),
-        .nCK_PER_CLK(2),
-      `else
-        .nCK_PER_CLK(4),
-        .NUM_DQ_PINS(8),
-      `endif
-    `else
-      `ifdef NCKPCLK_2
-        .NUM_DQ_PINS(64),
-        .nCK_PER_CLK(2),
-      `else
-        .nCK_PER_CLK(4),
-        .NUM_DQ_PINS(32),
-      `endif
-    .APP_DATA_WIDTH(APP_DATA_WIDTH),
-    .C_AXI_DATA_WIDTH(APP_DATA_WIDTH),
-  `endif
-  .DEFAULT_MODE                        ("2018_1")
-) u_atg_axi_9 (
-  .i_TG_PATTERN_MODE_PRBS_ADDR_SEED    (28'b0),
-  .i_clk                               (AXI_ACLK4_st0_buf),
-  .i_rst                               (~axi_rst4_st0_n),
-  .i_init_calib_complete               (apb_seq_complete_4_st0_r2),
-  .compare_error                       (axi_09_data_msmatch_err),
-  .vio_tg_rst                          (vio_tg_rst_9),
-  .vio_tg_start                        (vio_tg_start_9),
-  .vio_tg_err_chk_en                   (vio_tg_err_chk_en_9),
-  .vio_tg_err_clear                    (vio_tg_err_clear_9),
-  .vio_tg_instr_addr_mode              (vio_tg_instr_addr_mode_9),
-  .vio_tg_instr_data_mode              (vio_tg_instr_data_mode_9),
-  .vio_tg_instr_rw_mode                (vio_tg_instr_rw_mode_9),
-  .vio_tg_instr_rw_submode             (vio_tg_instr_rw_submode_9),
-  .vio_tg_instr_num_of_iter            (vio_tg_instr_num_of_iter_9),
-  .vio_tg_instr_nxt_instr              (vio_tg_instr_nxt_instr_9),
-  .vio_tg_restart                      (vio_tg_restart_9),
-  .vio_tg_pause                        (vio_tg_pause_9),
-  .vio_tg_err_clear_all                (vio_tg_err_clear_all_9),
-  .vio_tg_err_continue                 (vio_tg_err_continue_9),
-  .vio_tg_instr_program_en             (vio_tg_instr_program_en_9),
-  .vio_tg_direct_instr_en              (vio_tg_direct_instr_en_9),
-  .vio_tg_instr_num                    (vio_tg_instr_num_9),
-  .vio_tg_instr_victim_mode            (vio_tg_instr_victim_mode_9),
-  .vio_tg_instr_victim_aggr_delay      (vio_tg_instr_victim_aggr_delay_9),
-  .vio_tg_instr_victim_select          (vio_tg_instr_victim_select_9),
-  .vio_tg_instr_m_nops_btw_n_burst_m   (vio_tg_instr_m_nops_btw_n_burst_m_9),
-  .vio_tg_instr_m_nops_btw_n_burst_n   (vio_tg_instr_m_nops_btw_n_burst_n_9),
-  .vio_tg_seed_program_en              (vio_tg_seed_program_en_9),
-  .vio_tg_seed_num                     (vio_tg_seed_num_9),
-  .vio_tg_seed                         (vio_tg_seed_9),
-  .vio_tg_glb_victim_bit               (vio_tg_glb_victim_bit_9),
-  .vio_tg_glb_start_addr               (vio_tg_glb_start_addr_9),
-  .vio_tg_glb_qdriv_rw_submode         (2'b00),
-  .o_wrt_rqt_over_flow                 (),
-  .vio_tg_status_state                 (vio_tg_status_state_9),
-  .vio_tg_status_err_bit_valid         (vio_tg_status_err_bit_valid_9),
-  .vio_tg_status_err_bit               (vio_tg_status_err_bit_9),
-  .vio_tg_status_err_cnt               (vio_tg_status_err_cnt_9),
-  .vio_tg_status_err_addr              (vio_tg_status_err_addr_9),
-  .vio_tg_status_exp_bit_valid         (vio_tg_status_exp_bit_valid_9),
-  .vio_tg_status_exp_bit               (vio_tg_status_exp_bit_9),
-  .vio_tg_status_read_bit_valid        (vio_tg_status_read_bit_valid_9),
-  .vio_tg_status_read_bit              (vio_tg_status_read_bit_9),
-  .vio_tg_status_first_err_bit_valid   (vio_tg_status_first_err_bit_valid_9),
-  .vio_tg_status_first_err_bit         (vio_tg_status_first_err_bit_9),
-  .vio_tg_status_first_err_addr        (vio_tg_status_first_err_addr_9),
-  .vio_tg_status_first_exp_bit_valid   (vio_tg_status_first_exp_bit_valid_9),
-  .vio_tg_status_first_exp_bit         (vio_tg_status_first_exp_bit_9),
-  .vio_tg_status_first_read_bit_valid  (vio_tg_status_first_read_bit_valid_9),
-  .vio_tg_status_first_read_bit        (vio_tg_status_first_read_bit_9),
-  .vio_tg_status_err_bit_sticky_valid  (vio_tg_status_err_bit_sticky_valid_9),
-  .vio_tg_status_err_bit_sticky        (vio_tg_status_err_bit_sticky_9),
-  .vio_tg_status_err_cnt_sticky        (vio_tg_status_err_cnt_sticky_9),
-  .vio_tg_status_err_type_valid        (vio_tg_status_err_type_valid_9),
-  .vio_tg_status_err_type              (vio_tg_status_err_type_9),
-  .vio_tg_status_wr_done               (vio_tg_status_wr_done_9),
-  .vio_tg_status_done                  (boot_mode_done_9),
-  .vio_tg_status_watch_dog_hang        (vio_tg_status_watch_dog_hang_9),
-  .tg_ila_debug                        (tg_ila_debug_9),
-  .tg_qdriv_submode11_app_rd           (1'b0),
-  // Slave Interface Write Address Ports
-  .i_m_axi_awready                     ('0),
-  .o_m_axi_awid                        (),
-  .o_m_axi_awaddr                      (),
-  .o_m_axi_awlen                       (),
-  .o_m_axi_awsize                      (),
-  .o_m_axi_awburst                     (),
-  .o_m_axi_awlock                      (),
-  .o_m_axi_awcache                     (),
-  .o_m_axi_awprot                      (),
-  .o_m_axi_awvalid                     (),
-  // Slave Interface Write Data Ports
-  .i_m_axi_wready                      ('0),
-  .o_m_axi_wdata                       (),
-  .o_m_axi_wstrb                       (),
-  .o_m_axi_wlast                       (),
-  .o_m_axi_wvalid                      (),
-  // Slave Interface Write Response Ports
-  .i_m_axi_bid                         ('0),
-  .i_m_axi_bresp                       ('0),
-  .i_m_axi_bvalid                      ('0),
-  .o_m_axi_bready                      (),
-  .i_m_axi_arready                     ('0),
-  // Slave Interface Read Address Ports
-  .o_m_axi_arid                        (),
-  .o_m_axi_araddr                      (),
-  .o_m_axi_arlen                       (),
-  .o_m_axi_arsize                      (),
-  .o_m_axi_arburst                     (),
-  .o_m_axi_arlock                      (),
-  .o_m_axi_arcache                     (),
-  .o_m_axi_arprot                      (),
-  .o_m_axi_arvalid                     (),
-  // Slave Interface Read Data Ports
-  .i_m_axi_rid                         ('0),
-  .i_m_axi_rresp                       ('0),
-  .i_m_axi_rvalid                      ('0),
-  .i_m_axi_rdata                       ('0),
-  .i_m_axi_rlast                       ('0),
-  .o_m_axi_rready                      ()
-);
+
 
   //  mosi signals
   assign AXI_09_AWID    = axi4_hbm_chs_li[9].awid;
@@ -6361,142 +5074,7 @@ axi_pmon_v1_0 #(
 // assign AXI_10_ARADDR = {vio_tg_glb_start_addr_10[32:28],o_m_axi_araddr_10[27:0]};
 // assign AXI_10_AWADDR = {vio_tg_glb_start_addr_10[32:28],o_m_axi_awaddr_10[27:0]};
 
-atg_axi#(
-  .SIMULATION                          (SIMULATION),
-  .MEM_TYPE                            ("DDR4"),
-  .MEM_ARCH                            ("ULTRASCALE"),
-  //.APP_DATA_WIDTH                      (APP_DATA_WIDTH),
-  .APP_ADDR_WIDTH                      (APP_ADDR_WIDTH),
-  .C_AXI_ID_WIDTH                      (6),
-  .C_AXI_ADDR_WIDTH                    (APP_ADDR_WIDTH),
-  //.C_AXI_DATA_WIDTH                    (APP_DATA_WIDTH),
-  .TG_PATTERN_MODE_PRBS_ADDR_WIDTH     (28),
-  .ECC                                 ("OFF"),
-  //.NUM_DQ_PINS                         (32),
-  `ifdef OPT_DATA_W
-    .APP_DATA_WIDTH(64),
-    .C_AXI_DATA_WIDTH(64),
-      `ifdef NCKPCLK_2
-        .NUM_DQ_PINS(16),
-        .nCK_PER_CLK(2),
-      `else
-        .nCK_PER_CLK(4),
-        .NUM_DQ_PINS(8),
-      `endif
-    `else
-      `ifdef NCKPCLK_2
-        .NUM_DQ_PINS(64),
-        .nCK_PER_CLK(2),
-      `else
-        .nCK_PER_CLK(4),
-        .NUM_DQ_PINS(32),
-      `endif
-    .APP_DATA_WIDTH(APP_DATA_WIDTH),
-    .C_AXI_DATA_WIDTH(APP_DATA_WIDTH),
-  `endif
-  .DEFAULT_MODE                        ("2018_1")
-) u_atg_axi_10 (
-  .i_TG_PATTERN_MODE_PRBS_ADDR_SEED    (28'b0),
-  .i_clk                               (AXI_ACLK5_st0_buf),
-  .i_rst                               (~axi_rst5_st0_n),
-  .i_init_calib_complete               (apb_seq_complete_5_st0_r2),
-  .compare_error                       (axi_10_data_msmatch_err),
-  .vio_tg_rst                          (vio_tg_rst_10),
-  .vio_tg_start                        (vio_tg_start_10),
-  .vio_tg_err_chk_en                   (vio_tg_err_chk_en_10),
-  .vio_tg_err_clear                    (vio_tg_err_clear_10),
-  .vio_tg_instr_addr_mode              (vio_tg_instr_addr_mode_10),
-  .vio_tg_instr_data_mode              (vio_tg_instr_data_mode_10),
-  .vio_tg_instr_rw_mode                (vio_tg_instr_rw_mode_10),
-  .vio_tg_instr_rw_submode             (vio_tg_instr_rw_submode_10),
-  .vio_tg_instr_num_of_iter            (vio_tg_instr_num_of_iter_10),
-  .vio_tg_instr_nxt_instr              (vio_tg_instr_nxt_instr_10),
-  .vio_tg_restart                      (vio_tg_restart_10),
-  .vio_tg_pause                        (vio_tg_pause_10),
-  .vio_tg_err_clear_all                (vio_tg_err_clear_all_10),
-  .vio_tg_err_continue                 (vio_tg_err_continue_10),
-  .vio_tg_instr_program_en             (vio_tg_instr_program_en_10),
-  .vio_tg_direct_instr_en              (vio_tg_direct_instr_en_10),
-  .vio_tg_instr_num                    (vio_tg_instr_num_10),
-  .vio_tg_instr_victim_mode            (vio_tg_instr_victim_mode_10),
-  .vio_tg_instr_victim_aggr_delay      (vio_tg_instr_victim_aggr_delay_10),
-  .vio_tg_instr_victim_select          (vio_tg_instr_victim_select_10),
-  .vio_tg_instr_m_nops_btw_n_burst_m   (vio_tg_instr_m_nops_btw_n_burst_m_10),
-  .vio_tg_instr_m_nops_btw_n_burst_n   (vio_tg_instr_m_nops_btw_n_burst_n_10),
-  .vio_tg_seed_program_en              (vio_tg_seed_program_en_10),
-  .vio_tg_seed_num                     (vio_tg_seed_num_10),
-  .vio_tg_seed                         (vio_tg_seed_10),
-  .vio_tg_glb_victim_bit               (vio_tg_glb_victim_bit_10),
-  .vio_tg_glb_start_addr               (vio_tg_glb_start_addr_10),
-  .vio_tg_glb_qdriv_rw_submode         (2'b00),
-  .o_wrt_rqt_over_flow                 (),
-  .vio_tg_status_state                 (vio_tg_status_state_10),
-  .vio_tg_status_err_bit_valid         (vio_tg_status_err_bit_valid_10),
-  .vio_tg_status_err_bit               (vio_tg_status_err_bit_10),
-  .vio_tg_status_err_cnt               (vio_tg_status_err_cnt_10),
-  .vio_tg_status_err_addr              (vio_tg_status_err_addr_10),
-  .vio_tg_status_exp_bit_valid         (vio_tg_status_exp_bit_valid_10),
-  .vio_tg_status_exp_bit               (vio_tg_status_exp_bit_10),
-  .vio_tg_status_read_bit_valid        (vio_tg_status_read_bit_valid_10),
-  .vio_tg_status_read_bit              (vio_tg_status_read_bit_10),
-  .vio_tg_status_first_err_bit_valid   (vio_tg_status_first_err_bit_valid_10),
-  .vio_tg_status_first_err_bit         (vio_tg_status_first_err_bit_10),
-  .vio_tg_status_first_err_addr        (vio_tg_status_first_err_addr_10),
-  .vio_tg_status_first_exp_bit_valid   (vio_tg_status_first_exp_bit_valid_10),
-  .vio_tg_status_first_exp_bit         (vio_tg_status_first_exp_bit_10),
-  .vio_tg_status_first_read_bit_valid  (vio_tg_status_first_read_bit_valid_10),
-  .vio_tg_status_first_read_bit        (vio_tg_status_first_read_bit_10),
-  .vio_tg_status_err_bit_sticky_valid  (vio_tg_status_err_bit_sticky_valid_10),
-  .vio_tg_status_err_bit_sticky        (vio_tg_status_err_bit_sticky_10),
-  .vio_tg_status_err_cnt_sticky        (vio_tg_status_err_cnt_sticky_10),
-  .vio_tg_status_err_type_valid        (vio_tg_status_err_type_valid_10),
-  .vio_tg_status_err_type              (vio_tg_status_err_type_10),
-  .vio_tg_status_wr_done               (vio_tg_status_wr_done_10),
-  .vio_tg_status_done                  (boot_mode_done_10),
-  .vio_tg_status_watch_dog_hang        (vio_tg_status_watch_dog_hang_10),
-  .tg_ila_debug                        (tg_ila_debug_10),
-  .tg_qdriv_submode11_app_rd           (1'b0),
-  // Slave Interface Write Address Ports
-  .i_m_axi_awready                     ('0),
-  .o_m_axi_awid                        (),
-  .o_m_axi_awaddr                      (),
-  .o_m_axi_awlen                       (),
-  .o_m_axi_awsize                      (),
-  .o_m_axi_awburst                     (),
-  .o_m_axi_awlock                      (),
-  .o_m_axi_awcache                     (),
-  .o_m_axi_awprot                      (),
-  .o_m_axi_awvalid                     (),
-  // Slave Interface Write Data Ports
-  .i_m_axi_wready                      ('0),
-  .o_m_axi_wdata                       (),
-  .o_m_axi_wstrb                       (),
-  .o_m_axi_wlast                       (),
-  .o_m_axi_wvalid                      (),
-  // Slave Interface Write Response Ports
-  .i_m_axi_bid                         ('0),
-  .i_m_axi_bresp                       ('0),
-  .i_m_axi_bvalid                      ('0),
-  .o_m_axi_bready                      (),
-  .i_m_axi_arready                     ('0),
-  // Slave Interface Read Address Ports
-  .o_m_axi_arid                        (),
-  .o_m_axi_araddr                      (),
-  .o_m_axi_arlen                       (),
-  .o_m_axi_arsize                      (),
-  .o_m_axi_arburst                     (),
-  .o_m_axi_arlock                      (),
-  .o_m_axi_arcache                     (),
-  .o_m_axi_arprot                      (),
-  .o_m_axi_arvalid                     (),
-  // Slave Interface Read Data Ports
-  .i_m_axi_rid                         ('0),
-  .i_m_axi_rresp                       ('0),
-  .i_m_axi_rvalid                      ('0),
-  .i_m_axi_rdata                       ('0),
-  .i_m_axi_rlast                       ('0),
-  .o_m_axi_rready                      ()
-);
+
 
   //  mosi signals
   assign AXI_10_AWID    = axi4_hbm_chs_li[10].awid;
@@ -6639,142 +5217,7 @@ axi_pmon_v1_0 #(
 // assign AXI_11_ARADDR = {vio_tg_glb_start_addr_11[32:28],o_m_axi_araddr_11[27:0]};
 // assign AXI_11_AWADDR = {vio_tg_glb_start_addr_11[32:28],o_m_axi_awaddr_11[27:0]};
 
-atg_axi#(
-  .SIMULATION                          (SIMULATION),
-  .MEM_TYPE                            ("DDR4"),
-  .MEM_ARCH                            ("ULTRASCALE"),
-  //.APP_DATA_WIDTH                      (APP_DATA_WIDTH),
-  .APP_ADDR_WIDTH                      (APP_ADDR_WIDTH),
-  .C_AXI_ID_WIDTH                      (6),
-  .C_AXI_ADDR_WIDTH                    (APP_ADDR_WIDTH),
-  //.C_AXI_DATA_WIDTH                    (APP_DATA_WIDTH),
-  .TG_PATTERN_MODE_PRBS_ADDR_WIDTH     (28),
-  .ECC                                 ("OFF"),
-  //.NUM_DQ_PINS                         (32),
-  `ifdef OPT_DATA_W
-    .APP_DATA_WIDTH(64),
-    .C_AXI_DATA_WIDTH(64),
-      `ifdef NCKPCLK_2
-        .NUM_DQ_PINS(16),
-        .nCK_PER_CLK(2),
-      `else
-        .nCK_PER_CLK(4),
-        .NUM_DQ_PINS(8),
-      `endif
-    `else
-      `ifdef NCKPCLK_2
-        .NUM_DQ_PINS(64),
-        .nCK_PER_CLK(2),
-      `else
-        .nCK_PER_CLK(4),
-        .NUM_DQ_PINS(32),
-      `endif
-    .APP_DATA_WIDTH(APP_DATA_WIDTH),
-    .C_AXI_DATA_WIDTH(APP_DATA_WIDTH),
-  `endif
-  .DEFAULT_MODE                        ("2018_1")
-) u_atg_axi_11 (
-  .i_TG_PATTERN_MODE_PRBS_ADDR_SEED    (28'b0),
-  .i_clk                               (AXI_ACLK5_st0_buf),
-  .i_rst                               (~axi_rst5_st0_n),
-  .i_init_calib_complete               (apb_seq_complete_5_st0_r2),
-  .compare_error                       (axi_11_data_msmatch_err),
-  .vio_tg_rst                          (vio_tg_rst_11),
-  .vio_tg_start                        (vio_tg_start_11),
-  .vio_tg_err_chk_en                   (vio_tg_err_chk_en_11),
-  .vio_tg_err_clear                    (vio_tg_err_clear_11),
-  .vio_tg_instr_addr_mode              (vio_tg_instr_addr_mode_11),
-  .vio_tg_instr_data_mode              (vio_tg_instr_data_mode_11),
-  .vio_tg_instr_rw_mode                (vio_tg_instr_rw_mode_11),
-  .vio_tg_instr_rw_submode             (vio_tg_instr_rw_submode_11),
-  .vio_tg_instr_num_of_iter            (vio_tg_instr_num_of_iter_11),
-  .vio_tg_instr_nxt_instr              (vio_tg_instr_nxt_instr_11),
-  .vio_tg_restart                      (vio_tg_restart_11),
-  .vio_tg_pause                        (vio_tg_pause_11),
-  .vio_tg_err_clear_all                (vio_tg_err_clear_all_11),
-  .vio_tg_err_continue                 (vio_tg_err_continue_11),
-  .vio_tg_instr_program_en             (vio_tg_instr_program_en_11),
-  .vio_tg_direct_instr_en              (vio_tg_direct_instr_en_11),
-  .vio_tg_instr_num                    (vio_tg_instr_num_11),
-  .vio_tg_instr_victim_mode            (vio_tg_instr_victim_mode_11),
-  .vio_tg_instr_victim_aggr_delay      (vio_tg_instr_victim_aggr_delay_11),
-  .vio_tg_instr_victim_select          (vio_tg_instr_victim_select_11),
-  .vio_tg_instr_m_nops_btw_n_burst_m   (vio_tg_instr_m_nops_btw_n_burst_m_11),
-  .vio_tg_instr_m_nops_btw_n_burst_n   (vio_tg_instr_m_nops_btw_n_burst_n_11),
-  .vio_tg_seed_program_en              (vio_tg_seed_program_en_11),
-  .vio_tg_seed_num                     (vio_tg_seed_num_11),
-  .vio_tg_seed                         (vio_tg_seed_11),
-  .vio_tg_glb_victim_bit               (vio_tg_glb_victim_bit_11),
-  .vio_tg_glb_start_addr               (vio_tg_glb_start_addr_11),
-  .vio_tg_glb_qdriv_rw_submode         (2'b00),
-  .o_wrt_rqt_over_flow                 (),
-  .vio_tg_status_state                 (vio_tg_status_state_11),
-  .vio_tg_status_err_bit_valid         (vio_tg_status_err_bit_valid_11),
-  .vio_tg_status_err_bit               (vio_tg_status_err_bit_11),
-  .vio_tg_status_err_cnt               (vio_tg_status_err_cnt_11),
-  .vio_tg_status_err_addr              (vio_tg_status_err_addr_11),
-  .vio_tg_status_exp_bit_valid         (vio_tg_status_exp_bit_valid_11),
-  .vio_tg_status_exp_bit               (vio_tg_status_exp_bit_11),
-  .vio_tg_status_read_bit_valid        (vio_tg_status_read_bit_valid_11),
-  .vio_tg_status_read_bit              (vio_tg_status_read_bit_11),
-  .vio_tg_status_first_err_bit_valid   (vio_tg_status_first_err_bit_valid_11),
-  .vio_tg_status_first_err_bit         (vio_tg_status_first_err_bit_11),
-  .vio_tg_status_first_err_addr        (vio_tg_status_first_err_addr_11),
-  .vio_tg_status_first_exp_bit_valid   (vio_tg_status_first_exp_bit_valid_11),
-  .vio_tg_status_first_exp_bit         (vio_tg_status_first_exp_bit_11),
-  .vio_tg_status_first_read_bit_valid  (vio_tg_status_first_read_bit_valid_11),
-  .vio_tg_status_first_read_bit        (vio_tg_status_first_read_bit_11),
-  .vio_tg_status_err_bit_sticky_valid  (vio_tg_status_err_bit_sticky_valid_11),
-  .vio_tg_status_err_bit_sticky        (vio_tg_status_err_bit_sticky_11),
-  .vio_tg_status_err_cnt_sticky        (vio_tg_status_err_cnt_sticky_11),
-  .vio_tg_status_err_type_valid        (vio_tg_status_err_type_valid_11),
-  .vio_tg_status_err_type              (vio_tg_status_err_type_11),
-  .vio_tg_status_wr_done               (vio_tg_status_wr_done_11),
-  .vio_tg_status_done                  (boot_mode_done_11),
-  .vio_tg_status_watch_dog_hang        (vio_tg_status_watch_dog_hang_11),
-  .tg_ila_debug                        (tg_ila_debug_11),
-  .tg_qdriv_submode11_app_rd           (1'b0),
-  // Slave Interface Write Address Ports
-  .i_m_axi_awready                     ('0),
-  .o_m_axi_awid                        (),
-  .o_m_axi_awaddr                      (),
-  .o_m_axi_awlen                       (),
-  .o_m_axi_awsize                      (),
-  .o_m_axi_awburst                     (),
-  .o_m_axi_awlock                      (),
-  .o_m_axi_awcache                     (),
-  .o_m_axi_awprot                      (),
-  .o_m_axi_awvalid                     (),
-  // Slave Interface Write Data Ports
-  .i_m_axi_wready                      ('0),
-  .o_m_axi_wdata                       (),
-  .o_m_axi_wstrb                       (),
-  .o_m_axi_wlast                       (),
-  .o_m_axi_wvalid                      (),
-  // Slave Interface Write Response Ports
-  .i_m_axi_bid                         ('0),
-  .i_m_axi_bresp                       ('0),
-  .i_m_axi_bvalid                      ('0),
-  .o_m_axi_bready                      (),
-  .i_m_axi_arready                     ('0),
-  // Slave Interface Read Address Ports
-  .o_m_axi_arid                        (),
-  .o_m_axi_araddr                      (),
-  .o_m_axi_arlen                       (),
-  .o_m_axi_arsize                      (),
-  .o_m_axi_arburst                     (),
-  .o_m_axi_arlock                      (),
-  .o_m_axi_arcache                     (),
-  .o_m_axi_arprot                      (),
-  .o_m_axi_arvalid                     (),
-  // Slave Interface Read Data Ports
-  .i_m_axi_rid                         ('0),
-  .i_m_axi_rresp                       ('0),
-  .i_m_axi_rvalid                      ('0),
-  .i_m_axi_rdata                       ('0),
-  .i_m_axi_rlast                       ('0),
-  .o_m_axi_rready                      ()
-);
+
 
   //  mosi signals
   assign AXI_11_AWID    = axi4_hbm_chs_li[11].awid;
@@ -6916,142 +5359,7 @@ axi_pmon_v1_0 #(
 // assign AXI_12_ARADDR = {vio_tg_glb_start_addr_12[32:28],o_m_axi_araddr_12[27:0]};
 // assign AXI_12_AWADDR = {vio_tg_glb_start_addr_12[32:28],o_m_axi_awaddr_12[27:0]};
 
-atg_axi#(
-  .SIMULATION                          (SIMULATION),
-  .MEM_TYPE                            ("DDR4"),
-  .MEM_ARCH                            ("ULTRASCALE"),
-  //.APP_DATA_WIDTH                      (APP_DATA_WIDTH),
-  .APP_ADDR_WIDTH                      (APP_ADDR_WIDTH),
-  .C_AXI_ID_WIDTH                      (6),
-  .C_AXI_ADDR_WIDTH                    (APP_ADDR_WIDTH),
-  //.C_AXI_DATA_WIDTH                    (APP_DATA_WIDTH),
-  .TG_PATTERN_MODE_PRBS_ADDR_WIDTH     (28),
-  .ECC                                 ("OFF"),
-  //.NUM_DQ_PINS                         (32),
-  `ifdef OPT_DATA_W
-    .APP_DATA_WIDTH(64),
-    .C_AXI_DATA_WIDTH(64),
-      `ifdef NCKPCLK_2
-        .NUM_DQ_PINS(16),
-        .nCK_PER_CLK(2),
-      `else
-        .nCK_PER_CLK(4),
-        .NUM_DQ_PINS(8),
-      `endif
-    `else
-      `ifdef NCKPCLK_2
-        .NUM_DQ_PINS(64),
-        .nCK_PER_CLK(2),
-      `else
-        .nCK_PER_CLK(4),
-        .NUM_DQ_PINS(32),
-      `endif
-    .APP_DATA_WIDTH(APP_DATA_WIDTH),
-    .C_AXI_DATA_WIDTH(APP_DATA_WIDTH),
-  `endif
-  .DEFAULT_MODE                        ("2018_1")
-) u_atg_axi_12 (
-  .i_TG_PATTERN_MODE_PRBS_ADDR_SEED    (28'b0),
-  .i_clk                               (AXI_ACLK5_st0_buf),
-  .i_rst                               (~axi_rst5_st0_n),
-  .i_init_calib_complete               (apb_seq_complete_5_st0_r2),
-  .compare_error                       (axi_12_data_msmatch_err),
-  .vio_tg_rst                          (vio_tg_rst_12),
-  .vio_tg_start                        (vio_tg_start_12),
-  .vio_tg_err_chk_en                   (vio_tg_err_chk_en_12),
-  .vio_tg_err_clear                    (vio_tg_err_clear_12),
-  .vio_tg_instr_addr_mode              (vio_tg_instr_addr_mode_12),
-  .vio_tg_instr_data_mode              (vio_tg_instr_data_mode_12),
-  .vio_tg_instr_rw_mode                (vio_tg_instr_rw_mode_12),
-  .vio_tg_instr_rw_submode             (vio_tg_instr_rw_submode_12),
-  .vio_tg_instr_num_of_iter            (vio_tg_instr_num_of_iter_12),
-  .vio_tg_instr_nxt_instr              (vio_tg_instr_nxt_instr_12),
-  .vio_tg_restart                      (vio_tg_restart_12),
-  .vio_tg_pause                        (vio_tg_pause_12),
-  .vio_tg_err_clear_all                (vio_tg_err_clear_all_12),
-  .vio_tg_err_continue                 (vio_tg_err_continue_12),
-  .vio_tg_instr_program_en             (vio_tg_instr_program_en_12),
-  .vio_tg_direct_instr_en              (vio_tg_direct_instr_en_12),
-  .vio_tg_instr_num                    (vio_tg_instr_num_12),
-  .vio_tg_instr_victim_mode            (vio_tg_instr_victim_mode_12),
-  .vio_tg_instr_victim_aggr_delay      (vio_tg_instr_victim_aggr_delay_12),
-  .vio_tg_instr_victim_select          (vio_tg_instr_victim_select_12),
-  .vio_tg_instr_m_nops_btw_n_burst_m   (vio_tg_instr_m_nops_btw_n_burst_m_12),
-  .vio_tg_instr_m_nops_btw_n_burst_n   (vio_tg_instr_m_nops_btw_n_burst_n_12),
-  .vio_tg_seed_program_en              (vio_tg_seed_program_en_12),
-  .vio_tg_seed_num                     (vio_tg_seed_num_12),
-  .vio_tg_seed                         (vio_tg_seed_12),
-  .vio_tg_glb_victim_bit               (vio_tg_glb_victim_bit_12),
-  .vio_tg_glb_start_addr               (vio_tg_glb_start_addr_12),
-  .vio_tg_glb_qdriv_rw_submode         (2'b00),
-  .o_wrt_rqt_over_flow                 (),
-  .vio_tg_status_state                 (vio_tg_status_state_12),
-  .vio_tg_status_err_bit_valid         (vio_tg_status_err_bit_valid_12),
-  .vio_tg_status_err_bit               (vio_tg_status_err_bit_12),
-  .vio_tg_status_err_cnt               (vio_tg_status_err_cnt_12),
-  .vio_tg_status_err_addr              (vio_tg_status_err_addr_12),
-  .vio_tg_status_exp_bit_valid         (vio_tg_status_exp_bit_valid_12),
-  .vio_tg_status_exp_bit               (vio_tg_status_exp_bit_12),
-  .vio_tg_status_read_bit_valid        (vio_tg_status_read_bit_valid_12),
-  .vio_tg_status_read_bit              (vio_tg_status_read_bit_12),
-  .vio_tg_status_first_err_bit_valid   (vio_tg_status_first_err_bit_valid_12),
-  .vio_tg_status_first_err_bit         (vio_tg_status_first_err_bit_12),
-  .vio_tg_status_first_err_addr        (vio_tg_status_first_err_addr_12),
-  .vio_tg_status_first_exp_bit_valid   (vio_tg_status_first_exp_bit_valid_12),
-  .vio_tg_status_first_exp_bit         (vio_tg_status_first_exp_bit_12),
-  .vio_tg_status_first_read_bit_valid  (vio_tg_status_first_read_bit_valid_12),
-  .vio_tg_status_first_read_bit        (vio_tg_status_first_read_bit_12),
-  .vio_tg_status_err_bit_sticky_valid  (vio_tg_status_err_bit_sticky_valid_12),
-  .vio_tg_status_err_bit_sticky        (vio_tg_status_err_bit_sticky_12),
-  .vio_tg_status_err_cnt_sticky        (vio_tg_status_err_cnt_sticky_12),
-  .vio_tg_status_err_type_valid        (vio_tg_status_err_type_valid_12),
-  .vio_tg_status_err_type              (vio_tg_status_err_type_12),
-  .vio_tg_status_wr_done               (vio_tg_status_wr_done_12),
-  .vio_tg_status_done                  (boot_mode_done_12),
-  .vio_tg_status_watch_dog_hang        (vio_tg_status_watch_dog_hang_12),
-  .tg_ila_debug                        (tg_ila_debug_12),
-  .tg_qdriv_submode11_app_rd           (1'b0),
-  // Slave Interface Write Address Ports
-  .i_m_axi_awready                     ('0),
-  .o_m_axi_awid                        (),
-  .o_m_axi_awaddr                      (),
-  .o_m_axi_awlen                       (),
-  .o_m_axi_awsize                      (),
-  .o_m_axi_awburst                     (),
-  .o_m_axi_awlock                      (),
-  .o_m_axi_awcache                     (),
-  .o_m_axi_awprot                      (),
-  .o_m_axi_awvalid                     (),
-  // Slave Interface Write Data Ports
-  .i_m_axi_wready                      ('0),
-  .o_m_axi_wdata                       (),
-  .o_m_axi_wstrb                       (),
-  .o_m_axi_wlast                       (),
-  .o_m_axi_wvalid                      (),
-  // Slave Interface Write Response Ports
-  .i_m_axi_bid                         ('0),
-  .i_m_axi_bresp                       ('0),
-  .i_m_axi_bvalid                      ('0),
-  .o_m_axi_bready                      (),
-  .i_m_axi_arready                     ('0),
-  // Slave Interface Read Address Ports
-  .o_m_axi_arid                        (),
-  .o_m_axi_araddr                      (),
-  .o_m_axi_arlen                       (),
-  .o_m_axi_arsize                      (),
-  .o_m_axi_arburst                     (),
-  .o_m_axi_arlock                      (),
-  .o_m_axi_arcache                     (),
-  .o_m_axi_arprot                      (),
-  .o_m_axi_arvalid                     (),
-  // Slave Interface Read Data Ports
-  .i_m_axi_rid                         ('0),
-  .i_m_axi_rresp                       ('0),
-  .i_m_axi_rvalid                      ('0),
-  .i_m_axi_rdata                       ('0),
-  .i_m_axi_rlast                       ('0),
-  .o_m_axi_rready                      ()
-);
+
 
   //  mosi signals
   assign AXI_12_AWID    = axi4_hbm_chs_li[12].awid;
@@ -7193,142 +5501,7 @@ axi_pmon_v1_0 #(
 // assign AXI_13_ARADDR = {vio_tg_glb_start_addr_13[32:28],o_m_axi_araddr_13[27:0]};
 // assign AXI_13_AWADDR = {vio_tg_glb_start_addr_13[32:28],o_m_axi_awaddr_13[27:0]};
 
-atg_axi#(
-  .SIMULATION                          (SIMULATION),
-  .MEM_TYPE                            ("DDR4"),
-  .MEM_ARCH                            ("ULTRASCALE"),
-  //.APP_DATA_WIDTH                      (APP_DATA_WIDTH),
-  .APP_ADDR_WIDTH                      (APP_ADDR_WIDTH),
-  .C_AXI_ID_WIDTH                      (6),
-  .C_AXI_ADDR_WIDTH                    (APP_ADDR_WIDTH),
-  //.C_AXI_DATA_WIDTH                    (APP_DATA_WIDTH),
-  .TG_PATTERN_MODE_PRBS_ADDR_WIDTH     (28),
-  .ECC                                 ("OFF"),
-  //.NUM_DQ_PINS                         (32),
-  `ifdef OPT_DATA_W
-    .APP_DATA_WIDTH(64),
-    .C_AXI_DATA_WIDTH(64),
-      `ifdef NCKPCLK_2
-        .NUM_DQ_PINS(16),
-        .nCK_PER_CLK(2),
-      `else
-        .nCK_PER_CLK(4),
-        .NUM_DQ_PINS(8),
-      `endif
-    `else
-      `ifdef NCKPCLK_2
-        .NUM_DQ_PINS(64),
-        .nCK_PER_CLK(2),
-      `else
-        .nCK_PER_CLK(4),
-        .NUM_DQ_PINS(32),
-      `endif
-    .APP_DATA_WIDTH(APP_DATA_WIDTH),
-    .C_AXI_DATA_WIDTH(APP_DATA_WIDTH),
-  `endif
-  .DEFAULT_MODE                        ("2018_1")
-) u_atg_axi_13 (
-  .i_TG_PATTERN_MODE_PRBS_ADDR_SEED    (28'b0),
-  .i_clk                               (AXI_ACLK6_st0_buf),
-  .i_rst                               (~axi_rst6_st0_n),
-  .i_init_calib_complete               (apb_seq_complete_6_st0_r2),
-  .compare_error                       (axi_13_data_msmatch_err),
-  .vio_tg_rst                          (vio_tg_rst_13),
-  .vio_tg_start                        (vio_tg_start_13),
-  .vio_tg_err_chk_en                   (vio_tg_err_chk_en_13),
-  .vio_tg_err_clear                    (vio_tg_err_clear_13),
-  .vio_tg_instr_addr_mode              (vio_tg_instr_addr_mode_13),
-  .vio_tg_instr_data_mode              (vio_tg_instr_data_mode_13),
-  .vio_tg_instr_rw_mode                (vio_tg_instr_rw_mode_13),
-  .vio_tg_instr_rw_submode             (vio_tg_instr_rw_submode_13),
-  .vio_tg_instr_num_of_iter            (vio_tg_instr_num_of_iter_13),
-  .vio_tg_instr_nxt_instr              (vio_tg_instr_nxt_instr_13),
-  .vio_tg_restart                      (vio_tg_restart_13),
-  .vio_tg_pause                        (vio_tg_pause_13),
-  .vio_tg_err_clear_all                (vio_tg_err_clear_all_13),
-  .vio_tg_err_continue                 (vio_tg_err_continue_13),
-  .vio_tg_instr_program_en             (vio_tg_instr_program_en_13),
-  .vio_tg_direct_instr_en              (vio_tg_direct_instr_en_13),
-  .vio_tg_instr_num                    (vio_tg_instr_num_13),
-  .vio_tg_instr_victim_mode            (vio_tg_instr_victim_mode_13),
-  .vio_tg_instr_victim_aggr_delay      (vio_tg_instr_victim_aggr_delay_13),
-  .vio_tg_instr_victim_select          (vio_tg_instr_victim_select_13),
-  .vio_tg_instr_m_nops_btw_n_burst_m   (vio_tg_instr_m_nops_btw_n_burst_m_13),
-  .vio_tg_instr_m_nops_btw_n_burst_n   (vio_tg_instr_m_nops_btw_n_burst_n_13),
-  .vio_tg_seed_program_en              (vio_tg_seed_program_en_13),
-  .vio_tg_seed_num                     (vio_tg_seed_num_13),
-  .vio_tg_seed                         (vio_tg_seed_13),
-  .vio_tg_glb_victim_bit               (vio_tg_glb_victim_bit_13),
-  .vio_tg_glb_start_addr               (vio_tg_glb_start_addr_13),
-  .vio_tg_glb_qdriv_rw_submode         (2'b00),
-  .o_wrt_rqt_over_flow                 (),
-  .vio_tg_status_state                 (vio_tg_status_state_13),
-  .vio_tg_status_err_bit_valid         (vio_tg_status_err_bit_valid_13),
-  .vio_tg_status_err_bit               (vio_tg_status_err_bit_13),
-  .vio_tg_status_err_cnt               (vio_tg_status_err_cnt_13),
-  .vio_tg_status_err_addr              (vio_tg_status_err_addr_13),
-  .vio_tg_status_exp_bit_valid         (vio_tg_status_exp_bit_valid_13),
-  .vio_tg_status_exp_bit               (vio_tg_status_exp_bit_13),
-  .vio_tg_status_read_bit_valid        (vio_tg_status_read_bit_valid_13),
-  .vio_tg_status_read_bit              (vio_tg_status_read_bit_13),
-  .vio_tg_status_first_err_bit_valid   (vio_tg_status_first_err_bit_valid_13),
-  .vio_tg_status_first_err_bit         (vio_tg_status_first_err_bit_13),
-  .vio_tg_status_first_err_addr        (vio_tg_status_first_err_addr_13),
-  .vio_tg_status_first_exp_bit_valid   (vio_tg_status_first_exp_bit_valid_13),
-  .vio_tg_status_first_exp_bit         (vio_tg_status_first_exp_bit_13),
-  .vio_tg_status_first_read_bit_valid  (vio_tg_status_first_read_bit_valid_13),
-  .vio_tg_status_first_read_bit        (vio_tg_status_first_read_bit_13),
-  .vio_tg_status_err_bit_sticky_valid  (vio_tg_status_err_bit_sticky_valid_13),
-  .vio_tg_status_err_bit_sticky        (vio_tg_status_err_bit_sticky_13),
-  .vio_tg_status_err_cnt_sticky        (vio_tg_status_err_cnt_sticky_13),
-  .vio_tg_status_err_type_valid        (vio_tg_status_err_type_valid_13),
-  .vio_tg_status_err_type              (vio_tg_status_err_type_13),
-  .vio_tg_status_wr_done               (vio_tg_status_wr_done_13),
-  .vio_tg_status_done                  (boot_mode_done_13),
-  .vio_tg_status_watch_dog_hang        (vio_tg_status_watch_dog_hang_13),
-  .tg_ila_debug                        (tg_ila_debug_13),
-  .tg_qdriv_submode11_app_rd           (1'b0),
-  // Slave Interface Write Address Ports
-  .i_m_axi_awready                     ('0),
-  .o_m_axi_awid                        (),
-  .o_m_axi_awaddr                      (),
-  .o_m_axi_awlen                       (),
-  .o_m_axi_awsize                      (),
-  .o_m_axi_awburst                     (),
-  .o_m_axi_awlock                      (),
-  .o_m_axi_awcache                     (),
-  .o_m_axi_awprot                      (),
-  .o_m_axi_awvalid                     (),
-  // Slave Interface Write Data Ports
-  .i_m_axi_wready                      ('0),
-  .o_m_axi_wdata                       (),
-  .o_m_axi_wstrb                       (),
-  .o_m_axi_wlast                       (),
-  .o_m_axi_wvalid                      (),
-  // Slave Interface Write Response Ports
-  .i_m_axi_bid                         ('0),
-  .i_m_axi_bresp                       ('0),
-  .i_m_axi_bvalid                      ('0),
-  .o_m_axi_bready                      (),
-  .i_m_axi_arready                     ('0),
-  // Slave Interface Read Address Ports
-  .o_m_axi_arid                        (),
-  .o_m_axi_araddr                      (),
-  .o_m_axi_arlen                       (),
-  .o_m_axi_arsize                      (),
-  .o_m_axi_arburst                     (),
-  .o_m_axi_arlock                      (),
-  .o_m_axi_arcache                     (),
-  .o_m_axi_arprot                      (),
-  .o_m_axi_arvalid                     (),
-  // Slave Interface Read Data Ports
-  .i_m_axi_rid                         ('0),
-  .i_m_axi_rresp                       ('0),
-  .i_m_axi_rvalid                      ('0),
-  .i_m_axi_rdata                       ('0),
-  .i_m_axi_rlast                       ('0),
-  .o_m_axi_rready                      ()
-);
+
 
   //  mosi signals
   assign AXI_13_AWID    = axi4_hbm_chs_li[13].awid;
@@ -7469,143 +5642,6 @@ axi_pmon_v1_0 #(
 ////////////////////////////////////////////////////////////////////////////////
 // assign AXI_14_ARADDR = {vio_tg_glb_start_addr_14[32:28],o_m_axi_araddr_14[27:0]};
 // assign AXI_14_AWADDR = {vio_tg_glb_start_addr_14[32:28],o_m_axi_awaddr_14[27:0]};
-
-atg_axi#(
-  .SIMULATION                          (SIMULATION),
-  .MEM_TYPE                            ("DDR4"),
-  .MEM_ARCH                            ("ULTRASCALE"),
-  //.APP_DATA_WIDTH                      (APP_DATA_WIDTH),
-  .APP_ADDR_WIDTH                      (APP_ADDR_WIDTH),
-  .C_AXI_ID_WIDTH                      (6),
-  .C_AXI_ADDR_WIDTH                    (APP_ADDR_WIDTH),
-  //.C_AXI_DATA_WIDTH                    (APP_DATA_WIDTH),
-  .TG_PATTERN_MODE_PRBS_ADDR_WIDTH     (28),
-  .ECC                                 ("OFF"),
-  //.NUM_DQ_PINS                         (32),
-  `ifdef OPT_DATA_W
-    .APP_DATA_WIDTH(64),
-    .C_AXI_DATA_WIDTH(64),
-      `ifdef NCKPCLK_2
-        .NUM_DQ_PINS(16),
-        .nCK_PER_CLK(2),
-      `else
-        .nCK_PER_CLK(4),
-        .NUM_DQ_PINS(8),
-      `endif
-    `else
-      `ifdef NCKPCLK_2
-        .NUM_DQ_PINS(64),
-        .nCK_PER_CLK(2),
-      `else
-        .nCK_PER_CLK(4),
-        .NUM_DQ_PINS(32),
-      `endif
-    .APP_DATA_WIDTH(APP_DATA_WIDTH),
-    .C_AXI_DATA_WIDTH(APP_DATA_WIDTH),
-  `endif
-  .DEFAULT_MODE                        ("2018_1")
-) u_atg_axi_14 (
-  .i_TG_PATTERN_MODE_PRBS_ADDR_SEED    (28'b0),
-  .i_clk                               (AXI_ACLK6_st0_buf),
-  .i_rst                               (~axi_rst6_st0_n),
-  .i_init_calib_complete               (apb_seq_complete_6_st0_r2),
-  .compare_error                       (axi_14_data_msmatch_err),
-  .vio_tg_rst                          (vio_tg_rst_14),
-  .vio_tg_start                        (vio_tg_start_14),
-  .vio_tg_err_chk_en                   (vio_tg_err_chk_en_14),
-  .vio_tg_err_clear                    (vio_tg_err_clear_14),
-  .vio_tg_instr_addr_mode              (vio_tg_instr_addr_mode_14),
-  .vio_tg_instr_data_mode              (vio_tg_instr_data_mode_14),
-  .vio_tg_instr_rw_mode                (vio_tg_instr_rw_mode_14),
-  .vio_tg_instr_rw_submode             (vio_tg_instr_rw_submode_14),
-  .vio_tg_instr_num_of_iter            (vio_tg_instr_num_of_iter_14),
-  .vio_tg_instr_nxt_instr              (vio_tg_instr_nxt_instr_14),
-  .vio_tg_restart                      (vio_tg_restart_14),
-  .vio_tg_pause                        (vio_tg_pause_14),
-  .vio_tg_err_clear_all                (vio_tg_err_clear_all_14),
-  .vio_tg_err_continue                 (vio_tg_err_continue_14),
-  .vio_tg_instr_program_en             (vio_tg_instr_program_en_14),
-  .vio_tg_direct_instr_en              (vio_tg_direct_instr_en_14),
-  .vio_tg_instr_num                    (vio_tg_instr_num_14),
-  .vio_tg_instr_victim_mode            (vio_tg_instr_victim_mode_14),
-  .vio_tg_instr_victim_aggr_delay      (vio_tg_instr_victim_aggr_delay_14),
-  .vio_tg_instr_victim_select          (vio_tg_instr_victim_select_14),
-  .vio_tg_instr_m_nops_btw_n_burst_m   (vio_tg_instr_m_nops_btw_n_burst_m_14),
-  .vio_tg_instr_m_nops_btw_n_burst_n   (vio_tg_instr_m_nops_btw_n_burst_n_14),
-  .vio_tg_seed_program_en              (vio_tg_seed_program_en_14),
-  .vio_tg_seed_num                     (vio_tg_seed_num_14),
-  .vio_tg_seed                         (vio_tg_seed_14),
-  .vio_tg_glb_victim_bit               (vio_tg_glb_victim_bit_14),
-  .vio_tg_glb_start_addr               (vio_tg_glb_start_addr_14),
-  .vio_tg_glb_qdriv_rw_submode         (2'b00),
-  .o_wrt_rqt_over_flow                 (),
-  .vio_tg_status_state                 (vio_tg_status_state_14),
-  .vio_tg_status_err_bit_valid         (vio_tg_status_err_bit_valid_14),
-  .vio_tg_status_err_bit               (vio_tg_status_err_bit_14),
-  .vio_tg_status_err_cnt               (vio_tg_status_err_cnt_14),
-  .vio_tg_status_err_addr              (vio_tg_status_err_addr_14),
-  .vio_tg_status_exp_bit_valid         (vio_tg_status_exp_bit_valid_14),
-  .vio_tg_status_exp_bit               (vio_tg_status_exp_bit_14),
-  .vio_tg_status_read_bit_valid        (vio_tg_status_read_bit_valid_14),
-  .vio_tg_status_read_bit              (vio_tg_status_read_bit_14),
-  .vio_tg_status_first_err_bit_valid   (vio_tg_status_first_err_bit_valid_14),
-  .vio_tg_status_first_err_bit         (vio_tg_status_first_err_bit_14),
-  .vio_tg_status_first_err_addr        (vio_tg_status_first_err_addr_14),
-  .vio_tg_status_first_exp_bit_valid   (vio_tg_status_first_exp_bit_valid_14),
-  .vio_tg_status_first_exp_bit         (vio_tg_status_first_exp_bit_14),
-  .vio_tg_status_first_read_bit_valid  (vio_tg_status_first_read_bit_valid_14),
-  .vio_tg_status_first_read_bit        (vio_tg_status_first_read_bit_14),
-  .vio_tg_status_err_bit_sticky_valid  (vio_tg_status_err_bit_sticky_valid_14),
-  .vio_tg_status_err_bit_sticky        (vio_tg_status_err_bit_sticky_14),
-  .vio_tg_status_err_cnt_sticky        (vio_tg_status_err_cnt_sticky_14),
-  .vio_tg_status_err_type_valid        (vio_tg_status_err_type_valid_14),
-  .vio_tg_status_err_type              (vio_tg_status_err_type_14),
-  .vio_tg_status_wr_done               (vio_tg_status_wr_done_14),
-  .vio_tg_status_done                  (boot_mode_done_14),
-  .vio_tg_status_watch_dog_hang        (vio_tg_status_watch_dog_hang_14),
-  .tg_ila_debug                        (tg_ila_debug_14),
-  .tg_qdriv_submode11_app_rd           (1'b0),
-  // Slave Interface Write Address Ports
-  .i_m_axi_awready                     ('0),
-  .o_m_axi_awid                        (),
-  .o_m_axi_awaddr                      (),
-  .o_m_axi_awlen                       (),
-  .o_m_axi_awsize                      (),
-  .o_m_axi_awburst                     (),
-  .o_m_axi_awlock                      (),
-  .o_m_axi_awcache                     (),
-  .o_m_axi_awprot                      (),
-  .o_m_axi_awvalid                     (),
-  // Slave Interface Write Data Ports
-  .i_m_axi_wready                      ('0),
-  .o_m_axi_wdata                       (),
-  .o_m_axi_wstrb                       (),
-  .o_m_axi_wlast                       (),
-  .o_m_axi_wvalid                      (),
-  // Slave Interface Write Response Ports
-  .i_m_axi_bid                         ('0),
-  .i_m_axi_bresp                       ('0),
-  .i_m_axi_bvalid                      ('0),
-  .o_m_axi_bready                      (),
-  .i_m_axi_arready                     ('0),
-  // Slave Interface Read Address Ports
-  .o_m_axi_arid                        (),
-  .o_m_axi_araddr                      (),
-  .o_m_axi_arlen                       (),
-  .o_m_axi_arsize                      (),
-  .o_m_axi_arburst                     (),
-  .o_m_axi_arlock                      (),
-  .o_m_axi_arcache                     (),
-  .o_m_axi_arprot                      (),
-  .o_m_axi_arvalid                     (),
-  // Slave Interface Read Data Ports
-  .i_m_axi_rid                         ('0),
-  .i_m_axi_rresp                       ('0),
-  .i_m_axi_rvalid                      ('0),
-  .i_m_axi_rdata                       ('0),
-  .i_m_axi_rlast                       ('0),
-  .o_m_axi_rready                      ()
-);
 
   //  mosi signals
   assign AXI_14_AWID    = axi4_hbm_chs_li[14].awid;
@@ -7748,142 +5784,7 @@ axi_pmon_v1_0 #(
 // assign AXI_15_ARADDR = {vio_tg_glb_start_addr_15[32:28],o_m_axi_araddr_15[27:0]};
 // assign AXI_15_AWADDR = {vio_tg_glb_start_addr_15[32:28],o_m_axi_awaddr_15[27:0]};
 
-atg_axi#(
-  .SIMULATION                          (SIMULATION),
-  .MEM_TYPE                            ("DDR4"),
-  .MEM_ARCH                            ("ULTRASCALE"),
-  //.APP_DATA_WIDTH                      (APP_DATA_WIDTH),
-  .APP_ADDR_WIDTH                      (APP_ADDR_WIDTH),
-  .C_AXI_ID_WIDTH                      (6),
-  .C_AXI_ADDR_WIDTH                    (APP_ADDR_WIDTH),
-  //.C_AXI_DATA_WIDTH                    (APP_DATA_WIDTH),
-  .TG_PATTERN_MODE_PRBS_ADDR_WIDTH     (28),
-  .ECC                                 ("OFF"),
-  //.NUM_DQ_PINS                         (32),
-  `ifdef OPT_DATA_W
-    .APP_DATA_WIDTH(64),
-    .C_AXI_DATA_WIDTH(64),
-      `ifdef NCKPCLK_2
-        .NUM_DQ_PINS(16),
-        .nCK_PER_CLK(2),
-      `else
-        .nCK_PER_CLK(4),
-        .NUM_DQ_PINS(8),
-      `endif
-    `else
-      `ifdef NCKPCLK_2
-        .NUM_DQ_PINS(64),
-        .nCK_PER_CLK(2),
-      `else
-        .nCK_PER_CLK(4),
-        .NUM_DQ_PINS(32),
-      `endif
-    .APP_DATA_WIDTH(APP_DATA_WIDTH),
-    .C_AXI_DATA_WIDTH(APP_DATA_WIDTH),
-  `endif
-  .DEFAULT_MODE                        ("2018_1")
-) u_atg_axi_15 (
-  .i_TG_PATTERN_MODE_PRBS_ADDR_SEED    (28'b0),
-  .i_clk                               (AXI_ACLK6_st0_buf),
-  .i_rst                               (~axi_rst6_st0_n),
-  .i_init_calib_complete               (apb_seq_complete_6_st0_r2),
-  .compare_error                       (axi_15_data_msmatch_err),
-  .vio_tg_rst                          (vio_tg_rst_15),
-  .vio_tg_start                        (vio_tg_start_15),
-  .vio_tg_err_chk_en                   (vio_tg_err_chk_en_15),
-  .vio_tg_err_clear                    (vio_tg_err_clear_15),
-  .vio_tg_instr_addr_mode              (vio_tg_instr_addr_mode_15),
-  .vio_tg_instr_data_mode              (vio_tg_instr_data_mode_15),
-  .vio_tg_instr_rw_mode                (vio_tg_instr_rw_mode_15),
-  .vio_tg_instr_rw_submode             (vio_tg_instr_rw_submode_15),
-  .vio_tg_instr_num_of_iter            (vio_tg_instr_num_of_iter_15),
-  .vio_tg_instr_nxt_instr              (vio_tg_instr_nxt_instr_15),
-  .vio_tg_restart                      (vio_tg_restart_15),
-  .vio_tg_pause                        (vio_tg_pause_15),
-  .vio_tg_err_clear_all                (vio_tg_err_clear_all_15),
-  .vio_tg_err_continue                 (vio_tg_err_continue_15),
-  .vio_tg_instr_program_en             (vio_tg_instr_program_en_15),
-  .vio_tg_direct_instr_en              (vio_tg_direct_instr_en_15),
-  .vio_tg_instr_num                    (vio_tg_instr_num_15),
-  .vio_tg_instr_victim_mode            (vio_tg_instr_victim_mode_15),
-  .vio_tg_instr_victim_aggr_delay      (vio_tg_instr_victim_aggr_delay_15),
-  .vio_tg_instr_victim_select          (vio_tg_instr_victim_select_15),
-  .vio_tg_instr_m_nops_btw_n_burst_m   (vio_tg_instr_m_nops_btw_n_burst_m_15),
-  .vio_tg_instr_m_nops_btw_n_burst_n   (vio_tg_instr_m_nops_btw_n_burst_n_15),
-  .vio_tg_seed_program_en              (vio_tg_seed_program_en_15),
-  .vio_tg_seed_num                     (vio_tg_seed_num_15),
-  .vio_tg_seed                         (vio_tg_seed_15),
-  .vio_tg_glb_victim_bit               (vio_tg_glb_victim_bit_15),
-  .vio_tg_glb_start_addr               (vio_tg_glb_start_addr_15),
-  .vio_tg_glb_qdriv_rw_submode         (2'b00),
-  .o_wrt_rqt_over_flow                 (),
-  .vio_tg_status_state                 (vio_tg_status_state_15),
-  .vio_tg_status_err_bit_valid         (vio_tg_status_err_bit_valid_15),
-  .vio_tg_status_err_bit               (vio_tg_status_err_bit_15),
-  .vio_tg_status_err_cnt               (vio_tg_status_err_cnt_15),
-  .vio_tg_status_err_addr              (vio_tg_status_err_addr_15),
-  .vio_tg_status_exp_bit_valid         (vio_tg_status_exp_bit_valid_15),
-  .vio_tg_status_exp_bit               (vio_tg_status_exp_bit_15),
-  .vio_tg_status_read_bit_valid        (vio_tg_status_read_bit_valid_15),
-  .vio_tg_status_read_bit              (vio_tg_status_read_bit_15),
-  .vio_tg_status_first_err_bit_valid   (vio_tg_status_first_err_bit_valid_15),
-  .vio_tg_status_first_err_bit         (vio_tg_status_first_err_bit_15),
-  .vio_tg_status_first_err_addr        (vio_tg_status_first_err_addr_15),
-  .vio_tg_status_first_exp_bit_valid   (vio_tg_status_first_exp_bit_valid_15),
-  .vio_tg_status_first_exp_bit         (vio_tg_status_first_exp_bit_15),
-  .vio_tg_status_first_read_bit_valid  (vio_tg_status_first_read_bit_valid_15),
-  .vio_tg_status_first_read_bit        (vio_tg_status_first_read_bit_15),
-  .vio_tg_status_err_bit_sticky_valid  (vio_tg_status_err_bit_sticky_valid_15),
-  .vio_tg_status_err_bit_sticky        (vio_tg_status_err_bit_sticky_15),
-  .vio_tg_status_err_cnt_sticky        (vio_tg_status_err_cnt_sticky_15),
-  .vio_tg_status_err_type_valid        (vio_tg_status_err_type_valid_15),
-  .vio_tg_status_err_type              (vio_tg_status_err_type_15),
-  .vio_tg_status_wr_done               (vio_tg_status_wr_done_15),
-  .vio_tg_status_done                  (boot_mode_done_15),
-  .vio_tg_status_watch_dog_hang        (vio_tg_status_watch_dog_hang_15),
-  .tg_ila_debug                        (tg_ila_debug_15),
-  .tg_qdriv_submode11_app_rd           (1'b0),
-   // Slave Interface Write Address Ports
-  .i_m_axi_awready                     ('0),
-  .o_m_axi_awid                        (),
-  .o_m_axi_awaddr                      (),
-  .o_m_axi_awlen                       (),
-  .o_m_axi_awsize                      (),
-  .o_m_axi_awburst                     (),
-  .o_m_axi_awlock                      (),
-  .o_m_axi_awcache                     (),
-  .o_m_axi_awprot                      (),
-  .o_m_axi_awvalid                     (),
-  // Slave Interface Write Data Ports
-  .i_m_axi_wready                      ('0),
-  .o_m_axi_wdata                       (),
-  .o_m_axi_wstrb                       (),
-  .o_m_axi_wlast                       (),
-  .o_m_axi_wvalid                      (),
-  // Slave Interface Write Response Ports
-  .i_m_axi_bid                         ('0),
-  .i_m_axi_bresp                       ('0),
-  .i_m_axi_bvalid                      ('0),
-  .o_m_axi_bready                      (),
-  .i_m_axi_arready                     ('0),
-  // Slave Interface Read Address Ports
-  .o_m_axi_arid                        (),
-  .o_m_axi_araddr                      (),
-  .o_m_axi_arlen                       (),
-  .o_m_axi_arsize                      (),
-  .o_m_axi_arburst                     (),
-  .o_m_axi_arlock                      (),
-  .o_m_axi_arcache                     (),
-  .o_m_axi_arprot                      (),
-  .o_m_axi_arvalid                     (),
-  // Slave Interface Read Data Ports
-  .i_m_axi_rid                         ('0),
-  .i_m_axi_rresp                       ('0),
-  .i_m_axi_rvalid                      ('0),
-  .i_m_axi_rdata                       ('0),
-  .i_m_axi_rlast                       ('0),
-  .o_m_axi_rready                      ()
-);
+
 
   //  mosi signals
   assign AXI_15_AWID    = axi4_hbm_chs_li[15].awid;

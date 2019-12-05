@@ -74,7 +74,7 @@
 `include "defines_h.vh"
 module atg_axi_tg_pattern_gen_addr
   #(
-    parameter TCQ            = 100,    
+    parameter TCQ            = 100,
     parameter APP_ADDR_WIDTH = 32,
     parameter CMD_PER_CLK    = 1,
     parameter NUM_PORT       = 1,
@@ -93,7 +93,7 @@ module atg_axi_tg_pattern_gen_addr
     input 			    rst,
     //input 			    calib_complete,
     input 			    pattern_load,
-    input 			    pattern_done, 
+    input 			    pattern_done,
     input [APP_ADDR_WIDTH-1:0] 	    pattern_prbs_seed,
     input [APP_ADDR_WIDTH-1:0] 	    pattern_linear_seed,
     input [3:0] 		    pattern_mode,
@@ -113,7 +113,7 @@ module atg_axi_tg_pattern_gen_addr
    localparam UPPER_ADDR_PER_CLK  = ((MEM_TYPE == "RLD3") || (MEM_TYPE == "RLD2")) ? 1 : CMD_PER_CLK;
    localparam LOG2_UPPER_ADDR_PER_CLK = ((MEM_TYPE == "RLD3") || (MEM_TYPE == "RLD2")) ? 1 : LOG2_CMD_PER_CLK;
 
-   localparam TG_PATTERN_MODE_LINEAR   = 4'b0000;   
+   localparam TG_PATTERN_MODE_LINEAR   = 4'b0000;
    localparam TG_PATTERN_MODE_PRBS     = 4'b0001;
    localparam TG_PATTERN_MODE_WALKING1 = 4'b0010;
    localparam TG_PATTERN_MODE_WALKING0 = 4'b0011;
@@ -121,7 +121,7 @@ module atg_axi_tg_pattern_gen_addr
    localparam TG_PATTERN_MODE_HAMMER0  = 4'b0101;
    localparam TG_PATTERN_MODE_BRAM     = 4'b0110;
    //localparam TG_PATTERN_MODE_CAL_CPLX = 4'b0111; // Unsupported mode in Address pattern
-   
+
    reg [TG_LOWER_ADDR_WIDTH_1-1:0]    rld_bank_addr [CMD_PER_CLK*NUM_PORT];
    reg [CMD_PER_CLK*NUM_PORT-1:0]   rld_upper_addr_en_i;
    wire 			    rld_upper_addr_en;
@@ -135,8 +135,8 @@ module atg_axi_tg_pattern_gen_addr
 	 assign local_pattern_en = pattern_en;
       end
    endgenerate
-   
-   
+
+
    reg 			       pattern_int0_valid;
    reg 			       pattern_int0_repeat;
    reg [APP_ADDR_WIDTH-1:0]    pattern_int0 [CMD_PER_CLK*NUM_PORT];
@@ -147,23 +147,23 @@ module atg_axi_tg_pattern_gen_addr
 
    reg 			       pattern_int2_valid;
    reg 			       pattern_int2_repeat;
-   reg [APP_ADDR_WIDTH-1:0]    pattern_int2 [CMD_PER_CLK*NUM_PORT];   
+   reg [APP_ADDR_WIDTH-1:0]    pattern_int2 [CMD_PER_CLK*NUM_PORT];
 
    reg 			       pattern_int3_valid;
    reg 			       pattern_int3_repeat;
-   reg [APP_ADDR_WIDTH-1:0]    pattern_int3 [CMD_PER_CLK*NUM_PORT];      
+   reg [APP_ADDR_WIDTH-1:0]    pattern_int3 [CMD_PER_CLK*NUM_PORT];
 
    reg 			       pattern_int4_valid;
    reg 			       pattern_int4_repeat;
    reg [APP_ADDR_WIDTH-1:0]    pattern_int4 [CMD_PER_CLK*NUM_PORT];
-   //***********************************************   
+   //***********************************************
    // PRBS engine
    localparam TG_LOWER_ADDR_WIDTH_PRBS = ((MEM_TYPE == "RLD3") || (MEM_TYPE == "RLD2")) ? 0 : TG_LOWER_ADDR_WIDTH;
    localparam UPPER_ADDR_PER_CLK_PRBS  = ((MEM_TYPE == "RLD3") || (MEM_TYPE == "RLD2")) ? CMD_PER_CLK : UPPER_ADDR_PER_CLK;
    wire [APP_ADDR_WIDTH-TG_LOWER_ADDR_WIDTH_PRBS-1:0] prbs_out[UPPER_ADDR_PER_CLK_PRBS];
    wire [PRBS_WIDTH-1:0] prbs_out_1[UPPER_ADDR_PER_CLK_PRBS];
    wire 					 prbs_repeat;
-   atg_axi_tg_addr_prbs 
+   atg_axi_tg_addr_prbs
      #(
        .TCQ(TCQ),
 		`ifdef HBM_PRBS_ADDR_WIDTH_23
@@ -226,7 +226,7 @@ module atg_axi_tg_pattern_gen_addr
 
    always@(posedge clk) begin
       for (i=0; i<UPPER_ADDR_PER_CLK*NUM_PORT; i=i+1) begin : gen_lbl_linear
-	 
+
 	 if (pattern_load) begin
 	    linear_out[i] <= #TCQ pattern_linear_seed[APP_ADDR_WIDTH-1:TG_LOWER_ADDR_WIDTH] + i;
 	    linear_repeat <= #TCQ 1'b0;
@@ -243,7 +243,7 @@ module atg_axi_tg_pattern_gen_addr
 	 linear_repeat_int[i] = ((linear_out[i] + UPPER_ADDR_PER_CLK*NUM_PORT) == pattern_linear_seed[APP_ADDR_WIDTH-1:TG_LOWER_ADDR_WIDTH]);
       end
    end
-   
+
    //***********************************************
    // Walking 1/0 engine
    reg [APP_ADDR_WIDTH-TG_LOWER_ADDR_WIDTH-1:0] 		 walking_out[UPPER_ADDR_PER_CLK];
@@ -256,11 +256,11 @@ module atg_axi_tg_pattern_gen_addr
    reg [UPPER_ADDR_PER_CLK-1:0] 				 walking_repeat_vec;
    reg 								 walking_select;
    reg 								 walking_start;
-   
+
    always@(posedge clk) begin
       walking_select <= #TCQ (pattern_mode == TG_PATTERN_MODE_WALKING1);
    end
-      
+
    always@(posedge clk) begin
       for (i=0; i<UPPER_ADDR_PER_CLK; i=i+1) begin : gen_lbl_walking_i
 	 for (j=0; j<APP_ADDR_WIDTH-TG_LOWER_ADDR_WIDTH; j=j+1) begin : gen_lbl_walking_j
@@ -283,7 +283,7 @@ module atg_axi_tg_pattern_gen_addr
    end
 
    assign  walking_repeat = ~walking_start && (| walking_repeat_vec);
-   
+
    always@(posedge clk) begin
       if (pattern_load) begin
 	 walking_start  <= #TCQ 'h1;
@@ -292,7 +292,7 @@ module atg_axi_tg_pattern_gen_addr
 	 walking_start  <= #TCQ 'h0;
       end
    end
-   
+
    //***********************************************
    // BRAM engine
    // TBD
@@ -308,7 +308,7 @@ module atg_axi_tg_pattern_gen_addr
 
    //***********************************************
    // Linear address - RLD Bank address
-   generate 
+   generate
       if ((MEM_TYPE == "RLD3") || (MEM_TYPE == "RLD2")) begin
 	 for (gen_i=0; gen_i<CMD_PER_CLK*NUM_PORT; gen_i=gen_i+1) begin
 	    always@(posedge clk) begin
@@ -342,7 +342,7 @@ module atg_axi_tg_pattern_gen_addr
    end
 
    assign rld_upper_addr_en = |rld_upper_addr_en_i;
-   
+
    //***********************************************
    // output select
 
@@ -361,7 +361,7 @@ module atg_axi_tg_pattern_gen_addr
 		 TG_PATTERN_MODE_WALKING1,
 		   TG_PATTERN_MODE_WALKING0: begin
 		      pattern_int0[gen_i]  = {walking_out[0], lower_addr[gen_i]};
-		   end	     
+		   end
 		 TG_PATTERN_MODE_BRAM:       begin
 		    pattern_int0[gen_i]    = {bram_out[0], lower_addr[gen_i]};
 		 end
@@ -383,7 +383,7 @@ module atg_axi_tg_pattern_gen_addr
 		 TG_PATTERN_MODE_WALKING1,
 		   TG_PATTERN_MODE_WALKING0: begin
 		      pattern_int0[gen_i]  = walking_out[gen_i];
-		   end	     
+		   end
 		 TG_PATTERN_MODE_BRAM:       begin
 		    pattern_int0[gen_i]    = bram_out[gen_i];
 		 end
@@ -405,7 +405,7 @@ module atg_axi_tg_pattern_gen_addr
 		 TG_PATTERN_MODE_WALKING1,
 		   TG_PATTERN_MODE_WALKING0: begin
 		      pattern_int0[gen_i]  = {walking_out[gen_i], lower_addr[gen_i]};
-		   end	     
+		   end
 		 TG_PATTERN_MODE_BRAM:       begin
 		    pattern_int0[gen_i]    = {bram_out[gen_i], lower_addr[gen_i]};
 		 end
@@ -417,7 +417,7 @@ module atg_axi_tg_pattern_gen_addr
 	 end
       end
    endgenerate
-   
+
    always@(*) begin
       casez (pattern_mode)
 	TG_PATTERN_MODE_LINEAR:     begin
@@ -429,7 +429,7 @@ module atg_axi_tg_pattern_gen_addr
 	TG_PATTERN_MODE_WALKING1,
 	  TG_PATTERN_MODE_WALKING0: begin
 	     pattern_int0_repeat = walking_repeat;
-	  end	     
+	  end
 	TG_PATTERN_MODE_BRAM:       begin
 	   pattern_int0_repeat = bram_repeat;
 	   //synthesis translate_off
@@ -445,7 +445,7 @@ module atg_axi_tg_pattern_gen_addr
 	   //synthesis translate_on
 	end
       endcase
-   end      
+   end
 
    //synthesis translate_off
    always@(posedge clk) begin
@@ -454,14 +454,14 @@ module atg_axi_tg_pattern_gen_addr
 		 pattern_mode == TG_PATTERN_MODE_PRBS      ||
 		 pattern_mode == TG_PATTERN_MODE_WALKING0  ||
 		 pattern_mode == TG_PATTERN_MODE_WALKING1  ||
-		 pattern_mode == TG_PATTERN_MODE_BRAM) 
+		 pattern_mode == TG_PATTERN_MODE_BRAM)
 	   else begin
-	      $display ($time, "Warning: User programmed unsupported address mode %x\n", pattern_mode); 
-	   end	      
+	      $display ($time, "Warning: User programmed unsupported address mode %x\n", pattern_mode);
+	   end
       end
    end
    //synthesis translate_on
-   
+
    always@(posedge clk) begin
       if(rst | pattern_load) begin
 	 pattern_int1_valid  <= #TCQ 1'b0;
@@ -493,6 +493,6 @@ module atg_axi_tg_pattern_gen_addr
 	 pattern_out         <= #TCQ pattern_int4;
       end
    end
-   
+
 endmodule // atg_axi_tg_pattern_gen_addr
 

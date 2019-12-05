@@ -25,7 +25,7 @@ ${VIVADO_IP_DIR}/axi_protocol_converter_v2_1/hdl/axi_protocol_converter_v2_1_vl_
 ${VIVADO_IP_DIR}/axi_data_fifo_v2_1/hdl/axi_data_fifo_v2_1_vl_rfs.v
 "]
 
-add_files -fileset sources_1 ${XILINX_EX_DIR}/hbm_atg/
+# add_files -fileset sources_1 ${XILINX_EX_DIR}/hbm_atg/
 
 # ${VIVADO_IP_DIR}/axi_dwidth_converter_v2_1/hdl/axi_dwidth_converter_v2_1_vl_rfs.v
 # ${VIVADO_IP_DIR}/fifo_generator_v13_2/hdl/fifo_generator_v13_2_rfs.vhd
@@ -35,6 +35,7 @@ add_files -fileset sources_1 ${XILINX_EX_DIR}/hbm_atg/
 # ${VIVADO_IP_DIR}/fifo_generator_v13_2/hdl/fifo_generator_v13_2_rfs.v
 # "]
 
+set_property is_global_include true [get_files *bsg_bladerunner_defines.vh]
 
 # =====================================
 # generate ips
@@ -207,14 +208,12 @@ generate_target {instantiation_template} [get_files ${PRJ_IP_DIR}/clk_wiz_1/clk_
 set_property generate_synth_checkpoint false [get_files  ${PRJ_IP_DIR}/clk_wiz_1/clk_wiz_1.xci]
 generate_target all [get_files  ${PRJ_IP_DIR}/clk_wiz_1/clk_wiz_1.xci]
 
-
 # -------------------------------------
 # HBM
 # -------------------------------------
 create_ip -name hbm -vendor xilinx.com -library ip -version 1.0 -module_name hbm_0
 set_property -dict [list \
-CONFIG.USER_AXI_CLK_FREQ {250} \
-CONFIG.HBM_MMCM_FBOUT_MULT0 {70} \
+CONFIG.USER_SWITCH_ENABLE_00 {FALSE} \
 CONFIG.USER_MC0_REORDER_EN {false} \
 CONFIG.USER_MC0_REORDER_QUEUE_EN {false} \
 CONFIG.USER_MC0_MAINTAIN_COHERENCY {false} \
@@ -262,7 +261,9 @@ CONFIG.USER_MC14_REORDER_QUEUE_EN {false} \
 CONFIG.USER_MC14_MAINTAIN_COHERENCY {false} \
 CONFIG.USER_MC15_REORDER_EN {false} \
 CONFIG.USER_MC15_REORDER_QUEUE_EN {false} \
-CONFIG.USER_MC15_MAINTAIN_COHERENCY {false}
+CONFIG.USER_MC15_MAINTAIN_COHERENCY {false} \
+CONFIG.USER_AXI_CLK_FREQ {250} \
+CONFIG.HBM_MMCM_FBOUT_MULT0 {70}
 ] [get_ips hbm_0]
 generate_target {instantiation_template} [get_files ${PRJ_IP_DIR}/hbm_0/hbm_0.xci]
 set_property generate_synth_checkpoint false [get_files  ${PRJ_IP_DIR}/hbm_0/hbm_0.xci]

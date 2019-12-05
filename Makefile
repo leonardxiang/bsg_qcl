@@ -1,4 +1,4 @@
-DESINS_TARGETS = f1_manycore
+DESINS_TARGETS = f1_manycore hbm_manycore
 
 .DEFAULT_GOAL := help
 
