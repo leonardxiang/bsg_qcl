@@ -1,0 +1,7 @@
+# vivado log files
+#
+vivado*.jou
+.log
+.Xil/
+# trace replay rom
+*/*_rom.v

@@ -1,0 +1,6 @@
+set_property file_type {Verilog Header} [get_files *bsg_defines.v]
+set_property is_global_include true [get_files *bsg_defines.v]
+set_property is_global_include true [get_files *hbm_manycore.vh]
+set_property is_global_include true [get_files *bsg_axi_bus_pkg.vh]
+set_property file_type {SystemVerilog} [get_files *bsg_bladerunner_rom_pkg.vh]
+set_property is_global_include true [get_files *bsg_bladerunner_rom_pkg.vh]

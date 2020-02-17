@@ -66,75 +66,62 @@
 ##
 ## Free Running Clock is Required for IBERT/DRP operations.
 ##
+
 ###############################################################################
-create_clock -name sys_clk -period 10 [get_ports sys_clk_i_p]
-#
+# Clock
 ###############################################################################
-set_false_path -from [get_ports sys_resetn_i]
-set_property PULLUP true [get_ports sys_resetn_i]
-set_property IOSTANDARD LVCMOS18 [get_ports sys_resetn_i]
-set_property LOC [get_package_pins -filter {PIN_FUNC =~ *_PERSTN0_65}] [get_ports sys_resetn_i]
-#set_property PACKAGE_PIN AJ31 [get_ports sys_resetn_i]
-#
-set_property CONFIG_VOLTAGE 1.8 [current_design]
-#
-###############################################################################
+create_clock -name pcie_clk -period 10 [get_ports pcie_clk_i_p]
 set_property LOC [get_package_pins \
   -of_objects [get_bels [get_sites -filter {NAME =~ *COMMON*} \
     -of_objects [get_iobanks \
       -of_objects [get_sites GTYE4_CHANNEL_X1Y15]]]/REFCLK0P]] \
-  [get_ports sys_clk_i_p]
+  [get_ports pcie_clk_i_p]
 set_property LOC [get_package_pins \
   -of_objects [get_bels [get_sites -filter {NAME =~ *COMMON*} \
     -of_objects [get_iobanks \
       -of_objects [get_sites GTYE4_CHANNEL_X1Y15]]]/REFCLK0N]] \
-  [get_ports sys_clk_i_n]
-#
-###############################################################################
+  [get_ports pcie_clk_i_n]
+
 
 ###############################################################################
-#
+# Reset
+###############################################################################
+set_false_path -from [get_ports pcie_resetn_i]
+set_property PULLUP true [get_ports pcie_resetn_i]
+set_property IOSTANDARD LVCMOS18 [get_ports pcie_resetn_i]
+set_property LOC [get_package_pins -filter {PIN_FUNC =~ *_PERSTN0_65}] [get_ports pcie_resetn_i]
+#set_property PACKAGE_PIN AJ31 [get_ports pcie_resetn_i]
 
-#
-# BITFILE/BITSTREAM compress options
-#
-#set_property BITSTREAM.CONFIG.EXTMASTERCCLK_EN div-1 [current_design]
-#set_property BITSTREAM.CONFIG.BPI_SYNC_MODE Type1 [current_design]
-#set_property CONFIG_MODE BPI16 [current_design]
-#set_property BITSTREAM.GENERAL.COMPRESS TRUE [current_design]
-#set_property BITSTREAM.CONFIG.UNUSEDPIN Pulldown [current_design]
-#
 #
 set_false_path -to [get_pins -hier *sync_reg[0]/D]
 #
-
 
 ##-----------------------------------------------------------------------------
 ##
 ## Project    : UltraScale+ FPGA PCI Express CCIX v4.0 Integrated Block
 ## File       : xdma_0_pcie4c_ip_late.xdc
-## Version    : 1.0 
+## Version    : 1.0
 ##-----------------------------------------------------------------------------
 #
-# This constraints file contains ASYNC clock grouping and processed late after OOC and IP Level XDC files. 
+# This constraints file contains ASYNC clock grouping and processed late after OOC and IP Level XDC files.
 #
 #
 ###############################################################################
 # ASYNC CLOCK GROUPINGS
 ###############################################################################
-# sys_clk vs TXOUTCLK
-set_clock_groups -asynchronous -group [get_clocks -of_objects [get_ports sys_clk*]] -group [get_clocks -of_objects [get_pins -hierarchical -filter {NAME =~ *gen_channel_container[*].*gen_gtye4_channel_inst[*].GTYE4_CHANNEL_PRIM_INST/TXOUTCLK}]]
-set_clock_groups -asynchronous -group [get_clocks -of_objects [get_pins -hierarchical -filter {NAME =~ *gen_channel_container[*].*gen_gtye4_channel_inst[*].GTYE4_CHANNEL_PRIM_INST/TXOUTCLK}]] -group [get_clocks -of_objects [get_ports sys_clk*]]
+# pcie_clk vs TXOUTCLK
+set_clock_groups -asynchronous -group [get_clocks -of_objects [get_ports pcie_clk*]] -group [get_clocks -of_objects [get_pins -hierarchical -filter {NAME =~ *gen_channel_container[*].*gen_gtye4_channel_inst[*].GTYE4_CHANNEL_PRIM_INST/TXOUTCLK}]]
+set_clock_groups -asynchronous -group [get_clocks -of_objects [get_pins -hierarchical -filter {NAME =~ *gen_channel_container[*].*gen_gtye4_channel_inst[*].GTYE4_CHANNEL_PRIM_INST/TXOUTCLK}]] -group [get_clocks -of_objects [get_ports pcie_clk*]]
 #
-# sys_clk vs intclk
-set_clock_groups -asynchronous -group [get_clocks -of_objects [get_pins gt_top_i/diablo_gt.diablo_gt_phy_wrapper/phy_clk_i/bufg_gt_intclk/O]] -group [get_clocks -of_objects [get_ports sys_clk*]]
-set_clock_groups -asynchronous -group [get_clocks -of_objects [get_ports sys_clk*]] -group [get_clocks -of_objects [get_pins gt_top_i/diablo_gt.diablo_gt_phy_wrapper/phy_clk_i/bufg_gt_intclk/O]]
+# pcie_clk vs intclk
+set_clock_groups -asynchronous -group [get_clocks -of_objects [get_pins gt_top_i/diablo_gt.diablo_gt_phy_wrapper/phy_clk_i/bufg_gt_intclk/O]] -group [get_clocks -of_objects [get_ports pcie_clk*]]
+set_clock_groups -asynchronous -group [get_clocks -of_objects [get_ports pcie_clk*]] -group [get_clocks -of_objects [get_pins gt_top_i/diablo_gt.diablo_gt_phy_wrapper/phy_clk_i/bufg_gt_intclk/O]]
 #
 # intclk vs pclk
 set_clock_groups -asynchronous -group [get_clocks -of_objects [get_pins gt_top_i/diablo_gt.diablo_gt_phy_wrapper/phy_clk_i/bufg_gt_intclk/O]] -group [get_clocks -of_objects [get_pins gt_top_i/diablo_gt.diablo_gt_phy_wrapper/phy_clk_i/bufg_gt_pclk/O]]
 set_clock_groups -asynchronous -group [get_clocks -of_objects [get_pins gt_top_i/diablo_gt.diablo_gt_phy_wrapper/phy_clk_i/bufg_gt_pclk/O]] -group [get_clocks -of_objects [get_pins gt_top_i/diablo_gt.diablo_gt_phy_wrapper/phy_clk_i/bufg_gt_intclk/O]]
 #
-# sys_clk vs pclk
-set_clock_groups -asynchronous -group [get_clocks -of_objects [get_ports sys_clk*]] -group [get_clocks -of_objects [get_pins gt_top_i/diablo_gt.diablo_gt_phy_wrapper/phy_clk_i/bufg_gt_pclk/O]]
-set_clock_groups -asynchronous -group [get_clocks -of_objects [get_pins gt_top_i/diablo_gt.diablo_gt_phy_wrapper/phy_clk_i/bufg_gt_pclk/O]] -group [get_clocks -of_objects [get_ports sys_clk*]]
+# pcie_clk vs pclk
+set_clock_groups -asynchronous -group [get_clocks -of_objects [get_ports pcie_clk*]] -group [get_clocks -of_objects [get_pins gt_top_i/diablo_gt.diablo_gt_phy_wrapper/phy_clk_i/bufg_gt_pclk/O]]
+set_clock_groups -asynchronous -group [get_clocks -of_objects [get_pins gt_top_i/diablo_gt.diablo_gt_phy_wrapper/phy_clk_i/bufg_gt_pclk/O]] -group [get_clocks -of_objects [get_ports pcie_clk*]]
 #

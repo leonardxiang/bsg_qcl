@@ -37,7 +37,6 @@ module xilinx_dma_pcie_ep #(
   output                                    user_clk_o     ,
   output                                    user_resetn_o  ,
   output                                    user_link_up_o ,
-  output [                             3:0] leds_o         ,
   // AXI Lite Master Interface connections
   output [                            31:0] m_axil_awaddr  ,
   output                                    m_axil_awvalid ,
@@ -169,8 +168,6 @@ module xilinx_dma_pcie_ep #(
 
   assign sys_rst_n_buf_o = sys_rst_n_c;
 
-  // User Clock LED Heartbeat
-  reg [26:0]            user_clk_heartbeat;
   // reg [((2*C_NUM_USR_IRQ)-1):0]    usr_irq_function_number=0;
   reg  [C_NUM_USR_IRQ-1:0] usr_irq_req = 0;
   wire [C_NUM_USR_IRQ-1:0] usr_irq_ack    ;
@@ -343,23 +340,7 @@ module xilinx_dma_pcie_ep #(
     .user_lnk_up     ( user_lnk_up )
   );
 
-
   // The sys_rst_n input is active low based on the core configuration
   // wire sys_resetn = sys_rst_n_i;
-
-  // Create a Clock Heartbeat
-  always_ff @(posedge user_clk) begin
-    if(!sys_rst_n_buf_o) begin
-      user_clk_heartbeat <= #TCQ 27'd0;
-    end else begin
-      user_clk_heartbeat <= #TCQ user_clk_heartbeat + 1'b1;
-    end
-  end
-
-  // LEDs for observation
-  assign leds_o[0] = sys_rst_n_buf_o;
-  assign leds_o[1] = user_resetn;
-  assign leds_o[2] = user_lnk_up;
-  assign leds_o[3] = user_clk_heartbeat[26];
 
 endmodule

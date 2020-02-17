@@ -1,4 +1,6 @@
-DESINS_TARGETS = f1_manycore
+DESINS_TARGETS = hbm_manycore qmc_runner
+
+include environment.mk
 
 .DEFAULT_GOAL := help
 
